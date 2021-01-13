@@ -14,6 +14,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
     public void onButtonClicked(View v){
-        Toast.makeText(this, "move", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
     }
 }
