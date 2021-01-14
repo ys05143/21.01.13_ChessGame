@@ -45,7 +45,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="b8"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/c8"
@@ -65,7 +65,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="d8"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/e8"
@@ -85,7 +85,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="f8"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/g8"
@@ -105,7 +105,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="h8"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
         </TableRow>
 
@@ -122,7 +122,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="a7"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/b7"
@@ -142,7 +142,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="c7"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/d7"
@@ -162,7 +162,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="e7"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/f7"
@@ -182,7 +182,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="g7"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/h7"
@@ -218,7 +218,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="b6"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/c6"
@@ -238,7 +238,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="d6"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/e6"
@@ -258,7 +258,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="f6"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/g6"
@@ -278,7 +278,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="h6"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
         </TableRow>
 
@@ -295,7 +295,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="a5"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/b5"
@@ -315,7 +315,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="c5"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/d5"
@@ -335,7 +335,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="e5"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/f5"
@@ -355,7 +355,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="g5"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/h5"
@@ -391,7 +391,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="b4"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/c4"
@@ -411,7 +411,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="d4"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/e4"
@@ -431,7 +431,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="f4"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/g4"
@@ -451,7 +451,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="h4"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
         </TableRow>
 
@@ -468,7 +468,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="a3"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/b3"
@@ -488,7 +488,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="c3"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/d3"
@@ -508,7 +508,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="e3"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/f3"
@@ -528,7 +528,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="g3"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/h3"
@@ -564,7 +564,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="b2"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/c2"
@@ -584,7 +584,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="d2"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/e2"
@@ -604,7 +604,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="f2"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/g2"
@@ -624,7 +624,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="h2"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
         </TableRow>
 
@@ -641,7 +641,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="a1"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/b1"
@@ -661,7 +661,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="c1"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/d1"
@@ -681,7 +681,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="e1"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/f1"
@@ -701,7 +701,7 @@
                 android:background="@drawable/table_inside_b"
                 android:gravity="center"
                 android:text="g1"
-                android:textColor="#9a7b4f" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/h1"
@@ -742,6 +742,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/rook_b"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -750,6 +751,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/bishop_b"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -758,6 +760,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/knight_b"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -766,6 +769,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/king_b"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -774,6 +778,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/queen_b"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -782,6 +787,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/knight_b"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -790,6 +796,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/bishop_b"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -797,8 +804,12 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:onClick="onButtonClicked"
                 android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
+                android:foreground="@drawable/rook_b"
+                tools:src="@drawable/bishop_b" />
+
+
         </TableRow>
 
         <TableRow
