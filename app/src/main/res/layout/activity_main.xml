@@ -823,6 +823,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/pawn_b"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -831,6 +832,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/pawn_b"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -839,6 +841,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/pawn_b"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -847,6 +850,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/pawn_b"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -855,6 +859,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/pawn_b"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -863,6 +868,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/pawn_b"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -871,6 +877,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/pawn_b"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -879,6 +886,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/pawn_b"
                 android:onClick="onButtonClicked" />
         </TableRow>
 
@@ -1173,6 +1181,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/pawn_w"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -1181,6 +1190,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/pawn_w"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -1189,6 +1199,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/pawn_w"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -1197,6 +1208,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/pawn_w"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -1205,6 +1217,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/pawn_w"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -1213,6 +1226,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/pawn_w"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -1221,6 +1235,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/pawn_w"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -1229,6 +1244,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/pawn_w"
                 android:onClick="onButtonClicked" />
         </TableRow>
 
@@ -1243,6 +1259,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+
+                android:foreground="@drawable/rook_w"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -1251,6 +1269,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/bishop_w"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -1259,6 +1278,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/knight_w"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -1267,6 +1287,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/queen_w"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -1275,6 +1296,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/king_w"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -1283,6 +1305,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/knight_w"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -1291,6 +1314,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/bishop_w"
                 android:onClick="onButtonClicked" />
 
             <Button
@@ -1299,6 +1323,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="#00ff0000"
+                android:foreground="@drawable/rook_w"
                 android:onClick="onButtonClicked" />
         </TableRow>
 
