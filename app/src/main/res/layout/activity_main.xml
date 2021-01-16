@@ -1,1336 +1,1002 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TableLayout
-        android:id="@+id/board"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="h,1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
 
-        <TableRow
+    <TableRow
+        android:id="@+id/R8"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="@color/brown">
 
-            <TextView
+            <Button
                 android:id="@+id/a8"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="a8"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/rook_b">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/b8"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="b8"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/knight_b">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/c8"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="c8"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/bishop_b">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/d8"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="d8"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/queen_b">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/e8"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="e8"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/king_b">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/f8"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="f8"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/bishop_b">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/g8"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="g8"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/knight_b">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/h8"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="h8"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/rook_b">
 
-        </TableRow>
+            </Button>
+        </FrameLayout>
 
-        <TableRow
+    </TableRow>
+    <TableRow
+        android:id="@+id/R7"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="@color/beige">
 
-            <TextView
+            <Button
                 android:id="@+id/a7"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="a7"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/pawn_b">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/b7"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="b7"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/pawn_b">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/c7"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="c7"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/pawn_b">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/d7"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="d7"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/pawn_b">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/e7"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="e7"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/pawn_b">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/f7"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="f7"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/pawn_b">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/g7"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="g7"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/pawn_b">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/h7"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="h7"
-                android:textColor="#000000" />
-        </TableRow>
+                android:background="@color/transparent"
+                android:foreground="@drawable/pawn_b">
 
-        <TableRow
+            </Button>
+        </FrameLayout>
+
+    </TableRow>
+    <TableRow
+        android:id="@+id/R6"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="@color/brown">
 
-            <TextView
+            <Button
                 android:id="@+id/a6"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="a6"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/b6"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="b6"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/c6"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="c6"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/d6"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="d6"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/e6"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="e6"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/f6"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="f6"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/g6"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="g6"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/h6"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="h6"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-        </TableRow>
+            </Button>
+        </FrameLayout>
 
-        <TableRow
+    </TableRow>
+    <TableRow
+        android:id="@+id/R5"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="@color/beige">
 
-            <TextView
+            <Button
                 android:id="@+id/a5"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="a5"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/b5"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="b5"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/c5"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="c5"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/d5"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="d5"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/e5"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="e5"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/f5"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="f5"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/g5"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="g5"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/h5"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="h5"
-                android:textColor="#000000" />
-        </TableRow>
+                android:background="@color/transparent">
 
-        <TableRow
+            </Button>
+        </FrameLayout>
+
+    </TableRow>'
+    <TableRow
+        android:id="@+id/R4"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="@color/brown">
 
-            <TextView
+            <Button
                 android:id="@+id/a4"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="a4"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/b4"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="b4"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/c4"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="c4"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/d4"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="d4"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/e4"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="e4"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/f4"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="f4"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/g4"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="g4"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/h4"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="h4"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-        </TableRow>
+            </Button>
+        </FrameLayout>
 
-        <TableRow
+    </TableRow>
+    <TableRow
+        android:id="@+id/R3"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="@color/beige">
 
-            <TextView
+            <Button
                 android:id="@+id/a3"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="a3"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/b3"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="b3"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/c3"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="c3"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/d3"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="d3"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/e3"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="e3"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/f3"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="f3"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/g3"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="g3"
-                android:textColor="#000000" />
+                android:background="@color/transparent">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/h3"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="h3"
-                android:textColor="#000000" />
-        </TableRow>
+                android:background="@color/transparent">
 
-        <TableRow
+            </Button>
+        </FrameLayout>
+
+    </TableRow>
+    <TableRow
+        android:id="@+id/R2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="@color/brown">
 
-            <TextView
+            <Button
                 android:id="@+id/a2"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="a2"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/pawn_w">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/b2"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="b2"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/pawn_w">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/c2"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="c2"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/pawn_w">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/d2"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="d2"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/pawn_w">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/e2"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="e2"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/pawn_w">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/f2"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="f2"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/pawn_w">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/g2"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="g2"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/pawn_w">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/h2"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="h2"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/pawn_w">
 
-        </TableRow>
+            </Button>
+        </FrameLayout>
 
-        <TableRow
+    </TableRow>
+    <TableRow
+        android:id="@+id/R1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="@color/beige">
 
-            <TextView
+            <Button
                 android:id="@+id/a1"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="a1"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/rook_w">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/b1"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="b1"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/knight_w">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/c1"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="c1"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/bishop_w">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/d1"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="d1"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/queen_w">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/e1"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="e1"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/king_w">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/f1"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="f1"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/bishop_w">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/beige">
+
+            <Button
                 android:id="@+id/g1"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_b"
-                android:gravity="center"
-                android:text="g1"
-                android:textColor="#000000" />
+                android:background="@color/transparent"
+                android:foreground="@drawable/knight_w">
 
-            <TextView
+            </Button>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/brown">
+
+            <Button
                 android:id="@+id/h1"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/table_inside_w"
-                android:gravity="center"
-                android:text="h1"
-                android:textColor="#000000" />
-        </TableRow>
+                android:background="@color/transparent"
+                android:foreground="@drawable/rook_w">
 
+            </Button>
+        </FrameLayout>
 
-    </TableLayout>
+    </TableRow>
 
-    <TableLayout
-        android:id="@+id/board_b"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="h,1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TableRow
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <Button
-                android:id="@+id/a8_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/rook_b"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/b8_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/bishop_b"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/c8_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/knight_b"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/d8_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/king_b"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/e8_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/queen_b"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/f8_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/knight_b"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/g8_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/bishop_b"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/h8_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:onClick="onButtonClicked"
-                android:background="#00ff0000"
-                android:foreground="@drawable/rook_b"
-                tools:src="@drawable/bishop_b" />
-
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <Button
-                android:id="@+id/a7_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/pawn_b"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/b7_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/pawn_b"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/c7_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/pawn_b"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/d7_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/pawn_b"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/e7_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/pawn_b"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/f7_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/pawn_b"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/g7_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/pawn_b"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/h7_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/pawn_b"
-                android:onClick="onButtonClicked" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <Button
-                android:id="@+id/a6_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/b86_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/c6_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/d6_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/e6_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/f6_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/g6_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/h6_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <Button
-                android:id="@+id/a5_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/b5_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/c5_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/d5_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/e5_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/f5_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/g5_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/h5_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <Button
-                android:id="@+id/a4_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/b4_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/c4_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/d4_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/e4_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/f4_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/g4_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/h4_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <Button
-                android:id="@+id/a3_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/b3_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/c3_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/d3_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/e3_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/f3_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/g3_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/h3_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:onClick="onButtonClicked" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <Button
-                android:id="@+id/a2_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/pawn_w"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/b2_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/pawn_w"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/c2_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/pawn_w"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/d2_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/pawn_w"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/e2_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/pawn_w"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/f2_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/pawn_w"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/g2_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/pawn_w"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/h2_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/pawn_w"
-                android:onClick="onButtonClicked" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <Button
-                android:id="@+id/a1_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-
-                android:foreground="@drawable/rook_w"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/b1_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/bishop_w"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/c1_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/knight_w"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/d1_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/queen_w"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/e1_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/king_w"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/f1_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/knight_w"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/g1_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/bishop_w"
-                android:onClick="onButtonClicked" />
-
-            <Button
-                android:id="@+id/h1_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#00ff0000"
-                android:foreground="@drawable/rook_w"
-                android:onClick="onButtonClicked" />
-        </TableRow>
-
-
-    </TableLayout>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-</FrameLayout>
+</TableLayout>
