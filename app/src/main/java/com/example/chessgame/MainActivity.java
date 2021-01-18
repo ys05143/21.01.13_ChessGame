@@ -19,7 +19,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
-
+//------------------------------------변수처리부분---------------------------------
     // imageview ID 처리
     int block_id[] = {R.id.A8, R.id.B8, R.id.C8, R.id.D8, R.id.E8, R.id.F8, R.id.G8, R.id.H8,
             R.id.A7, R.id.B7, R.id.C7, R.id.D7, R.id.E7, R.id.F7, R.id.G7, R.id.H7,
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     int[] temp_index = new int[1]; // 첫번째 버튼의 번호 저장(첫번째 누른 block의 인덱스)
     int[] choose_num = new int[1]; // 첫번째 버튼의 말의 종류 저장 (1~6)
     boolean[] flag = {false}; // 버튼 2번눌렀을때
-
+//---------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 64; i++)
             block[i] = (ImageView) findViewById(block_id[i]);
 
-
+        // 0~23 3번째 줄까지 추가해놓음
         block[0].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,52 +129,156 @@ public class MainActivity extends AppCompatActivity {
                 move(9);
             }
         });
-
-
+        block[10].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(10);
+            }
+        });
+        block[11].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(11);
+            }
+        });
+        block[12].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(12);
+            }
+        });
+        block[13].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(13);
+            }
+        });
+        block[14].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(14);
+            }
+        });
+        block[15].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(15);
+            }
+        });
         block[16].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //버튼1 이 버튼2를 지울때
-                if (temp[0] != null) {
-                    number[temp_index[0]] = 0;
-                    number[16] = choose_num[0];
-                    block[temp_index[0]].setImageDrawable(block[16].getDrawable());
-                    block[16].setImageDrawable(temp[0]);
-                    for (int i = 0; i < 32; i++)
-                        if (number[i] == 0) block[i].setVisibility(View.INVISIBLE);
-                }
+                move(16);
+            }
+        });
+        block[17].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(17);
+            }
+        });
+        block[18].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(18);
+            }
+        });
+        block[19].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(19);
+            }
+        });
+        block[20].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(20);
+            }
+        });
+        block[21].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(21);
+            }
+        });
+        block[22].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(22);
+            }
+        });
+        block[23].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(23);
             }
         });
 
-
     }
 
 
-
+//-----------------------------MOVE() 부분 -----------------------------------------------
     public void move(int num){
-        if(!flag[0]) {
-            temp[0] = block[num].getDrawable() ;
-            temp_index[0] = num ;
-            flag[0] = true ;
-            // switch 부문( 말의 종류에따라서 )
-            switch(number[temp_index[0]]) {
-                case 1 :{choose_num[0]=1; rook(num); break;}
-                case 2: {choose_num[0]=2; knight(num); break;}
-                case 3: {choose_num[0]=3; bishop(num); break;}
-                case 4: {choose_num[0]=4; queen(num); break;}
-                case 5: {choose_num[0]=5; king(num); break;}
-                case 6: {choose_num[0]=6; pawn(num); break;}
-            }
+        // 버튼 선택 1
+        if(temp[0]==null) {
+            if (!flag[0]) {
+                temp[0] = block[num].getDrawable();
+                temp_index[0] = num;
+                flag[0] = true;
+                // switch 부문( 말의 종류에따라서 )
+                switch (number[temp_index[0]]) {
+                    case 1: {
+                        choose_num[0] = 1;
+                        rook(num);
+                        break;
+                    }
+                    case 2: {
+                        choose_num[0] = 2;
+                        knight(num);
+                        break;
+                    }
+                    case 3: {
+                        choose_num[0] = 3;
+                        bishop(num);
+                        break;
+                    }
+                    case 4: {
+                        choose_num[0] = 4;
+                        queen(num);
+                        break;
+                    }
+                    case 5: {
+                        choose_num[0] = 5;
+                        king(num);
+                        break;
+                    }
+                    case 6: {
+                        choose_num[0] = 6;
+                        pawn(num);
+                        break;
+                    }
+                }
 
+            } else {
+                for (int i = 0; i < 64; i++)
+                    if (number[i] == 0) block[i].setVisibility(View.INVISIBLE);
+                temp[0] = null;
+                flag[0] = false;
+            }
         }
+        //버튼 선택 2  (temp[0]!=null)
         else {
-            for(int i=0;i<64;i++) if(number[i]==0) block[i].setVisibility(View.INVISIBLE);
+            number[temp_index[0]]= 0 ;
+            number[num] = choose_num[0] ; // number[0] fix
+            block[temp_index[0]].setImageDrawable(block[num].getDrawable()); // block[0] fix
+            block[num].setImageDrawable(temp[0]); // block[0] fix
+            // clear
             temp[0]=null;
-            flag[0] = false;
+            flag[0]=false;
+            for(int i=0;i<64;i++) if(number[i]==0) block[i].setVisibility(View.INVISIBLE);
         }
     }
-
+//-----------------------------------------------------------------------------------------
 
 
 /////////////각 말들 움직임

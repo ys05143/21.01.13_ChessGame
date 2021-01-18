@@ -162,7 +162,8 @@
                     android:id="@+id/A7"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_b" />
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/dot" />
             </FrameLayout>
 
             <FrameLayout
@@ -176,7 +177,8 @@
                     android:id="@+id/B7"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_b" />
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/dot"  />
             </FrameLayout>
 
             <FrameLayout
@@ -190,7 +192,8 @@
                     android:id="@+id/C7"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_b" />
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/dot"  />
             </FrameLayout>
 
             <FrameLayout
@@ -204,7 +207,8 @@
                     android:id="@+id/D7"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_b" />
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/dot"  />
             </FrameLayout>
 
             <FrameLayout
@@ -218,7 +222,8 @@
                     android:id="@+id/E7"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_b" />
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/dot"  />
             </FrameLayout>
 
             <FrameLayout
@@ -232,7 +237,8 @@
                     android:id="@+id/F7"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_b" />
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/dot"  />
             </FrameLayout>
 
             <FrameLayout
@@ -246,7 +252,8 @@
                     android:id="@+id/G7"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_b" />
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/dot"  />
             </FrameLayout>
 
             <FrameLayout
