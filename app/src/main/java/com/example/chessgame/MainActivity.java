@@ -270,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
 //-----------------------------MOVE() 부분 -----------------------------------------------
     public void move(int num){
         // 버튼 선택 1
-        if(temp[0]==null) {
+        if(temp[0]==null && number[num]!=0) {
             if (!flag[0]) {// 한번 눌렀을 때
                 temp[0] = block[num].getDrawable();
                 temp_index[0] = num;
@@ -351,30 +351,41 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
-            } else {//두번 눌렀을 때 = 선택취소
-                for (int i = 0; i < 64; i++)
-                    if (number[i] == 0) block[i].setVisibility(View.INVISIBLE);
-                temp[0] = null;
-                flag[0] = false;
             }
         }
         //버튼 선택 2  (temp[0]!=null) : 이미지가 하나라도 복사되었을 때
         else {
-            number[temp_index[0]]= 0 ;
-            number[num] = choose_num[0] ; // number[0] fix
-            block[temp_index[0]].setImageDrawable(block[num].getDrawable()); // 첫번째 선택한 버튼 자리에 두번째 선택한 버튼 이미지 삽입
-            block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
-            // clear
-            temp[0]=null;
-            flag[0]=false;
+            // 두번 눌렀을때 = 선택취소
+            if(num==temp_index[0]) {
+            }
+            // dot
+            else if(number[num]==0) {
+                number[temp_index[0]] = 0;
+                number[num] = choose_num[0]; // number[0] fix
+                block[temp_index[0]].setImageDrawable(block[num].getDrawable()); // 첫번째 선택한 버튼 자리에 두번째 선택한 버튼 이미지 삽입
+                block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
+            }
+            // 다른 말 선택
+            else  {
+                number[temp_index[0]]=0;
+                number[num] = choose_num[0] ;
+                block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
+                block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
+            }
+            //공통
+            clear() ;
             for(int i=0;i<64;i++) {
                 if(number[i]==0) block[i].setVisibility(View.INVISIBLE);
                 if(number[i]!=0) block[i].setBackgroundColor(getResources().getColor(R.color.transparent));
             }
         }
     }
-//-----------------------------------------------------------------------------------------
-
+//-------------------------------clear()-----------------------------------
+    void clear() {
+        temp_index[0] = -1 ;
+        flag[0] = false ;
+        temp[0] = null ;
+    }
 
 /////////////각 말들 움직임
 
@@ -382,7 +393,7 @@ public class MainActivity extends AppCompatActivity {
             for (int a = spot + 8; a < 64; a = a + 8) {//하
                 if (a >= 0 && a <= 63) {
                     if(bw==true&&(number[a]>=11&&number[a]<=17))
-                        block[a].setBackgroundColor(getResources().getColor(R.color.red));
+                        block[a].setBackground(getResources().getDrawable(R.drawable.image_border));
                     if(bw==false&&(number[a]>=1&&number[a]<=7))
                         block[a].setBackgroundColor(getResources().getColor(R.color.red));
                     if (number[a] != 0) break;
