@@ -583,7 +583,7 @@ public class MainActivity extends AppCompatActivity {
         temp[0] = null ;
     }
 
-/////////////각 말들 움직임
+/////////////각 말들 움직임----------------------------------------------------------------
 
     public void rook(int spot, boolean bw) {//rook의 이동함수 완료, bw=true:rook_b/bw=false:rook_w
             for (int a = spot + 8; a < 64; a = a + 8) {//하
