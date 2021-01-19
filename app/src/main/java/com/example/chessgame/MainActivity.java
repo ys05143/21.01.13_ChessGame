@@ -33,17 +33,17 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView block[] = new ImageView[64];
 
-    //   rook-1, knight-2, bishop-3, queen-4, king-5, pawn-6   *dot - 0
-    int number[] = {1, 2, 3, 4, 5, 3, 2, 1,
-            0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0,
-            1, 2, 3, 4, 5, 3, 2, 1,
-            6, 6, 6, 6, 6, 6, 6, 6};
+    //   rook_b-1, knight_b-2, bishop_b-3, queen_b-4, king_b-5, pawn_b-6, first_pawn_b-7  *dot - 0
+    //   rook_w-11, knight_w=12, bishop-13, queen_w-14, king_w-15, pawn_w-16, first_pawn_w-17
+    int number[] = {1,  2,  3,  4,  5,  3,  2,  1,
+                    0,  7,  7,  7,  7,  7,  7,  7,
+                    0,  0,  0,  0,  0,  0,  0,  0,
+                    0,  0,  0,  0,  0,  0,  0,  0,
+                    0,  0,  0,  0,  0,  0,  0,  0,
+                    0,  0,  0,  0,  0,  0,  0,  0,
+                   17, 17, 17, 17, 17, 17, 17, 17,
+                   11, 12, 13, 14, 15, 13, 12, 11 };
 
-    static int pawn1_count = 0;
 
     Drawable[] temp = new Drawable[1];// 버튼 클릭 시 이미지 임시 저장
     int[] temp_index = new int[1]; // 첫번째 버튼의 번호 저장(첫번째 누른 block의 인덱스)
@@ -213,6 +213,56 @@ public class MainActivity extends AppCompatActivity {
                 move(23);
             }
         });
+        block[24].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(24);
+            }
+        });
+        block[25].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(25);
+            }
+        });
+        block[26].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(26);
+            }
+        });
+        block[27].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(27);
+            }
+        });
+        block[28].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(28);
+            }
+        });
+        block[29].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(29);
+            }
+        });
+        block[30].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(30);
+            }
+        });
+        block[31].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(31);
+            }
+        });
+
+
 
     }
 
@@ -221,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
     public void move(int num){
         // 버튼 선택 1
         if(temp[0]==null) {
-            if (!flag[0]) {
+            if (!flag[0]) {// 한번 눌렀을 때
                 temp[0] = block[num].getDrawable();
                 temp_index[0] = num;
                 flag[0] = true;
@@ -229,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (number[temp_index[0]]) {
                     case 1: {
                         choose_num[0] = 1;
-                        rook(num);
+                        rook(num,true);
                         break;
                     }
                     case 2: {
@@ -252,30 +302,75 @@ public class MainActivity extends AppCompatActivity {
                         king(num);
                         break;
                     }
-                    case 6: {
+                    case 6: { //일반 pawn
                         choose_num[0] = 6;
                         pawn(num);
                         break;
                     }
+                    case 7:{ //처음 움직이는 pawn
+                        choose_num[0]=6;
+                        f_pawn(num);
+                        break;
+                    }
+                    case 11:{ //rook_w
+                        choose_num[0]=11;
+                        rook(num, false);
+                        break;
+                    }
+                    case 12:{
+                        choose_num[0]=12;
+                        knight(num);
+                        break;
+                    }
+                    case 13:{
+                        choose_num[0] = 13;
+                        bishop(num);
+                        break;
+                    }
+                    case 14:{
+                        choose_num[0] = 14;
+                        queen(num);
+                        break;
+                    }
+                    case 15:{
+                        choose_num[0] = 15;
+                        king(num);
+                        break;
+                    }
+                    case 16:{
+                        choose_num[0] = 16;
+                        pawn(num);
+                        break;
+                    }
+                    case 17:{
+                        choose_num[0]= 16;
+                        f_pawn(num);
+                        break;
+                    }
+
+
                 }
 
-            } else {
+            } else {//두번 눌렀을 때 = 선택취소
                 for (int i = 0; i < 64; i++)
                     if (number[i] == 0) block[i].setVisibility(View.INVISIBLE);
                 temp[0] = null;
                 flag[0] = false;
             }
         }
-        //버튼 선택 2  (temp[0]!=null)
+        //버튼 선택 2  (temp[0]!=null) : 이미지가 하나라도 복사되었을 때
         else {
             number[temp_index[0]]= 0 ;
             number[num] = choose_num[0] ; // number[0] fix
-            block[temp_index[0]].setImageDrawable(block[num].getDrawable()); // block[0] fix
-            block[num].setImageDrawable(temp[0]); // block[0] fix
+            block[temp_index[0]].setImageDrawable(block[num].getDrawable()); // 첫번째 선택한 버튼 자리에 두번째 선택한 버튼 이미지 삽입
+            block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
             // clear
             temp[0]=null;
             flag[0]=false;
-            for(int i=0;i<64;i++) if(number[i]==0) block[i].setVisibility(View.INVISIBLE);
+            for(int i=0;i<64;i++) {
+                if(number[i]==0) block[i].setVisibility(View.INVISIBLE);
+                if(number[i]!=0) block[i].setBackgroundColor(getResources().getColor(R.color.transparent));
+            }
         }
     }
 //-----------------------------------------------------------------------------------------
@@ -283,135 +378,181 @@ public class MainActivity extends AppCompatActivity {
 
 /////////////각 말들 움직임
 
-    public void rook(int spot) { //rook의 이동
-        for(int a=spot+8;a<64;a=a+8) {//하
-            if(number[a]!=0) break;
-            block[a].setVisibility(View.VISIBLE);
-        }
-        for(int b=spot-8;b>=0;b=b-8) {//상
-            if(number[b]!=0) break;
-            block[b].setVisibility(View.VISIBLE);
-        }
-        for(int c=0;c<spot%8;c++){//좌
-            if(number[c]!=0) break;
-            block[spot-(c+1)].setVisibility(View.VISIBLE);
-        }
-        for(int d=0;d<8-((spot%8)+1);d++){//우
-            if(number[d]!=0) break;
-            block[spot-(d+1)].setVisibility(View.VISIBLE);
-        }
+    public void rook(int spot, boolean bw) {//rook의 이동함수 완료, bw=true:rook_b/bw=false:rook_w
+            for (int a = spot + 8; a < 64; a = a + 8) {//하
+                if (a >= 0 && a <= 63) {
+                    if(bw==true&&(number[a]>=11&&number[a]<=17))
+                        block[a].setBackgroundColor(getResources().getColor(R.color.red));
+                    if(bw==false&&(number[a]>=1&&number[a]<=7))
+                        block[a].setBackgroundColor(getResources().getColor(R.color.red));
+                    if (number[a] != 0) break;
+                    block[a].setVisibility(View.VISIBLE);
+                }
+            }
+            for (int b = spot - 8; b >= 0; b = b - 8) {//상
+                if (b >= 0 && b <= 63) {
+                    if(bw==true&&(number[b]>=11&&number[b]<=17))
+                        block[b].setBackgroundColor(getResources().getColor(R.color.red));
+                    if(bw==false&&(number[b]>=1&&number[b]<=7))
+                        block[b].setBackgroundColor(getResources().getColor(R.color.red));
+                    if (number[b] != 0) break;
+                    block[b].setVisibility(View.VISIBLE);
+                }
+            }
+            for (int c = 0; c < spot % 8; c++) {//좌
+                if (spot - (c + 1) >= 0 && spot - (c + 1) <= 63) {
+                    if(bw==true&&(number[spot - (c + 1)]>=11&&number[spot - (c + 1)]<=17))
+                        block[spot - (c + 1)].setBackgroundColor(getResources().getColor(R.color.red));
+                    if(bw==false&&(number[spot - (c + 1)]>=1&&number[spot - (c + 1)]<=7))
+                        block[spot - (c + 1)].setBackgroundColor(getResources().getColor(R.color.red));
+                    if (number[spot - (c + 1)] != 0) break;
+                    block[spot - (c + 1)].setVisibility(View.VISIBLE);
+                }
+            }
+            for (int d = 0; d < 8 - ((spot % 8) + 1); d++) {//우
+                if (spot + (d + 1) >= 0 && spot + (d + 1) <= 63) {
+                    if(bw==true&&(number[spot + (d + 1)]>=11&&number[spot + (d + 1)]<=17))
+                        block[spot + (d + 1)].setBackgroundColor(getResources().getColor(R.color.red));
+                    if(bw==false&&(number[spot + (d + 1)]>=1&&number[spot + (d + 1)]<=7))
+                        block[spot + (d + 1)].setBackgroundColor(getResources().getColor(R.color.red));
+                    if (number[spot + (d + 1)] != 0) break;
+                    block[spot + (d + 1)].setVisibility(View.VISIBLE);
+                }
+            }
 
     }
-    public void pawn(int spot) { //pawn의 이동
-        if(pawn1_count<1) {
-            for (int a = spot+8; a < 32; a = a+ 8) {
+
+    public void f_pawn(int spot) { //처음 움직이는 pawn의 이동함수 완료
+            for (int a = spot+8; a <= spot+16; a = a+ 8) {
+                if(a>=0&&a<=63)
+                { if (number[a] != 0) break;
+                block[a].setVisibility(View.VISIBLE);}
+            }
+    }
+
+    public void pawn(int spot) { //일반 pawn의 이동함수 완료
+        for (int a = spot + 8; a <= spot+8; a = a + 8) {
+            if (a >= 0 && a <= 63) {
                 if (number[a] != 0) break;
                 block[a].setVisibility(View.VISIBLE);
             }
-            pawn1_count++;
-        }
-        else{
-            for (int a = spot+8; a < 24; a = a + 8) {
-                if (number[a] != 0) break;
-                block[a].setVisibility(View.VISIBLE);
-            }
-
         }
     }
-    public void bishop(int spot){ //bishop 의 이동
+
+    public void bishop(int spot){ //bishop 의 이동함수 완료
         for(int a=0;a<8-((spot%8)+1);a++){//우 대각 아래
-
             if(spot+(9*(a+1))>=0&&spot+(9*(a+1))<=63)
-            { if (number[spot+(9*(a+1))] != 0) break;
+            {if (number[spot+(9*(a+1))] != 0) break;
                 block[spot+(9*(a+1))].setVisibility(View.VISIBLE);}
         }
         for(int b=0;b<spot%8;b++){ //좌 대각 위
-
             if(spot-(9*(b+1))>=0&&spot-(9*(b+1))<=63)
-            {  if (number[spot-(9*(b+1))] != 0) break;
+            {if (number[spot-(9*(b+1))] != 0) break;
                 block[spot-(9*(b+1))].setVisibility(View.VISIBLE);}
         }
         for(int c=0;c<spot%8;c++){ //좌 대각 아래
-
             if(spot+(7*(c+1))>=0&&spot+(7*(c+1))<=63)
             {if(number[spot+(7*(c+1))] != 0) break;
                 block[spot+(7*(c+1))].setVisibility(View.VISIBLE);}
         }
         for(int d=0;d<8-((spot%8)+1);d++){//우 대각 아래
-
             if(spot-(7*(d+1))>=0&&spot-(7*(d+1))<=63)
             {if (number[spot-(7*(d+1))] != 0) break;
                 block[spot-(7*(d+1))].setVisibility(View.VISIBLE);}
         }
 
     }
-    public void knight(int spot){
-        if((spot+(8*2)+1<=63&&spot+(8*2)+1>=0)&&(number[spot+(8*2)+1]==0))//우 대각 아래
-            block[spot+(8*2)+1].setVisibility(View.VISIBLE);
-        if((spot+(8*2)-1<=63&&spot+(8*2)-1>=0)&&(number[spot+(8*2)-1]==0))//좌 대각 아래
-            block[spot+(8*2)-1].setVisibility(View.VISIBLE);
-        if((spot-(8*2)+1<=63&&spot-(8*2)+1>=0)&&(number[spot-(8*2)+1]==0))//우 대각 위
-            block[spot-(8*2)+1].setVisibility(View.VISIBLE);
-        if((spot-(8*2)-1<=63&&spot-(8*2)-1>=0)&&(number[spot-(8*2)-1]==0))//좌 대각 위
-            block[spot-(8*2)-1].setVisibility(View.VISIBLE);
+
+    public void knight(int spot){ //knight 이동함수 완료
+        if((spot+(8*2)+1<=63&&spot+(8*2)+1>=0)&&(number[spot+(8*2)+1]==0))//우 대각 아래(2)
+        {if(8-spot%8-1>=1) //끝쪽에 있을때 넘어가기 방지
+            block[spot+(8*2)+1].setVisibility(View.VISIBLE);}
+        if((spot+(8*2)-1<=63&&spot+(8*2)-1>=0)&&(number[spot+(8*2)-1]==0))//좌 대각 아래(2)
+        {if(spot%8>=1)
+            block[spot+(8*2)-1].setVisibility(View.VISIBLE);}
+        if((spot-(8*2)+1<=63&&spot-(8*2)+1>=0)&&(number[spot-(8*2)+1]==0))//우 대각 위(2)
+        {if(8-spot%8-1>=1)
+            block[spot-(8*2)+1].setVisibility(View.VISIBLE);}
+        if((spot-(8*2)-1<=63&&spot-(8*2)-1>=0)&&(number[spot-(8*2)-1]==0))//좌 대각 위(2)
+        {if(spot%8>=1)
+            block[spot-(8*2)-1].setVisibility(View.VISIBLE);}
+        if((spot+(8*1)+2<=63&&spot+(8*1)+2>=0)&&(number[spot+(8*1)+2]==0))//우 대각 아래(1)
+        {if(8-spot%8-1>=2)
+            block[spot+(8*1)+2].setVisibility(View.VISIBLE);}
+        if((spot+(8*1)-2<=63&&spot+(8*1)-2>=0)&&(number[spot+(8*1)-2]==0))//좌 대각 아래(1)
+        {if(spot%8>=2)
+            block[spot+(8*1)-2].setVisibility(View.VISIBLE);}
+        if((spot-(8*1)+2<=63&&spot-(8*1)+2>=0)&&(number[spot-(8*1)+2]==0))//우 대각 위(1)
+        {if(8-spot%8-1>=2)
+            block[spot-(8*1)+2].setVisibility(View.VISIBLE);}
+        if((spot-(8*1)-2<=63&&spot-(8*1)-2>=0)&&(number[spot-(8*1)-2]==0))//좌 대각 위(1)
+        {if(spot%8>=2)
+            block[spot-(8*1)-2].setVisibility(View.VISIBLE);}
     }
-    public void king(int spot){
+
+    public void king(int spot){ //king 이동함수 완료
         if((spot+1<=63&&spot+1>=0)&&(number[spot+1]==0))//우
-            block[spot+1].setVisibility(View.VISIBLE);
+        {if(8-spot%8-1>=1)
+            block[spot+1].setVisibility(View.VISIBLE);}
         if((spot-1<=63&&spot-1>=0)&&(number[spot-1]==0))//좌
-            block[spot+1].setVisibility(View.VISIBLE);
+        {if(spot%8>=1)
+            block[spot-1].setVisibility(View.VISIBLE);}
         if((spot+7<=63&&spot+7>=0)&&(number[spot+7]==0))//좌대각 아래
-            block[spot+7].setVisibility(View.VISIBLE);
+        {if(spot%8>=1)
+            block[spot+7].setVisibility(View.VISIBLE);}
         if((spot+8<=63&&spot+8>=0)&&(number[spot+8]==0))//아래
             block[spot+8].setVisibility(View.VISIBLE);
         if((spot+9<=63&&spot+9>=0)&&(number[spot+9]==0))//우대각 아래
-            block[spot+9].setVisibility(View.VISIBLE);
+        {if(8-spot%8-1>=1)
+            block[spot+9].setVisibility(View.VISIBLE);}
         if((spot-7<=63&&spot-7>=0)&&(number[spot-7]==0))//우대각 위
-            block[spot-7].setVisibility(View.VISIBLE);
+        {if(8-spot%8-1>=1)
+            block[spot-7].setVisibility(View.VISIBLE);}
         if((spot-8<=63&&spot-8>=0)&&(number[spot-8]==0))//위
             block[spot-8].setVisibility(View.VISIBLE);
         if((spot-9<=63&&spot-9>=0)&&(number[spot-9]==0))//좌대각위
-            block[spot-9].setVisibility(View.VISIBLE);
+        {if(spot%8>=1)
+            block[spot-9].setVisibility(View.VISIBLE);}
 
     }
-    public void queen(int spot){
+    public void queen(int spot){ //queen 이동함수 완료(rook+bishop)
 
         for(int a=spot+8;a<64;a=a+8) {//하
-            if(number[a]!=0) break;
-            block[a].setVisibility(View.VISIBLE);
+            if(a>=0&&a<=63)
+            {if(number[a]!=0) break;
+                block[a].setVisibility(View.VISIBLE);}
         }
         for(int b=spot-8;b>=0;b=b-8) {//상
-            if(number[b]!=0) break;
-            block[b].setVisibility(View.VISIBLE);
+            if(b>=0&&b<=63)
+            {if(number[b]!=0) break;
+                block[b].setVisibility(View.VISIBLE);}
         }
         for(int c=0;c<spot%8;c++){//좌
-            if(number[c]!=0) break;
-            block[spot-(c+1)].setVisibility(View.VISIBLE);
+            if(spot-(c+1)>=0&&spot-(c+1)<=63)
+            {if(number[spot-(c+1)]!=0) break;
+                block[spot-(c+1)].setVisibility(View.VISIBLE);}
         }
         for(int d=0;d<8-((spot%8)+1);d++){//우
-            if(number[d]!=0) break;
-            block[spot-(d+1)].setVisibility(View.VISIBLE);
+            if(spot+(d+1)>=0&&spot+(d+1)<=63)
+            {if(number[spot+(d+1)]!=0) break;
+                block[spot+(d+1)].setVisibility(View.VISIBLE);}
         }
         for(int a=0;a<8-((spot%8)+1);a++){//우 대각 아래
-
             if(spot+(9*(a+1))>=0&&spot+(9*(a+1))<=63)
-            { if (number[spot+(9*(a+1))] != 0) break;
+            {if (number[spot+(9*(a+1))] != 0) break;
                 block[spot+(9*(a+1))].setVisibility(View.VISIBLE);}
         }
         for(int b=0;b<spot%8;b++){ //좌 대각 위
-
             if(spot-(9*(b+1))>=0&&spot-(9*(b+1))<=63)
-            {  if (number[spot-(9*(b+1))] != 0) break;
+            {if (number[spot-(9*(b+1))] != 0) break;
                 block[spot-(9*(b+1))].setVisibility(View.VISIBLE);}
         }
         for(int c=0;c<spot%8;c++){ //좌 대각 아래
-
             if(spot+(7*(c+1))>=0&&spot+(7*(c+1))<=63)
             {if(number[spot+(7*(c+1))] != 0) break;
                 block[spot+(7*(c+1))].setVisibility(View.VISIBLE);}
         }
         for(int d=0;d<8-((spot%8)+1);d++){//우 대각 아래
-
             if(spot-(7*(d+1))>=0&&spot-(7*(d+1))<=63)
             {if (number[spot-(7*(d+1))] != 0) break;
                 block[spot-(7*(d+1))].setVisibility(View.VISIBLE);}
