@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     //   rook_b-1, knight_b-2, bishop_b-3, queen_b-4, king_b-5, pawn_b-6, first_pawn_b-7  *dot - 0
     //   rook_w-11, knight_w=12, bishop-13, queen_w-14, king_w-15, pawn_w-16, first_pawn_w-17
     int number[] = {1,  2,  3,  4,  5,  3,  2,  1,
-                    0,  7,  7,  7,  7,  7,  7,  7,
+                    7,  7,  7,  7,  7,  7,  7,  7,
                     0,  0,  0,  0,  0,  0,  0,  0,
                     0,  0,  0,  0,  0,  0,  0,  0,
                     0,  0,  0,  0,  0,  0,  0,  0,
@@ -261,8 +261,204 @@ public class MainActivity extends AppCompatActivity {
                 move(31);
             }
         });
-
-
+        block[32].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(32);
+            }
+        });
+        block[33].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(33);
+            }
+        });
+        block[34].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(34);
+            }
+        });
+        block[35].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(35);
+            }
+        });
+        block[36].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(36);
+            }
+        });
+        block[37].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(37);
+            }
+        });
+        block[38].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(38);
+            }
+        });
+        block[39].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(39);
+            }
+        });
+        block[40].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(40);
+            }
+        });
+        block[41].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(41);
+            }
+        });
+        block[42].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(42);
+            }
+        });
+        block[43].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(43);
+            }
+        });
+        block[44].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(44);
+            }
+        });
+        block[45].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(45);
+            }
+        });
+        block[46].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(46);
+            }
+        });
+        block[46].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(46);
+            }
+        });
+        block[47].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(47);
+            }
+        });
+        block[48].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(48);
+            }
+        });
+        block[49].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(49);
+            }
+        });
+        block[50].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(50);
+            }
+        });
+        block[51].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(51);
+            }
+        });
+        block[52].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(52);
+            }
+        });
+        block[53].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(53);
+            }
+        });
+        block[54].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(54);
+            }
+        });
+        block[55].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(55);
+            }
+        });
+        block[56].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(56);
+            }
+        });
+        block[57].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(57);
+            }
+        });
+        block[58].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(58);
+            }
+        });
+        block[59].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(59);
+            }
+        });
+        block[60].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(60);
+            }
+        });
+        block[61].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(61);
+            }
+        });
+        block[62].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(62);
+            }
+        });
+        block[63].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                move(63);
+            }
+        });
 
     }
 
@@ -304,12 +500,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case 6: { //일반 pawn
                         choose_num[0] = 6;
-                        pawn(num);
+                        pawn(num, true);
                         break;
                     }
                     case 7:{ //처음 움직이는 pawn
                         choose_num[0]=6;
-                        f_pawn(num);
+                        f_pawn(num, true);
                         break;
                     }
                     case 11:{ //rook_w
@@ -339,12 +535,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case 16:{
                         choose_num[0] = 16;
-                        pawn(num);
+                        pawn(num, false);
                         break;
                     }
                     case 17:{
                         choose_num[0]= 16;
-                        f_pawn(num);
+                        f_pawn(num, false);
                         break;
                     }
 
@@ -358,11 +554,11 @@ public class MainActivity extends AppCompatActivity {
                 flag[0] = false;
             }
         }
-        //버튼 선택 2  (temp[0]!=null) : 이미지가 하나라도 복사되었을 때
+        //버튼 선택 2  (temp[0]!=null) : 이미지가 하나라도 복사되었을 때=두번째 버튼 클릭
         else {
-            number[temp_index[0]]= 0 ;
+            number[temp_index[0]]= 0 ; //두번째 클릭한 곳의 number를 0으로 만듦
             number[num] = choose_num[0] ; // number[0] fix
-            block[temp_index[0]].setImageDrawable(block[num].getDrawable()); // 첫번째 선택한 버튼 자리에 두번째 선택한 버튼 이미지 삽입
+            block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에는 무조건 점 ㄴ
             block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
             // clear
             temp[0]=null;
@@ -422,20 +618,63 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void f_pawn(int spot) { //처음 움직이는 pawn의 이동함수 완료
-            for (int a = spot+8; a <= spot+16; a = a+ 8) {
-                if(a>=0&&a<=63)
-                { if (number[a] != 0) break;
-                block[a].setVisibility(View.VISIBLE);}
+    public void f_pawn(int spot, boolean bw) { //처음 움직이는 pawn의 이동함수 완료
+        if (bw == true) { //pawn_b
+            for (int a = spot + 8; a <= spot + 16; a = a + 8) {
+                if (a >= 0 && a <= 63) {
+                    if (number[a] != 0) break;
+                    block[a].setVisibility(View.VISIBLE);
+                }
             }
-    }
+            if((spot+9 >= 0 && spot+9<= 63)&&(number[spot+9]>=11&&number[spot+9]<=17)) //우 대각 아래에 상대방 말이 있을 때
+            {if(8-spot%8-1>=1)
+                block[spot+9].setBackgroundColor(getResources().getColor(R.color.red));}
+            if((spot+7 >= 0 && spot+7<= 63)&&(number[spot+7]>=11&&number[spot+7]<=17)) //좌 대각 아래에 상대방 말이 있을 때
+            {if(spot%8>=1)
+                block[spot+7].setBackgroundColor(getResources().getColor(R.color.red));}
+        }
+        if(bw==false){ //pawn_W
+            for (int a = spot - 8; a >= spot - 16; a = a - 8) {
+                if (a >= 0 && a <= 63) {
+                    if (number[a] != 0) break;
+                    block[a].setVisibility(View.VISIBLE);
+                }
+            }
+            if((spot-9 >= 0 && spot-9<= 63)&&(number[spot-9]>=1&&number[spot-9]<=7)) //좌 대각 위에 상대방 말이 있을 때
+            {if(spot%8>=1)
+                block[spot-9].setBackgroundColor(getResources().getColor(R.color.red));}
+            if((spot-7 >= 0 && spot-7<= 63)&&(number[spot-7]>=1&&number[spot-7]<=7)) //우 대각 위에 상대방 말이 있을 때
+            {if(8-spot%8-1>=1)
+                block[spot-7].setBackgroundColor(getResources().getColor(R.color.red));}
+        }
 
-    public void pawn(int spot) { //일반 pawn의 이동함수 완료
-        for (int a = spot + 8; a <= spot+8; a = a + 8) {
-            if (a >= 0 && a <= 63) {
-                if (number[a] != 0) break;
-                block[a].setVisibility(View.VISIBLE);
+    }
+    public void pawn(int spot,boolean bw) { //일반 pawn의 이동함수 완료
+        if (bw == true) {
+            for (int a = spot + 8; a <= spot + 8; a = a + 8) {
+                if (a >= 0 && a <= 63) {
+                    if (number[a] != 0) break;
+                    block[a].setVisibility(View.VISIBLE);
+                }
             }
+            if((spot+9 >= 0 && spot+9<= 63)&&(number[spot+9]>=11&&number[spot+9]<=17)) //우 대각 아래에 상대방 말이 있을 때
+            {if(8-spot%8-1>=1)
+                block[spot+9].setBackgroundColor(getResources().getColor(R.color.red));}
+            if((spot+7 >= 0 && spot+7<= 63)&&(number[spot+7]>=11&&number[spot+7]<=17)) //좌 대각 아래에 상대방 말이 있을 때
+            {if(spot%8>=1)
+                block[spot+7].setBackgroundColor(getResources().getColor(R.color.red));}
+        }
+        if(bw==false){
+            for (int a = spot - 8; a >= spot - 8; a = a - 8) {
+                if (a >= 0 && a <= 63) {
+                    if (number[a] != 0) break;
+                    block[a].setVisibility(View.VISIBLE);
+                }
+            }
+            if((spot-9 >= 0 && spot-9<= 63)&&(number[spot-9]>=1&&number[spot-9]<=7)) //좌 대각 위에 상대방 말이 있을 때
+                block[spot-9].setBackgroundColor(getResources().getColor(R.color.red));
+            if((spot-7 >= 0 && spot-7<= 63)&&(number[spot-7]>=1&&number[spot-7]<=7)) //우 대각 위에 상대방 말이 있을 때
+                block[spot-7].setBackgroundColor(getResources().getColor(R.color.red));
         }
     }
 
