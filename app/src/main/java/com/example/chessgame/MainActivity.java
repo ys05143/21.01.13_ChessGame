@@ -43,7 +43,14 @@ public class MainActivity extends AppCompatActivity {
                     0,  0,  0,  0,  0,  0,  0,  0,
                    17, 17, 17, 17, 17, 17, 17, 17,
                    11, 12, 13, 14, 15, 13, 12, 11 };
-
+    int kill_red[] = { 0,0,0,0,0,0,0,0, // red인 말들만 죽일수있음
+                       0,0,0,0,0,0,0,0,
+                       0,0,0,0,0,0,0,0,
+                       0,0,0,0,0,0,0,0,
+                       0,0,0,0,0,0,0,0,
+                       0,0,0,0,0,0,0,0,
+                       0,0,0,0,0,0,0,0,
+                       0,0,0,0,0,0,0,0};
 
     Drawable[] temp = new Drawable[1];// 버튼 클릭 시 이미지 임시 저장
     int[] temp_index = new int[1]; // 첫번째 버튼의 번호 저장(첫번째 누른 block의 인덱스)
@@ -480,7 +487,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case 2: {
                         choose_num[0] = 2;
-                        knight(num);
+                        knight(num,true);
                         break;
                     }
                     case 3: {
@@ -490,12 +497,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case 4: {
                         choose_num[0] = 4;
-                        queen(num);
+                        queen(num,true);
                         break;
                     }
                     case 5: {
                         choose_num[0] = 5;
-                        king(num);
+                        king(num,true);
                         break;
                     }
                     case 6: { //일반 pawn
@@ -515,7 +522,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case 12:{
                         choose_num[0]=12;
-                        knight(num);
+                        knight(num,false);
                         break;
                     }
                     case 13:{
@@ -525,12 +532,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case 14:{
                         choose_num[0] = 14;
-                        queen(num);
+                        queen(num,false);
                         break;
                     }
                     case 15:{
                         choose_num[0] = 15;
-                        king(num);
+                        king(num,false);
                         break;
                     }
                     case 16:{
@@ -575,7 +582,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             // 다른 말 선택
-            else  {
+            else if(kill_red[num]==1)  {
                 if(choose_num[0]==6&&(num>=56&&num<=63)){ //pawn_b이 상대방 진영끝까지 갔을 때
                     number[temp_index[0]] = 0;
                     block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
@@ -601,11 +608,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-//-------------------------------clear()-----------------------------------
+//-------------------------------함수 정리-----------------------------------
     void clear() {
         temp_index[0] = -1 ;
         flag[0] = false ;
         temp[0] = null ;
+        for(int i=0;i<64;i++) kill_red[i]= 0;
     }
     boolean in_board(int index) {
         if(index>=0&&index<64) return true;
@@ -619,11 +627,17 @@ public class MainActivity extends AppCompatActivity {
         if(number[index]>=11&&number[index]<=17) return true;
         else return false ;
     }
+    boolean dot(int index) {
+        if(number[index]==0) return true;
+        else return false ;
+    }
     void red(int index) {
         block[index].setBackgroundColor(getResources().getColor(R.color.red));
+        kill_red[index]= 1;
     }
-/////////////각 말들 움직임----------------------------------------------------------------
 
+/////////////각 말들 움직임----------------------------------------------------------------
+    int k; // (임시) 위치변수
     public void rook(int spot, boolean bw) {//rook의 이동함수 완료, bw=true:rook_b/bw=false:rook_w
             for (int a = spot + 8; a < 64; a = a + 8) {//하
                 if (in_board(a)) {
@@ -731,146 +745,229 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void bishop(int spot,boolean bw){ //bishop 의 이동함수 완료
-        int k;
+
         for(int a=0;a<8-((spot%8)+1);a++){//우 대각 아래
             k=spot+(9*(a+1));
-            if(spot+(9*(a+1))>=0&&spot+(9*(a+1))<=63)
+            if(in_board(k))
             {
-                if(bw==true&&(number[spot+(9*(a+1))]>=11&&number[spot+(9*(a+1))]<=17))
-                    block[spot+(9*(a+1))].setBackgroundColor(getResources().getColor(R.color.red));
-                if(bw==false&&(number[spot+(9*(a+1))]>=1&&number[spot+(9*(a+1))]<=7))
-                    block[spot+(9*(a+1))].setBackgroundColor(getResources().getColor(R.color.red));
-                if (number[spot+(9*(a+1))] != 0) break;
-                block[spot+(9*(a+1))].setVisibility(View.VISIBLE);}
+                if(bw==true&& white(k))
+                    red(k);
+                if(bw==false&& black(k))
+                    red(k);
+                if (number[k] != 0) break;
+                block[k].setVisibility(View.VISIBLE);}
         }
         for(int b=0;b<spot%8;b++){ //좌 대각 위
-            if(spot-(9*(b+1))>=0&&spot-(9*(b+1))<=63)
+            k=spot-(9*(b+1));
+            if(in_board(k))
             {
-                if(bw==true&&(number[spot-(9*(b+1))]>=11&&number[spot-(9*(b+1))]<=17))
-                    block[spot-(9*(b+1))].setBackgroundColor(getResources().getColor(R.color.red));
-                if(bw==false&&(number[spot-(9*(b+1))]>=1&&number[spot-(9*(b+1))]<=7))
-                    block[spot-(9*(b+1))].setBackgroundColor(getResources().getColor(R.color.red));
-                if (number[spot-(9*(b+1))] != 0) break;
-                block[spot-(9*(b+1))].setVisibility(View.VISIBLE);}
+                if(bw==true&&white(k))
+                    red(k);
+                if(bw==false&&black(k))
+                    red(k);
+                if (number[k] != 0) break;
+                block[k].setVisibility(View.VISIBLE);}
         }
         for(int c=0;c<spot%8;c++){ //좌 대각 아래
-            if(spot+(7*(c+1))>=0&&spot+(7*(c+1))<=63)
-            {
-                if(bw==true&&(number[spot+(7*(c+1))]>=11&&number[spot+(7*(c+1))]<=17))
-                    block[spot+(7*(c+1))].setBackgroundColor(getResources().getColor(R.color.red));
-                if(bw==false&&(number[spot+(7*(c+1))]>=1&&number[spot+(7*(c+1))]<=7))
-                    block[spot+(7*(c+1))].setBackgroundColor(getResources().getColor(R.color.red));
-                if(number[spot+(7*(c+1))] != 0) break;
-                block[spot+(7*(c+1))].setVisibility(View.VISIBLE);}
+            k=spot+(7*(c+1));
+                if(in_board(k))
+                {
+                    if(bw==true&&white(k))
+                        red(k);
+                    if(bw==false&&black(k))
+                        red(k);
+                    if (number[k] != 0) break;
+                    block[k].setVisibility(View.VISIBLE);}
         }
-        for(int d=0;d<8-((spot%8)+1);d++){//우 대각 아래
-            if(spot-(7*(d+1))>=0&&spot-(7*(d+1))<=63)
+        for(int d=0;d<8-((spot%8)+1);d++){//우 대각 위
+            k=spot-(7*(d+1));
+            if(in_board(k))
             {
-                if(bw==true&&(number[spot-(7*(d+1))]>=11&&number[spot-(7*(d+1))]<=17))
-                    block[spot-(7*(d+1))].setBackgroundColor(getResources().getColor(R.color.red));
-                if(bw==false&&(number[spot-(7*(d+1))]>=1&&number[spot-(7*(d+1))]<=7))
-                    block[spot-(7*(d+1))].setBackgroundColor(getResources().getColor(R.color.red));
-                if (number[spot-(7*(d+1))] != 0) break;
-                block[spot-(7*(d+1))].setVisibility(View.VISIBLE);}
+                if(bw==true&&white(k))
+                    red(k);
+                if(bw==false&&black(k))
+                    red(k);
+                if (number[k] != 0) break;
+                block[k].setVisibility(View.VISIBLE);}
+        }
+    }
+
+    public void knight(int spot,boolean bw){ //knight 이동함수 완료
+         k=spot+(8*2)+1 ;//우 대각 아래(2) down-2 right-1
+        if(in_board(k)&&8-spot%8-1>=1)  //끝쪽에 있을때 넘어가기 방지
+        {   if(dot(k)) block[k].setVisibility(View.VISIBLE);
+            else if(bw==true&&white(k)) red(k) ;
+            else if(bw==false&&black(k)) red(k);
+        }
+        k=spot+(8*2)-1 ; //좌 대각 아래(2) down-2 left-1
+        if(in_board(k)&& spot%8>=1) //끝쪽에 있을때 넘어가기 방지
+        {   if(dot(k)) block[k].setVisibility(View.VISIBLE);
+            else if(bw==true&&white(k)) red(k) ;
+            else if(bw==false&&black(k)) red(k);
+        }
+        k=spot-(8*2)+1 ; //우 대각 위(2) up-2 right-1
+        if(in_board(k)&&8-spot%8-1>=1)  //끝쪽에 있을때 넘어가기 방지
+        {   if(dot(k)) block[k].setVisibility(View.VISIBLE);
+            else if(bw==true&&white(k)) red(k) ;
+            else if(bw==false&&black(k)) red(k);
+        }
+        k=spot-(8*2)-1 ; //좌 대각 위(2) up-2 left-1
+        if(in_board(k)&& spot%8>=1) //끝쪽에 있을때 넘어가기 방지
+        {   if(dot(k)) block[k].setVisibility(View.VISIBLE);
+            else if(bw==true&&white(k)) red(k) ;
+            else if(bw==false&&black(k)) red(k);
+        }
+        k=spot+(8*1)+2 ; //우 대각 아래(1) right-2 down-1
+        if(in_board(k)&& 8-spot%8-1>=2) //끝쪽에 있을때 넘어가기 방지
+        {   if(dot(k)) block[k].setVisibility(View.VISIBLE);
+            else if(bw==true&&white(k)) red(k) ;
+            else if(bw==false&&black(k)) red(k);
+        }
+        k=spot+(8*1)-2 ;//좌 대각 아래(1) left-2 down-1
+        if(in_board(k)&& spot%8>=2) //끝쪽에 있을때 넘어가기 방지
+        {   if(dot(k)) block[k].setVisibility(View.VISIBLE);
+            else if(bw==true&&white(k)) red(k) ;
+            else if(bw==false&&black(k)) red(k);
+        }
+        k=spot-(8*1)+2 ; //우 대각 위(1) right-2 up -1
+        if(in_board(k)&& 8-spot%8-1>=2) //끝쪽에 있을때 넘어가기 방지
+        {   if(dot(k)) block[k].setVisibility(View.VISIBLE);
+            else if(bw==true&&white(k)) red(k) ;
+            else if(bw==false&&black(k)) red(k);
+        }
+        k=spot-(8*1)-2 ; //좌 대각 위(1) left-2 up - 1
+        if(in_board(k)&& spot%8>=2) //끝쪽에 있을때 넘어가기 방지
+        {   if(dot(k)) block[k].setVisibility(View.VISIBLE);
+            else if(bw==true&&white(k)) red(k) ;
+            else if(bw==false&&black(k)) red(k);
+        }
+    }
+
+    public void king(int spot,boolean bw){ //king 이동함수 완료
+        k=spot+1 ; //우
+        if(in_board(k)&&8-spot%8-1>=1)
+        {if (dot(k))
+            block[k].setVisibility(View.VISIBLE);
+        else if(bw==true&&white(k)) red(k) ;
+        else if(bw==false&&black(k)) red(k);
+        }
+        k=spot-1 ;  //좌
+        if(in_board(k)&&spot%8>=1)
+        {if (dot(k))
+            block[k].setVisibility(View.VISIBLE);
+        else if(bw==true&&white(k)) red(k) ;
+        else if(bw==false&&black(k)) red(k);
+        }
+        k=spot+7 ; //좌대각 아래
+        if(in_board(k)&&spot%8>=1)
+        {if (dot(k))
+            block[k].setVisibility(View.VISIBLE);
+        else if(bw==true&&white(k)) red(k) ;
+        else if(bw==false&&black(k)) red(k);
+        }
+        k=spot+8; //아래
+        if(in_board(k))//아래
+        {if (dot(k))
+            block[k].setVisibility(View.VISIBLE);
+        else if(bw==true&&white(k)) red(k) ;
+        else if(bw==false&&black(k)) red(k);
+        }
+        k=spot+9 ;
+        if(in_board(k)&&8-spot%8-1>=1)//우대각 아래
+        {if (dot(k))
+            block[k].setVisibility(View.VISIBLE);
+        else if(bw==true&&white(k)) red(k) ;
+        else if(bw==false&&black(k)) red(k);
+        }
+        k=spot-7; //우대각 위
+        if(in_board(k)&&8-spot%8-1>=1)
+        {if (dot(k))
+            block[k].setVisibility(View.VISIBLE);
+        else if(bw==true&&white(k)) red(k) ;
+        else if(bw==false&&black(k)) red(k);
+        }
+        k=spot-8 ; //위
+        if(in_board(k))
+        {if (dot(k))
+            block[k].setVisibility(View.VISIBLE);
+        else if(bw==true&&white(k)) red(k) ;
+        else if(bw==false&&black(k)) red(k);
+        }
+        k=spot -9 ; //좌대각위
+        if(in_board(k)&&spot%8>=1)
+        {if (dot(k))
+            block[k].setVisibility(View.VISIBLE);
+        else if(bw==true&&white(k)) red(k) ;
+        else if(bw==false&&black(k)) red(k);
         }
 
     }
-
-    public void knight(int spot){ //knight 이동함수 완료
-        if((spot+(8*2)+1<=63&&spot+(8*2)+1>=0)&&(number[spot+(8*2)+1]==0))//우 대각 아래(2)
-        {if(8-spot%8-1>=1) //끝쪽에 있을때 넘어가기 방지
-            block[spot+(8*2)+1].setVisibility(View.VISIBLE);}
-        if((spot+(8*2)-1<=63&&spot+(8*2)-1>=0)&&(number[spot+(8*2)-1]==0))//좌 대각 아래(2)
-        {if(spot%8>=1)
-            block[spot+(8*2)-1].setVisibility(View.VISIBLE);}
-        if((spot-(8*2)+1<=63&&spot-(8*2)+1>=0)&&(number[spot-(8*2)+1]==0))//우 대각 위(2)
-        {if(8-spot%8-1>=1)
-            block[spot-(8*2)+1].setVisibility(View.VISIBLE);}
-        if((spot-(8*2)-1<=63&&spot-(8*2)-1>=0)&&(number[spot-(8*2)-1]==0))//좌 대각 위(2)
-        {if(spot%8>=1)
-            block[spot-(8*2)-1].setVisibility(View.VISIBLE);}
-        if((spot+(8*1)+2<=63&&spot+(8*1)+2>=0)&&(number[spot+(8*1)+2]==0))//우 대각 아래(1)
-        {if(8-spot%8-1>=2)
-            block[spot+(8*1)+2].setVisibility(View.VISIBLE);}
-        if((spot+(8*1)-2<=63&&spot+(8*1)-2>=0)&&(number[spot+(8*1)-2]==0))//좌 대각 아래(1)
-        {if(spot%8>=2)
-            block[spot+(8*1)-2].setVisibility(View.VISIBLE);}
-        if((spot-(8*1)+2<=63&&spot-(8*1)+2>=0)&&(number[spot-(8*1)+2]==0))//우 대각 위(1)
-        {if(8-spot%8-1>=2)
-            block[spot-(8*1)+2].setVisibility(View.VISIBLE);}
-        if((spot-(8*1)-2<=63&&spot-(8*1)-2>=0)&&(number[spot-(8*1)-2]==0))//좌 대각 위(1)
-        {if(spot%8>=2)
-            block[spot-(8*1)-2].setVisibility(View.VISIBLE);}
-    }
-
-    public void king(int spot){ //king 이동함수 완료
-        if((spot+1<=63&&spot+1>=0)&&(number[spot+1]==0))//우
-        {if(8-spot%8-1>=1)
-            block[spot+1].setVisibility(View.VISIBLE);}
-        if((spot-1<=63&&spot-1>=0)&&(number[spot-1]==0))//좌
-        {if(spot%8>=1)
-            block[spot-1].setVisibility(View.VISIBLE);}
-        if((spot+7<=63&&spot+7>=0)&&(number[spot+7]==0))//좌대각 아래
-        {if(spot%8>=1)
-            block[spot+7].setVisibility(View.VISIBLE);}
-        if((spot+8<=63&&spot+8>=0)&&(number[spot+8]==0))//아래
-            block[spot+8].setVisibility(View.VISIBLE);
-        if((spot+9<=63&&spot+9>=0)&&(number[spot+9]==0))//우대각 아래
-        {if(8-spot%8-1>=1)
-            block[spot+9].setVisibility(View.VISIBLE);}
-        if((spot-7<=63&&spot-7>=0)&&(number[spot-7]==0))//우대각 위
-        {if(8-spot%8-1>=1)
-            block[spot-7].setVisibility(View.VISIBLE);}
-        if((spot-8<=63&&spot-8>=0)&&(number[spot-8]==0))//위
-            block[spot-8].setVisibility(View.VISIBLE);
-        if((spot-9<=63&&spot-9>=0)&&(number[spot-9]==0))//좌대각위
-        {if(spot%8>=1)
-            block[spot-9].setVisibility(View.VISIBLE);}
-
-    }
-    public void queen(int spot){ //queen 이동함수 완료(rook+bishop)
+    public void queen(int spot,boolean bw){ //queen 이동함수 완료(rook+bishop)
 
         for(int a=spot+8;a<64;a=a+8) {//하
-            if(a>=0&&a<=63)
-            {if(number[a]!=0) break;
-                block[a].setVisibility(View.VISIBLE);}
+            k=a ;
+            if(in_board(k))
+            {   if(bw==true&&white(k)) red(k) ;
+                else if(bw==false&&black(k)) red(k) ;
+                if(number[k]!=0) break;
+                block[k].setVisibility(View.VISIBLE);}
         }
         for(int b=spot-8;b>=0;b=b-8) {//상
-            if(b>=0&&b<=63)
-            {if(number[b]!=0) break;
-                block[b].setVisibility(View.VISIBLE);}
+            k=b ;
+            if(in_board(k))
+            {   if(bw==true&&white(k)) red(k) ;
+                else if(bw==false&&black(k)) red(k) ;
+                if(number[k]!=0) break;
+                block[k].setVisibility(View.VISIBLE);}
         }
         for(int c=0;c<spot%8;c++){//좌
-            if(spot-(c+1)>=0&&spot-(c+1)<=63)
-            {if(number[spot-(c+1)]!=0) break;
-                block[spot-(c+1)].setVisibility(View.VISIBLE);}
+            k=spot-(c+1);
+            if(in_board(k))
+            {   if(bw==true&&white(k)) red(k) ;
+                else if(bw==false&&black(k)) red(k) ;
+                if(number[k]!=0) break;
+                block[k].setVisibility(View.VISIBLE);}
         }
         for(int d=0;d<8-((spot%8)+1);d++){//우
-            if(spot+(d+1)>=0&&spot+(d+1)<=63)
-            {if(number[spot+(d+1)]!=0) break;
-                block[spot+(d+1)].setVisibility(View.VISIBLE);}
+            k=spot+(d+1);
+            if(in_board(k))
+            {   if(bw==true&&white(k)) red(k) ;
+                else if(bw==false&&black(k)) red(k) ;
+                if(number[k]!=0) break;
+                block[k].setVisibility(View.VISIBLE);}
         }
         for(int a=0;a<8-((spot%8)+1);a++){//우 대각 아래
-            if(spot+(9*(a+1))>=0&&spot+(9*(a+1))<=63)
-            {if (number[spot+(9*(a+1))] != 0) break;
-                block[spot+(9*(a+1))].setVisibility(View.VISIBLE);}
+            k=spot+(9*(a+1));
+            if(in_board(k))
+            {   if(bw==true&&white(k)) red(k) ;
+                else if(bw==false&&black(k)) red(k) ;
+                if(number[k]!=0) break;
+                block[k].setVisibility(View.VISIBLE);}
         }
         for(int b=0;b<spot%8;b++){ //좌 대각 위
-            if(spot-(9*(b+1))>=0&&spot-(9*(b+1))<=63)
-            {if (number[spot-(9*(b+1))] != 0) break;
-                block[spot-(9*(b+1))].setVisibility(View.VISIBLE);}
+            k=spot-(9*(b+1));
+            if(in_board(k))
+            {   if(bw==true&&white(k)) red(k) ;
+                else if(bw==false&&black(k)) red(k) ;
+                if(number[k]!=0) break;
+                block[k].setVisibility(View.VISIBLE);}
         }
         for(int c=0;c<spot%8;c++){ //좌 대각 아래
-            if(spot+(7*(c+1))>=0&&spot+(7*(c+1))<=63)
-            {if(number[spot+(7*(c+1))] != 0) break;
-                block[spot+(7*(c+1))].setVisibility(View.VISIBLE);}
+            k=spot+(7*(c+1));
+            if(in_board(k))
+            {   if(bw==true&&white(k)) red(k) ;
+                else if(bw==false&&black(k)) red(k) ;
+                if(number[k]!=0) break;
+                block[k].setVisibility(View.VISIBLE);}
         }
         for(int d=0;d<8-((spot%8)+1);d++){//우 대각 아래
-            if(spot-(7*(d+1))>=0&&spot-(7*(d+1))<=63)
-            {if (number[spot-(7*(d+1))] != 0) break;
-                block[spot-(7*(d+1))].setVisibility(View.VISIBLE);}
+            k=spot-(7*(d+1));
+            if(in_board(k))
+            {   if(bw==true&&white(k)) red(k) ;
+                else if(bw==false&&black(k)) red(k) ;
+                if(number[k]!=0) break;
+                block[k].setVisibility(View.VISIBLE);}
         }
-
     }
     public void change_pawn(int spot, boolean bw){ //pawn은 상대진영 끝까지 가면 원하는 말로 변경가능 하다 (주로 queen) , 이부분은 사용자로 부터 입력을 받아서 설정하도록 수정 필요
         if(bw==true){
