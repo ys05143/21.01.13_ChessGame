@@ -485,7 +485,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case 3: {
                         choose_num[0] = 3;
-                        bishop(num);
+                        bishop(num,true);
                         break;
                     }
                     case 4: {
@@ -520,7 +520,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     case 13:{
                         choose_num[0] = 13;
-                        bishop(num);
+                        bishop(num,false);
                         break;
                     }
                     case 14:{
@@ -536,6 +536,7 @@ public class MainActivity extends AppCompatActivity {
                     case 16:{
                         choose_num[0] = 16;
                         pawn(num, false);
+
                         break;
                     }
                     case 17:{
@@ -556,17 +557,41 @@ public class MainActivity extends AppCompatActivity {
             }
             // dot
             else if(number[num]==0) {
-                number[temp_index[0]] = 0;
-                number[num] = choose_num[0]; // number[0] fix
-                block[temp_index[0]].setImageDrawable(block[num].getDrawable()); // 첫번째 선택한 버튼 자리에 두번째 선택한 버튼 이미지 삽입
-                block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
+                if(choose_num[0]==6&&(num>=56&&num<=63)){ //pawn_b이 상대방 진영끝까지 갔을 때
+                    number[temp_index[0]] = 0;
+                    block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
+                    change_pawn(num,true);
+                }
+                else if(choose_num[0]==16&&(num>=0&&num<=7)) { //pawn-w가 상대방 진영 끝까지 갔을 때
+                    number[temp_index[0]] = 0;
+                    block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
+                    change_pawn(num,false);
+                }
+                else {
+                    number[temp_index[0]] = 0;
+                    number[num] = choose_num[0]; // number[0] fix
+                    block[temp_index[0]].setImageDrawable(block[num].getDrawable()); // 첫번째 선택한 버튼 자리에 두번째 선택한 버튼 이미지 삽입
+                    block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
+                }
             }
             // 다른 말 선택
             else  {
-                number[temp_index[0]]=0;
-                number[num] = choose_num[0] ;
-                block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
-                block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
+                if(choose_num[0]==6&&(num>=56&&num<=63)){ //pawn_b이 상대방 진영끝까지 갔을 때
+                    number[temp_index[0]] = 0;
+                    block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
+                    change_pawn(num,true);
+                }
+                else if(choose_num[0]==16&&(num>=0&&num<=7)) { //pawn-w가 상대방 진영 끝까지 갔을 때
+                    number[temp_index[0]] = 0;
+                    block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
+                    change_pawn(num,false);
+                }
+                else {
+                    number[temp_index[0]] = 0;
+                    number[num] = choose_num[0];
+                    block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
+                    block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
+                }
             }
             //공통
             clear() ;
@@ -705,25 +730,47 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void bishop(int spot){ //bishop 의 이동함수 완료
+    public void bishop(int spot,boolean bw){ //bishop 의 이동함수 완료
+        int k;
         for(int a=0;a<8-((spot%8)+1);a++){//우 대각 아래
+            k=spot+(9*(a+1));
             if(spot+(9*(a+1))>=0&&spot+(9*(a+1))<=63)
-            {if (number[spot+(9*(a+1))] != 0) break;
+            {
+                if(bw==true&&(number[spot+(9*(a+1))]>=11&&number[spot+(9*(a+1))]<=17))
+                    block[spot+(9*(a+1))].setBackgroundColor(getResources().getColor(R.color.red));
+                if(bw==false&&(number[spot+(9*(a+1))]>=1&&number[spot+(9*(a+1))]<=7))
+                    block[spot+(9*(a+1))].setBackgroundColor(getResources().getColor(R.color.red));
+                if (number[spot+(9*(a+1))] != 0) break;
                 block[spot+(9*(a+1))].setVisibility(View.VISIBLE);}
         }
         for(int b=0;b<spot%8;b++){ //좌 대각 위
             if(spot-(9*(b+1))>=0&&spot-(9*(b+1))<=63)
-            {if (number[spot-(9*(b+1))] != 0) break;
+            {
+                if(bw==true&&(number[spot-(9*(b+1))]>=11&&number[spot-(9*(b+1))]<=17))
+                    block[spot-(9*(b+1))].setBackgroundColor(getResources().getColor(R.color.red));
+                if(bw==false&&(number[spot-(9*(b+1))]>=1&&number[spot-(9*(b+1))]<=7))
+                    block[spot-(9*(b+1))].setBackgroundColor(getResources().getColor(R.color.red));
+                if (number[spot-(9*(b+1))] != 0) break;
                 block[spot-(9*(b+1))].setVisibility(View.VISIBLE);}
         }
         for(int c=0;c<spot%8;c++){ //좌 대각 아래
             if(spot+(7*(c+1))>=0&&spot+(7*(c+1))<=63)
-            {if(number[spot+(7*(c+1))] != 0) break;
+            {
+                if(bw==true&&(number[spot+(7*(c+1))]>=11&&number[spot+(7*(c+1))]<=17))
+                    block[spot+(7*(c+1))].setBackgroundColor(getResources().getColor(R.color.red));
+                if(bw==false&&(number[spot+(7*(c+1))]>=1&&number[spot+(7*(c+1))]<=7))
+                    block[spot+(7*(c+1))].setBackgroundColor(getResources().getColor(R.color.red));
+                if(number[spot+(7*(c+1))] != 0) break;
                 block[spot+(7*(c+1))].setVisibility(View.VISIBLE);}
         }
         for(int d=0;d<8-((spot%8)+1);d++){//우 대각 아래
             if(spot-(7*(d+1))>=0&&spot-(7*(d+1))<=63)
-            {if (number[spot-(7*(d+1))] != 0) break;
+            {
+                if(bw==true&&(number[spot-(7*(d+1))]>=11&&number[spot-(7*(d+1))]<=17))
+                    block[spot-(7*(d+1))].setBackgroundColor(getResources().getColor(R.color.red));
+                if(bw==false&&(number[spot-(7*(d+1))]>=1&&number[spot-(7*(d+1))]<=7))
+                    block[spot-(7*(d+1))].setBackgroundColor(getResources().getColor(R.color.red));
+                if (number[spot-(7*(d+1))] != 0) break;
                 block[spot-(7*(d+1))].setVisibility(View.VISIBLE);}
         }
 
@@ -822,6 +869,17 @@ public class MainActivity extends AppCompatActivity {
             if(spot-(7*(d+1))>=0&&spot-(7*(d+1))<=63)
             {if (number[spot-(7*(d+1))] != 0) break;
                 block[spot-(7*(d+1))].setVisibility(View.VISIBLE);}
+        }
+
+    }
+    public void change_pawn(int spot, boolean bw){ //pawn은 상대진영 끝까지 가면 원하는 말로 변경가능 하다 (주로 queen) , 이부분은 사용자로 부터 입력을 받아서 설정하도록 수정 필요
+        if(bw==true){
+            number[spot] = 4;
+            block[spot].setImageDrawable(getResources().getDrawable(R.drawable.queen_b));
+        }
+        else if(bw==false) {
+            number[spot] = 14;
+            block[spot].setImageDrawable(getResources().getDrawable(R.drawable.queen_w));
         }
 
     }
