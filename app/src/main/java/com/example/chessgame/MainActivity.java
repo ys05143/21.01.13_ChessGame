@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     //   rook_b-1, knight_b-2, bishop_b-3, queen_b-4, king_b-5, pawn_b-6, first_pawn_b-7  *dot - 0
     //   rook_w-11, knight_w=12, bishop-13, queen_w-14, king_w-15, pawn_w-16, first_pawn_w-17
     int number[] = {1,  2,  3,  4,  5,  3,  2,  1,
-                    0,  7,  7,  7,  7,  7,  7,  7,
+                    7,  7,  7,  7,  7,  7,  7,  7,
                     0,  0,  0,  0,  0,  0,  0,  0,
                     0,  0,  0,  0,  0,  0,  0,  0,
                     0,  0,  0,  0,  0,  0,  0,  0,
@@ -582,46 +582,60 @@ public class MainActivity extends AppCompatActivity {
         flag[0] = false ;
         temp[0] = null ;
     }
-
+    boolean in_board(int index) {
+        if(index>=0&&index<64) return true;
+        else return false ;
+    }
+    boolean black(int index) {
+        if(number[index]>=1&&number[index]<=7) return true;
+        else return false ;
+    }
+    boolean white(int index) {
+        if(number[index]>=11&&number[index]<=17) return true;
+        else return false ;
+    }
+    void red(int index) {
+        block[index].setBackgroundColor(getResources().getColor(R.color.red));
+    }
 /////////////각 말들 움직임----------------------------------------------------------------
 
     public void rook(int spot, boolean bw) {//rook의 이동함수 완료, bw=true:rook_b/bw=false:rook_w
             for (int a = spot + 8; a < 64; a = a + 8) {//하
-                if (a >= 0 && a <= 63) {
-                    if(bw==true&&(number[a]>=11&&number[a]<=17))
-                        block[a].setBackgroundColor(getResources().getColor(R.color.red));
-                    if(bw==false&&(number[a]>=1&&number[a]<=7))
-                        block[a].setBackgroundColor(getResources().getColor(R.color.red));
+                if (in_board(a)) {
+                    if(bw== true && white(a))
+                        red(a);
+                    if(bw==false && black(a))
+                        red(a);
                     if (number[a] != 0) break;
                     block[a].setVisibility(View.VISIBLE);
                 }
             }
             for (int b = spot - 8; b >= 0; b = b - 8) {//상
-                if (b >= 0 && b <= 63) {
-                    if(bw==true&&(number[b]>=11&&number[b]<=17))
-                        block[b].setBackgroundColor(getResources().getColor(R.color.red));
-                    if(bw==false&&(number[b]>=1&&number[b]<=7))
-                        block[b].setBackgroundColor(getResources().getColor(R.color.red));
+                if (in_board(b)) {
+                    if(bw==true&& white(b))
+                        red(b);
+                    if(bw==false && black(b))
+                        red(b);
                     if (number[b] != 0) break;
                     block[b].setVisibility(View.VISIBLE);
                 }
             }
             for (int c = 0; c < spot % 8; c++) {//좌
-                if (spot - (c + 1) >= 0 && spot - (c + 1) <= 63) {
-                    if(bw==true&&(number[spot - (c + 1)]>=11&&number[spot - (c + 1)]<=17))
-                        block[spot - (c + 1)].setBackgroundColor(getResources().getColor(R.color.red));
-                    if(bw==false&&(number[spot - (c + 1)]>=1&&number[spot - (c + 1)]<=7))
-                        block[spot - (c + 1)].setBackgroundColor(getResources().getColor(R.color.red));
+                if (in_board(spot - (c + 1))) {
+                    if(bw==true && white(spot - (c + 1)))
+                        red(spot-(c+1));
+                    if(bw==false && black(spot - (c + 1)))
+                        red(spot-(c+1));
                     if (number[spot - (c + 1)] != 0) break;
                     block[spot - (c + 1)].setVisibility(View.VISIBLE);
                 }
             }
             for (int d = 0; d < 8 - ((spot % 8) + 1); d++) {//우
-                if (spot + (d + 1) >= 0 && spot + (d + 1) <= 63) {
-                    if(bw==true&&(number[spot + (d + 1)]>=11&&number[spot + (d + 1)]<=17))
-                        block[spot + (d + 1)].setBackgroundColor(getResources().getColor(R.color.red));
-                    if(bw==false&&(number[spot + (d + 1)]>=1&&number[spot + (d + 1)]<=7))
-                        block[spot + (d + 1)].setBackgroundColor(getResources().getColor(R.color.red));
+                if (in_board(spot + (d + 1))) {
+                    if(bw==true && white(spot + (d + 1)))
+                        red(spot+(d+1));
+                    if(bw==false&& black(spot + (d + 1)))
+                        red(spot+(d+1));
                     if (number[spot + (d + 1)] != 0) break;
                     block[spot + (d + 1)].setVisibility(View.VISIBLE);
                 }
@@ -632,48 +646,48 @@ public class MainActivity extends AppCompatActivity {
     public void f_pawn(int spot, boolean bw) { //처음 움직이는 pawn의 이동함수 완료
         if (bw == true) { //pawn_b
             for (int a = spot + 8; a <= spot + 16; a = a + 8) {
-                if (a >= 0 && a <= 63) {
+                if (in_board(a)) {
                     if (number[a] != 0) break;
                     block[a].setVisibility(View.VISIBLE);
                 }
             }
-            if((spot+9 >= 0 && spot+9<= 63)&&(number[spot+9]>=11&&number[spot+9]<=17)) //우 대각 아래에 상대방 말이 있을 때
-            {if(8-spot%8-1>=1)
-                block[spot+9].setBackgroundColor(getResources().getColor(R.color.red));}
-            if((spot+7 >= 0 && spot+7<= 63)&&(number[spot+7]>=11&&number[spot+7]<=17)) //좌 대각 아래에 상대방 말이 있을 때
-            {if(spot%8>=1)
-                block[spot+7].setBackgroundColor(getResources().getColor(R.color.red));}
+            if(in_board(spot+9)&&white(spot+9)) //우 대각 아래에 상대방 말이 있을 때
+                {if(8-spot%8-1>=1)
+                    red(spot+9);}
+            if(in_board(spot+7)&&white(spot+7)) //좌 대각 아래에 상대방 말이 있을 때
+                {if(spot%8>=1)
+                    red(spot+7);}
         }
         if(bw==false){ //pawn_W
             for (int a = spot - 8; a >= spot - 16; a = a - 8) {
-                if (a >= 0 && a <= 63) {
+                if (in_board(a)) {
                     if (number[a] != 0) break;
                     block[a].setVisibility(View.VISIBLE);
                 }
             }
-            if((spot-9 >= 0 && spot-9<= 63)&&(number[spot-9]>=1&&number[spot-9]<=7)) //좌 대각 위에 상대방 말이 있을 때
-            {if(spot%8>=1)
-                block[spot-9].setBackgroundColor(getResources().getColor(R.color.red));}
-            if((spot-7 >= 0 && spot-7<= 63)&&(number[spot-7]>=1&&number[spot-7]<=7)) //우 대각 위에 상대방 말이 있을 때
-            {if(8-spot%8-1>=1)
-                block[spot-7].setBackgroundColor(getResources().getColor(R.color.red));}
+            if(in_board(spot-9)&&black(spot-9)) //좌 대각 위에 상대방 말이 있을 때
+                {if(spot%8>=1)
+                    red(spot-9);}
+            if(in_board(spot-7)&&black(spot-7)) //우 대각 위에 상대방 말이 있을 때
+                {if(8-spot%8-1>=1)
+                    red(spot-7);}
         }
 
     }
     public void pawn(int spot,boolean bw) { //일반 pawn의 이동함수 완료
         if (bw == true) {
             for (int a = spot + 8; a <= spot + 8; a = a + 8) {
-                if (a >= 0 && a <= 63) {
+                if (in_board(a)) {
                     if (number[a] != 0) break;
                     block[a].setVisibility(View.VISIBLE);
                 }
             }
-            if((spot+9 >= 0 && spot+9<= 63)&&(number[spot+9]>=11&&number[spot+9]<=17)) //우 대각 아래에 상대방 말이 있을 때
+            if(in_board(spot+9)&&white(spot+9)) //우 대각 아래에 상대방 말이 있을 때
             {if(8-spot%8-1>=1)
-                block[spot+9].setBackgroundColor(getResources().getColor(R.color.red));}
-            if((spot+7 >= 0 && spot+7<= 63)&&(number[spot+7]>=11&&number[spot+7]<=17)) //좌 대각 아래에 상대방 말이 있을 때
+                red(spot+9);}
+            if(in_board(spot+7)&&white(spot+7)) //좌 대각 아래에 상대방 말이 있을 때
             {if(spot%8>=1)
-                block[spot+7].setBackgroundColor(getResources().getColor(R.color.red));}
+                red(spot+7);}
         }
         if(bw==false){
             for (int a = spot - 8; a >= spot - 8; a = a - 8) {
@@ -682,10 +696,12 @@ public class MainActivity extends AppCompatActivity {
                     block[a].setVisibility(View.VISIBLE);
                 }
             }
-            if((spot-9 >= 0 && spot-9<= 63)&&(number[spot-9]>=1&&number[spot-9]<=7)) //좌 대각 위에 상대방 말이 있을 때
-                block[spot-9].setBackgroundColor(getResources().getColor(R.color.red));
-            if((spot-7 >= 0 && spot-7<= 63)&&(number[spot-7]>=1&&number[spot-7]<=7)) //우 대각 위에 상대방 말이 있을 때
-                block[spot-7].setBackgroundColor(getResources().getColor(R.color.red));
+            if(in_board(spot-9)&&black(spot-9)) //좌 대각 위에 상대방 말이 있을 때
+            {if(spot%8>=1)
+                red(spot-9);}
+            if(in_board(spot-7)&&black(spot-7)) //우 대각 위에 상대방 말이 있을 때
+            {if(8-spot%8-1>=1)
+                red(spot-7);}
         }
     }
 
