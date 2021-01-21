@@ -564,15 +564,29 @@ public class MainActivity extends AppCompatActivity {
             }
             // dot
             else if(number[num]==0) {
+                enpassant_return();
                 if(choose_num[0]==6&&(num>=56&&num<=63)){ //pawn_b이 상대방 진영끝까지 갔을 때
                     number[temp_index[0]] = 0;
                     block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
                     change_pawn(num,true);
+
                 }
-                else if(choose_num[0]==16&&(num>=0&&num<=7)) { //pawn-w가 상대방 진영 끝까지 갔을 때
+                else if(choose_num[0]==16&&(num>=0&&num<=7)) { //pawn_w가 상대방 진영 끝까지 갔을 때
                     number[temp_index[0]] = 0;
                     block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
                     change_pawn(num,false);
+                }
+                else if(enpassant_check_b(num,temp_index[0])){
+                    number[temp_index[0]] = 0; // number[0] fix
+                    block[temp_index[0]].setImageDrawable(block[num].getDrawable()); // 첫번째 선택한 버튼 자리에 두번째 선택한 버튼 이미지 삽입
+                    block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
+                    number[num]=8;
+                }
+                else if(enpassant_check_w(num,temp_index[0])){
+                    number[temp_index[0]] = 0; // number[0] fix
+                    block[temp_index[0]].setImageDrawable(block[num].getDrawable()); // 첫번째 선택한 버튼 자리에 두번째 선택한 버튼 이미지 삽입
+                    block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
+                    number[num]=18;
                 }
                 else {
                     number[temp_index[0]] = 0;
@@ -581,7 +595,7 @@ public class MainActivity extends AppCompatActivity {
                     block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
                 }
             }
-            // 다른 말 선택
+            // 다른 말 선택, kill_red[]가 1인 다른말만 선택가능
             else if(kill_red[num]==1)  {
                 if(choose_num[0]==6&&(num>=56&&num<=63)){ //pawn_b이 상대방 진영끝까지 갔을 때
                     number[temp_index[0]] = 0;
@@ -593,15 +607,34 @@ public class MainActivity extends AppCompatActivity {
                     block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
                     change_pawn(num,false);
                 }
+               else if(choose_num[0]==6&&number[num]==18){ //앙파상 조건문이 문제???
+                    number[temp_index[0]] = 0;
+                    number[num] = 0;
+                    number[num+8]=choose_num[0];
+                    block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
+                    block[num].setImageDrawable(getResources().getDrawable(R.drawable.dot));// 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
+                    block[num+8].setImageDrawable(temp[0]);
+                }
+                else if(choose_num[0]==16&&number[num]==8){
+                    number[temp_index[0]] = 0;
+                    number[num] = choose_num[0];
+                    number[num-8]=choose_num[0];
+                    block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
+                    block[num].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
+                    block[num-8].setImageDrawable(temp[0]);
+                }
+
                 else {
                     number[temp_index[0]] = 0;
                     number[num] = choose_num[0];
                     block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
                     block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
+
                 }
+                enpassant_return();
             }
             //공통
-            clear() ;
+            clear() ; //이때 kill_red도 전부 0으로 다시 초기화됨
             for(int i=0;i<64;i++) {
                 if(number[i]==0) block[i].setVisibility(View.INVISIBLE);
                 if(number[i]!=0) block[i].setBackgroundColor(getResources().getColor(R.color.transparent));
@@ -620,18 +653,18 @@ public class MainActivity extends AppCompatActivity {
         else return false ;
     }
     boolean black(int index) {
-        if(number[index]>=1&&number[index]<=7) return true;
+        if(number[index]>=1&&number[index]<=8) return true;
         else return false ;
     }
     boolean white(int index) {
-        if(number[index]>=11&&number[index]<=17) return true;
+        if(number[index]>=11&&number[index]<=18) return true;
         else return false ;
     }
     boolean dot(int index) {
         if(number[index]==0) return true;
         else return false ;
     }
-    void red(int index) {
+    void red(int index) { //잡을 수 있는 말은 배경을 빨갛게하고 kill_red를 1로 변경
         block[index].setBackgroundColor(getResources().getColor(R.color.red));
         kill_red[index]= 1;
     }
@@ -727,6 +760,10 @@ public class MainActivity extends AppCompatActivity {
             if(in_board(spot+7)&&white(spot+7)) //좌 대각 아래에 상대방 말이 있을 때
             {if(spot%8>=1)
                 red(spot+7);}
+            if(spot%8>=1&&number[spot-1]==18)
+                red(spot-1);
+            if(8-spot%8-1>=1&&number[spot+1]==18)
+                red(spot+1);
         }
         if(bw==false){
             for (int a = spot - 8; a >= spot - 8; a = a - 8) {
@@ -741,6 +778,10 @@ public class MainActivity extends AppCompatActivity {
             if(in_board(spot-7)&&black(spot-7)) //우 대각 위에 상대방 말이 있을 때
             {if(8-spot%8-1>=1)
                 red(spot-7);}
+            if(spot%8>=1&&number[spot-1]==8)
+                red(spot-1);
+            if(8-spot%8-1>=1&&number[spot+1]==8)
+                red(spot+1);
         }
     }
 
@@ -969,7 +1010,7 @@ public class MainActivity extends AppCompatActivity {
                 block[k].setVisibility(View.VISIBLE);}
         }
     }
-    public void change_pawn(int spot, boolean bw){ //pawn은 상대진영 끝까지 가면 원하는 말로 변경가능 하다 (주로 queen) , 이부분은 사용자로 부터 입력을 받아서 설정하도록 수정 필요
+    public void change_pawn(int spot, boolean bw){ //pawn은 상대진영 끝까지 가면 원하는 말(주로 queen)로 변경가능 하다(규칙이름:프로모션), 이부분은 사용자로 부터 입력을 받아서 설정하도록 수정 필요
         if(bw==true){
             number[spot] = 4;
             block[spot].setImageDrawable(getResources().getDrawable(R.drawable.queen_b));
@@ -979,6 +1020,31 @@ public class MainActivity extends AppCompatActivity {
             block[spot].setImageDrawable(getResources().getDrawable(R.drawable.queen_w));
         }
 
+    }
+    public boolean enpassant_check_b(int spot, int temp_index) {
+        if (number[temp_index] == 7 && spot == temp_index + 16) {//pawn_b이 두칸 전진 했을 때
+            if ((spot % 8 >= 1 && number[spot - 1] == 16) || (8 - spot % 8 - 1 >= 1 && number[spot + 16 + 1] == 16)) //전진한 pawn_b 좌 또는 우 에 pawn_w이 있으면 앙파상 가능
+            return true;
+            else return false;
+        }
+        else return false;
+    }
+    public boolean enpassant_check_w(int spot, int temp_index){
+         if (number[temp_index] == 17 && spot == temp_index - 16) {//pawn_w이 두칸 전진 했을 때
+            if ((spot % 8 >= 1 && number[spot - 1] == 6) || (8 - spot % 8 - 1 >= 1 && number[spot + 1] == 6)) //전진한 pawn_w 좌 또는 우 에 pawn_b이 있으면 앙파상 가능
+            return true;
+            else return false;
+        }
+        else return false;
+
+    }
+    public void enpassant_return(){
+        for(int i=0;i<64;i++){
+            if(number[i]==8)
+                number[i]=6;
+            if(number[i]==18)
+                number[i]=16;
+        }
     }
 
 }
