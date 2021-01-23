@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     int[] temp_index = new int[1]; // 첫번째 버튼의 번호 저장(첫번째 누른 block의 인덱스)
     int[] choose_num = new int[1]; // 첫번째 버튼의 말의 종류 저장 (1~6)
     boolean[] flag = {false}; // 버튼 2번눌렀을때
+    static int count=0;
 //---------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -594,6 +595,7 @@ public class MainActivity extends AppCompatActivity {
                     block[temp_index[0]].setImageDrawable(block[num].getDrawable()); // 첫번째 선택한 버튼 자리에 두번째 선택한 버튼 이미지 삽입
                     block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
                 }
+                count++;
             }
             // 다른 말 선택, kill_red[]가 1인 다른말만 선택가능
             else if(kill_red[num]==1)  {
@@ -608,20 +610,10 @@ public class MainActivity extends AppCompatActivity {
                     change_pawn(num,false);
                 }
                else if(choose_num[0]==6&&number[num]==18){ //앙파상 조건문이 문제???
-                    number[temp_index[0]] = 0;
-                    number[num] = 0;
-                    number[num+8]=choose_num[0];
-                    block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
-                    block[num].setImageDrawable(getResources().getDrawable(R.drawable.dot));// 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
-                    block[num+8].setImageDrawable(temp[0]);
+                   enpassant_move_b(num,temp_index[0]);
                 }
                 else if(choose_num[0]==16&&number[num]==8){
-                    number[temp_index[0]] = 0;
-                    number[num] = choose_num[0];
-                    number[num-8]=choose_num[0];
-                    block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
-                    block[num].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
-                    block[num-8].setImageDrawable(temp[0]);
+                    enpassant_move_w(num,temp_index[0]);
                 }
 
                 else {
@@ -632,13 +624,16 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 enpassant_return();
+                count=0; //말을 하나라도 잡으면 count 초기화
             }
             //공통
             clear() ; //이때 kill_red도 전부 0으로 다시 초기화됨
             for(int i=0;i<64;i++) {
+                block[i].setBackgroundColor(getResources().getColor(R.color.transparent));
                 if(number[i]==0) block[i].setVisibility(View.INVISIBLE);
-                if(number[i]!=0) block[i].setBackgroundColor(getResources().getColor(R.color.transparent));
             }
+            if(count>=50) //말 갯수 변화 없이 50수 진행되면
+                count=100; //게임종료
         }
     }
 //-------------------------------함수 정리-----------------------------------
@@ -1023,7 +1018,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public boolean enpassant_check_b(int spot, int temp_index) {
         if (number[temp_index] == 7 && spot == temp_index + 16) {//pawn_b이 두칸 전진 했을 때
-            if ((spot % 8 >= 1 && number[spot - 1] == 16) || (8 - spot % 8 - 1 >= 1 && number[spot + 16 + 1] == 16)) //전진한 pawn_b 좌 또는 우 에 pawn_w이 있으면 앙파상 가능
+            if ((spot % 8 >= 1 && number[spot - 1] == 16) || (8 - spot % 8 - 1 >= 1 && number[spot + 1] == 16)) //전진한 pawn_b 좌 또는 우 에 pawn_w이 있으면 앙파상 가능
             return true;
             else return false;
         }
@@ -1046,6 +1041,25 @@ public class MainActivity extends AppCompatActivity {
                 number[i]=16;
         }
     }
+    public void enpassant_move_b(int spot, int temp_index){
+        number[temp_index]=0;
+        number[spot]=0;
+        number[spot+8]=6;
+        block[temp_index].setImageDrawable(getResources().getDrawable(R.drawable.dot));
+        block[spot].setImageDrawable(getResources().getDrawable(R.drawable.dot));
+        block[spot+8].setImageDrawable(getResources().getDrawable(R.drawable.pawn_b));
+        block[spot+8].setVisibility(View.VISIBLE);
+    }
+    public void enpassant_move_w(int spot, int temp_index){
+        number[temp_index]=0;
+        number[spot]=0;
+        number[spot-8]=16;
+        block[temp_index].setImageDrawable(getResources().getDrawable(R.drawable.dot));
+        block[spot].setImageDrawable(getResources().getDrawable(R.drawable.dot));
+        block[spot-8].setImageDrawable(getResources().getDrawable(R.drawable.pawn_w));
+        block[spot-8].setVisibility(View.VISIBLE);
+    }
+
 
 }
 
