@@ -599,7 +599,9 @@ public class MainActivity extends AppCompatActivity {
                     block[temp_index[0]].setImageDrawable(block[num].getDrawable()); // 첫번째 선택한 버튼 자리에 두번째 선택한 버튼 이미지 삽입
                     block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
                 }
+
                 count++;
+
             }
             // 양파상 ( w -> b )
             else if (number[temp_index[0]]==16&& enpassant[num]==1&&kill_red[num]==1&&(num==temp_index[0]-1||num==temp_index[0]+1)) {
@@ -621,6 +623,7 @@ public class MainActivity extends AppCompatActivity {
                 block[num].setImageDrawable(getResources().getDrawable(R.drawable.dot));
                 block[num].setBackgroundColor(getResources().getColor(R.color.transparent));
             }
+
             //다른 말 선택
             else if(kill_red[num]==1 )  {
                 enpassant_clear();
@@ -629,6 +632,7 @@ public class MainActivity extends AppCompatActivity {
                     number[temp_index[0]] = 0;
                     block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
                     change_pawn(num,true);
+
                 }
                 else if(choose_num[0]==16&&(num>=0&&num<=7)) { //pawn-w가 상대방 진영 끝까지 갔을 때
                     number[temp_index[0]] = 0;
@@ -1114,6 +1118,7 @@ public class MainActivity extends AppCompatActivity {
        });
 
     }
+
     public void end_game(int bw){
                 AlertDialog.Builder end_builder = new AlertDialog.Builder(MainActivity.this,
                         android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
@@ -1138,6 +1143,7 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog end=end_builder.create();
                 end.show();
             }
+
 
 }
 
