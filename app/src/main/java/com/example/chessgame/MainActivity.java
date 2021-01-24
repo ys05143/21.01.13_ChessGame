@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     int[] choose_num = new int[1]; // 첫번째 버튼의 말의 종류 저장 (1~6)
     boolean[] flag = {false}; // 버튼 2번눌렀을때
     static int count=0;
+    static boolean turn=true; //순서 표시 처음에는 흑 먼저
 //---------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -497,79 +498,97 @@ public class MainActivity extends AppCompatActivity {
                 temp_index[0] = num;
                 flag[0] = true;
                 // switch 부문( 말의 종류에따라서 )
-                switch (number[temp_index[0]]) {
-                    case 1: {
-                        choose_num[0] = 1;
-                        rook(num,true);
-                        break;
-                    }
-                    case 2: {
-                        choose_num[0] = 2;
-                        knight(num,true);
-                        break;
-                    }
-                    case 3: {
-                        choose_num[0] = 3;
-                        bishop(num,true);
-                        break;
-                    }
-                    case 4: {
-                        choose_num[0] = 4;
-                        queen(num,true);
-                        break;
-                    }
-                    case 5: {
-                        choose_num[0] = 5;
-                        king(num,true);
-                        break;
-                    }
-                    case 6: { //일반 pawn
-                        choose_num[0] = 6;
-                        pawn(num, true);
-                        break;
-                    }
-                    case 7:{ //처음 움직이는 pawn
-                        choose_num[0] = 6 ;
-                        f_pawn(num, true);
-                        break;
-                    }
-                    case 11:{ //rook_w
-                        choose_num[0]=11;
-                        rook(num, false);
-                        break;
-                    }
-                    case 12:{
-                        choose_num[0]=12;
-                        knight(num,false);
-                        break;
-                    }
-                    case 13:{
-                        choose_num[0] = 13;
-                        bishop(num,false);
-                        break;
-                    }
-                    case 14:{
-                        choose_num[0] = 14;
-                        queen(num,false);
-                        break;
-                    }
-                    case 15:{
-                        choose_num[0] = 15;
-                        king(num,false);
-                        break;
-                    }
-                    case 16:{
-                        choose_num[0] = 16;
-                        pawn(num, false);
+                if(turn==true) {
+                    switch (number[temp_index[0]]) {
+                        case 1: {
+                            choose_num[0] = 1;
+                            rook(num, true);
+                            break;
+                        }
+                        case 2: {
+                            choose_num[0] = 2;
+                            knight(num, true);
+                            break;
+                        }
+                        case 3: {
+                            choose_num[0] = 3;
+                            bishop(num, true);
+                            break;
+                        }
+                        case 4: {
+                            choose_num[0] = 4;
+                            queen(num, true);
+                            break;
+                        }
+                        case 5: {
+                            choose_num[0] = 5;
+                            king(num, true);
+                            break;
+                        }
+                        case 6: { //일반 pawn
+                            choose_num[0] = 6;
+                            pawn(num, true);
+                            break;
+                        }
+                        case 7: { //처음 움직이는 pawn_b
+                            choose_num[0] = 6;
+                            f_pawn(num, true);
+                            break;
+                        }
+                        case 11: case 12: case 13: case 14: case 15: case 16: case 17: {
+                            clear();
+                            Toast.makeText(this,"'흑'차례입니다.",Toast.LENGTH_SHORT).show();
+                            break;
+                        }
 
-                        break;
-                    }
-                    case 17:{
-                        choose_num[0]= 16;
-                        f_pawn(num, false);
-                        break;
                     }
 
+                }
+                else if(turn==false){
+                    switch (number[temp_index[0]]) {
+                        case 1: case 2: case 3: case 4: case 5: case 6: case 7:{
+                            clear();
+                            Toast.makeText(this,"'백'차례입니다.",Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+                        case 11: { //rook_w
+                            choose_num[0] = 11;
+                            rook(num, false);
+                            break;
+                        }
+                        case 12: {
+                            choose_num[0] = 12;
+                            knight(num, false);
+                            break;
+                        }
+                        case 13: {
+                            choose_num[0] = 13;
+                            bishop(num, false);
+                            break;
+                        }
+                        case 14: {
+                            choose_num[0] = 14;
+                            queen(num, false);
+                            break;
+                        }
+                        case 15: {
+                            choose_num[0] = 15;
+                            king(num, false);
+                            break;
+                        }
+                        case 16: {
+                            choose_num[0] = 16;
+                            pawn(num, false);
+                            break;
+                        }
+                        case 17: {
+                            choose_num[0] = 16;
+                            f_pawn(num, false);
+                            break;
+                        }
+
+
+                    }
 
                 }
 
@@ -579,6 +598,8 @@ public class MainActivity extends AppCompatActivity {
         else {
             // 두번 눌렀을때 = 선택취소
             if(num==temp_index[0]) {
+                if(turn==true) turn=false;
+                else if (turn==false) turn=true;
             }
             // dot
             else if(number[num]==0) {
@@ -663,6 +684,8 @@ public class MainActivity extends AppCompatActivity {
                 block[i].setBackgroundColor(getResources().getColor(R.color.transparent));
                 if(number[i]==0) block[i].setVisibility(View.INVISIBLE);
             }
+            if(turn==true) turn=false;
+            else if (turn==false) turn=true;
         }
         if(count>=50) end_game(0); //말 갯수 변화 없이 50수 진행되면 비긴다
     }
@@ -672,6 +695,7 @@ public class MainActivity extends AppCompatActivity {
         flag[0] = false ;
         temp[0] = null ;
         for(int i=0;i<64;i++) kill_red[i]= 0;
+
     }
     boolean in_board(int index) {
         if(index>=0&&index<64) return true;
