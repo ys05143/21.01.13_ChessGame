@@ -73,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
     int[] temp_index = new int[1]; // 첫번째 버튼의 번호 저장(첫번째 누른 block의 인덱스)
     int[] choose_num = new int[1]; // 첫번째 버튼의 말의 종류 저장 (1~6)
     boolean[] flag = {false}; // 버튼 2번눌렀을때
-    static int count=0;
-    static boolean turn=true; //순서 표시 처음에는 흑 먼저
+    int count=0;
+    boolean turn=true; //순서 표시 처음에는 흑 먼저
 //---------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1153,12 +1153,18 @@ public class MainActivity extends AppCompatActivity {
                 end_builder.setPositiveButton("홈으로 이동", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        turn=true;
+                        count=0;
+                        clear();
                         finish(); //현재(메인) 엑티비티 종료
                     }
                 });
                 end_builder.setNegativeButton("종료", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) { //앱 종료
+                        turn=true;
+                        count=0;
+                        clear();
                         finishAffinity();
                         System.runFinalization();
                         System.exit(0);
