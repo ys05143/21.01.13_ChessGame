@@ -11,7 +11,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class Ai_Activity extends AppCompatActivity {
+public class Ai_w_Activity extends AppCompatActivity {
+
     // imageview ID 처리
     int block_id[] = {R.id.A8, R.id.B8, R.id.C8, R.id.D8, R.id.E8, R.id.F8, R.id.G8, R.id.H8,
             R.id.A7, R.id.B7, R.id.C7, R.id.D7, R.id.E7, R.id.F7, R.id.G7, R.id.H7,
@@ -33,7 +34,7 @@ public class Ai_Activity extends AppCompatActivity {
             0,  0,  0,  0,  0,  0,  0,  0,
             0,  0,  0,  0,  0,  0,  0,  0,
             0,  0,  0,  0,  0,  0,  0,  0,
-            17, 17, 17, 17, 17, 17, 17, 17,
+            0, 17, 17, 17, 17, 17, 17, 0,
             11, 12, 13, 14, 15, 13, 12, 11 };
     int kill_red[] = { 0,0,0,0,0,0,0,0, // red인 말들만 죽일수있음
             0,0,0,0,0,0,0,0,
@@ -59,7 +60,7 @@ public class Ai_Activity extends AppCompatActivity {
     int[] choose_num = new int[1]; // 첫번째 버튼의 말의 종류 저장 (1~6)
     boolean[] flag = {false}; // 버튼 2번눌렀을때
     int count=0;
-    boolean turn=false; //순서 표시, 처음에는 백 먼저
+    boolean turn=true; //순서 표시, 처음에는 백 먼저
     /*int [][]board_state=new int [50][64];//현재 보드 저장
     int repeat[]={ 0,0,0,0,0,0,0,0,0,0,
             0,0,0,0,0,0,0,0,0,0,
@@ -73,7 +74,7 @@ public class Ai_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ai);
+        setContentView(R.layout.activity_ai_w);
 
         //  ImageView - ID  match
         for (int i = 0; i < 64; i++)
@@ -521,7 +522,7 @@ public class Ai_Activity extends AppCompatActivity {
                 temp_index[0] = num;
                 flag[0] = true;
                 // switch 부문( 말의 종류에따라서 )
-                if(turn==true) {
+                if(turn==true) { //흑의 차례일때
                     switch (number[temp_index[0]]) {
                         case 1: {
                             choose_num[0] = 1;
@@ -567,52 +568,9 @@ public class Ai_Activity extends AppCompatActivity {
                     }
 
                 }
-                else if(turn==false){
-                    switch (number[temp_index[0]]) {
-                        case 1: case 2: case 3: case 4: case 5: case 6: case 7:{
-                            clear();
-                            Toast.makeText(this,"'백'차례입니다.",Toast.LENGTH_SHORT).show();
-                            break;
-                        }
-                        case 11: { //rook_w
-                            choose_num[0] = 11;
-                            rook(num, false);
-                            break;
-                        }
-                        case 12: {
-                            choose_num[0] = 12;
-                            knight(num, false);
-                            break;
-                        }
-                        case 13: {
-                            choose_num[0] = 13;
-                            bishop(num, false);
-                            break;
-                        }
-                        case 14: {
-                            choose_num[0] = 14;
-                            queen(num, false);
-                            break;
-                        }
-                        case 15: {
-                            choose_num[0] = 15;
-                            king(num, false);
-                            break;
-                        }
-                        case 16: {
-                            choose_num[0] = 16;
-                            pawn(num, false);
-                            break;
-                        }
-                        case 17: {
-                            choose_num[0] = 16;
-                            f_pawn(num, false);
-                            break;
-                        }
-
-
-                    }
-
+                else if(turn==false){ //백의 차례일때
+                    clear();
+                    Toast.makeText(this,"user의 차례가 아닙니다.",Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -695,6 +653,10 @@ public class Ai_Activity extends AppCompatActivity {
                 }
 
             }
+            else if(kill_red[num]!=1) {
+                if(turn==true) turn=false;
+                else if (turn==false) turn=true;
+            }
             // 2칸 전진한 경우
             if((number[num]==6&&num==temp_index[0]+16)||(number[num]==16&&num==temp_index[0]-16)) {
                 enpassant[num] = 1 ;
@@ -728,7 +690,7 @@ public class Ai_Activity extends AppCompatActivity {
             check_repeat(repeat);*/
         }
         if(count>=50) end_game(0); //말 갯수 변화 없이 50수 진행되면 비긴다
-
+        if(turn==false) AI(); //유저 차례가 끝나고 백의 차례가 되면 ai 실행
     }
     //-------------------------------함수 정리-----------------------------------
     void clear() {
@@ -1120,12 +1082,12 @@ public class Ai_Activity extends AppCompatActivity {
 
     public void change_pawn(int spot, boolean bw){ //pawn은 상대진영 끝까지 가면 원하는 말로 변경가능 하다 (주로 queen) , 이부분은 사용자로 부터 입력을 받아서 설정하도록 수정 필요
         // 새로운 스레드를 생성해서 따로 진행흐름을 가져가야 사용자가 입력하기전에 코드가 진행되지 않는다.
-        Ai_Activity.this.runOnUiThread(new Runnable(){
+        Ai_w_Activity.this.runOnUiThread(new Runnable(){
             public void run() {
                 final String[] oItems = {"룩", "나이트", "비숍", "퀸"};
 
 
-                AlertDialog.Builder oDialog = new AlertDialog.Builder(Ai_Activity.this,
+                AlertDialog.Builder oDialog = new AlertDialog.Builder(Ai_w_Activity.this,
                         android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
                 oDialog.setTitle("무슨 말로 바꾸시겠습니까?") ;
                 oDialog.setItems(oItems,new DialogInterface.OnClickListener() {
@@ -1191,7 +1153,7 @@ public class Ai_Activity extends AppCompatActivity {
     }
 
     public void end_game(int bw){
-        AlertDialog.Builder end_builder = new AlertDialog.Builder(Ai_Activity.this,
+        AlertDialog.Builder end_builder = new AlertDialog.Builder(Ai_w_Activity.this,
                 android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
         end_builder.setTitle("게임이 종료되었습니다.");
         if (bw == 1) end_builder.setMessage("'백'이 승리하였습니다!!!");
@@ -1221,7 +1183,7 @@ public class Ai_Activity extends AppCompatActivity {
         end.show();
     }
     public void give_up(int bw){
-        AlertDialog.Builder giveup_builder = new AlertDialog.Builder(Ai_Activity.this,
+        AlertDialog.Builder giveup_builder = new AlertDialog.Builder(Ai_w_Activity.this,
                 android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
         giveup_builder.setTitle("기권 버튼을 누르셨습니다.");
         giveup_builder.setMessage("기권하시겠습니까?");
@@ -1242,7 +1204,7 @@ public class Ai_Activity extends AppCompatActivity {
 
     }
     public void draw_suggestion(){
-        AlertDialog.Builder giveup_builder = new AlertDialog.Builder(Ai_Activity.this,
+        AlertDialog.Builder giveup_builder = new AlertDialog.Builder(Ai_w_Activity.this,
                 android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
         giveup_builder.setTitle("상대방이 비기기를 제안했습니다.");
         giveup_builder.setMessage("받아드리겠습니까?");
@@ -1263,23 +1225,25 @@ public class Ai_Activity extends AppCompatActivity {
 
     }
     //---------------------ai관련-----------------------------------------------------------
+
     public void AI(){
         number=MinMax(number);//ai가 minmax 알고리즘으로 찾은 배열을 number로 지정
-        for(int i=0;i<64;i++){
-            if(number[i]==1) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_w));  block[i].setVisibility(View.VISIBLE);}//룩
-            else if(number[i]==2) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_w));  block[i].setVisibility(View.VISIBLE);}//나이트
-            else if(number[i]==3) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.bishop_w));  block[i].setVisibility(View.VISIBLE);}//비숍
-            else if(number[i]==4) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.queen_w)); block[i].setVisibility(View.VISIBLE);}//퀸
-            else if(number[i]==5) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_w)); block[i].setVisibility(View.VISIBLE);}//킹
-            else if(number[i]==7||number[i]==6||number[i]==8) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_w)); block[i].setVisibility(View.VISIBLE);}//폰
-            else if(number[i]==11) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_b)); block[i].setVisibility(View.VISIBLE);}
-            else if(number[i]==12) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_b)); block[i].setVisibility(View.VISIBLE);}
-            else if(number[i]==13) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.bishop_b)); block[i].setVisibility(View.VISIBLE);}
-            else if(number[i]==14) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.queen_b)); block[i].setVisibility(View.VISIBLE);}
-            else if(number[i]==15) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_b)); block[i].setVisibility(View.VISIBLE);}
-            else if(number[i]==17||number[i]==16||number[i]==18) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_b)); block[i].setVisibility(View.VISIBLE);}
+        for(int i=0;i<64;i++){ //알고리즘으로 나온 결과로 판을 바꾸는 것
+            if(number[i]==1) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_b));  block[i].setVisibility(View.VISIBLE);}//룩
+            else if(number[i]==2) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_b));  block[i].setVisibility(View.VISIBLE);}//나이트
+            else if(number[i]==3) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.bishop_b));  block[i].setVisibility(View.VISIBLE);}//비숍
+            else if(number[i]==4) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.queen_b)); block[i].setVisibility(View.VISIBLE);}//퀸
+            else if(number[i]==5) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_b)); block[i].setVisibility(View.VISIBLE);}//킹
+            else if(number[i]==7||number[i]==6||number[i]==8) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_b)); block[i].setVisibility(View.VISIBLE);}//폰
+            else if(number[i]==11) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_w)); block[i].setVisibility(View.VISIBLE);}
+            else if(number[i]==12) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_w)); block[i].setVisibility(View.VISIBLE);}
+            else if(number[i]==13) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.bishop_w)); block[i].setVisibility(View.VISIBLE);}
+            else if(number[i]==14) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.queen_w)); block[i].setVisibility(View.VISIBLE);}
+            else if(number[i]==15) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_w)); block[i].setVisibility(View.VISIBLE);}
+            else if(number[i]==17||number[i]==16||number[i]==18) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_w)); block[i].setVisibility(View.VISIBLE);}
             else if(number[i]==0) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.dot)); block[i].setVisibility(View.INVISIBLE);}
         }
+        turn=true;
     }
 
     public int[] MinMax(int []number){
@@ -1287,7 +1251,7 @@ public class Ai_Activity extends AppCompatActivity {
         int []best_node=number;
         int []Node;
         for(int i=0;i<64;i++){
-            if(number[i]==1) {
+            if(number[i]==11) {
                 Node = rook_generatemove_max_w(number, i, 2);
                 if (Evalstate_w(Node) > best_val)
                     best_node = Node;
@@ -1338,6 +1302,65 @@ public class Ai_Activity extends AppCompatActivity {
                     }
                 }
             }
+            for (int a = spot - 8; a >= 0; a = a - 8) {//상
+                if (in_board(a)) {
+                    if (black(a)) {
+                        node[a] = node[spot];
+                        node[spot] = 0;
+                        move = rook_generatemove_max_w(node, a, depth - 1);
+                        if (Evalstate_w(move) > Evalstate_w(best_move)) {
+                            best_move=move;
+                        }
+                    }
+                    if (number[a] != 0) break;
+                    node[a] = node[spot];
+                    node[spot] = 0;
+                    move = rook_generatemove_max_w(node, a, depth - 1);
+                    if (Evalstate_w(move) > Evalstate_w(best_move)) {
+                        best_move=move;
+                    }
+                }
+            }
+            for (int c = 0; c < spot % 8; c++) {//좌
+                int t=spot - (c + 1);
+                if (in_board(t)) {
+                    if( black(t)) {
+                        node[t] = node[spot];
+                        node[spot] = 0;
+                        move = rook_generatemove_max_w(node, t, depth - 1);
+                        if (Evalstate_w(move) > Evalstate_w(best_move)) {
+                            best_move=move;
+                        }
+                    }
+                    if (number[t] != 0) break;
+                    node[t] = node[spot];
+                    node[spot] = 0;
+                    move = rook_generatemove_max_w(node, t, depth - 1);
+                    if (Evalstate_w(move) > Evalstate_w(best_move)) {
+                        best_move=move;
+                    }
+                }
+            }
+            for (int d = 0; d < 8 - ((spot % 8) + 1); d++) {//우
+                int t=spot + (d + 1);
+                if (in_board(t)) {
+                    if( black(t)) {
+                        node[t] = node[spot];
+                        node[spot] = 0;
+                        move = rook_generatemove_max_w(node, t, depth - 1);
+                        if (Evalstate_w(move) > Evalstate_w(best_move)) {
+                            best_move=move;
+                        }
+                    }
+                    if (number[t] != 0) break;
+                    node[t] = node[spot];
+                    node[spot] = 0;
+                    move = rook_generatemove_max_w(node, t, depth - 1);
+                    if (Evalstate_w(move) > Evalstate_w(best_move)) {
+                        best_move=move;
+                    }
+                }
+            }
             return best_move;
         }
     }
@@ -1367,6 +1390,7 @@ public class Ai_Activity extends AppCompatActivity {
                 }
             }
             for (int a = spot - 8; a >= 0; a = a - 8) {//상
+
                 if (in_board(a)) {
                     if (black(a)) {
                         node[a] = node[spot];
