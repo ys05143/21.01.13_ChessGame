@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import org.w3c.dom.Node;
+
 public class Ai_w_Activity extends AppCompatActivity {
 
     // imageview ID 처리
@@ -1227,7 +1229,7 @@ public class Ai_w_Activity extends AppCompatActivity {
     //---------------------ai관련-----------------------------------------------------------
 
     public void AI(){
-        number=MinMax(number);//ai가 minmax 알고리즘으로 찾은 배열을 number로 지정
+        number=MinMax(number).clone();//ai가 minmax 알고리즘으로 찾은 배열을 number로 지정
         for(int i=0;i<64;i++){ //알고리즘으로 나온 결과로 판을 바꾸는 것
             if(number[i]==1) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_b));  block[i].setVisibility(View.VISIBLE);}//룩
             else if(number[i]==2) {block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_b));  block[i].setVisibility(View.VISIBLE);}//나이트
@@ -1245,19 +1247,43 @@ public class Ai_w_Activity extends AppCompatActivity {
         }
         turn=true;
     }
+    public int[] MinMax(int[]number){
+       return MaxMove(number,2);
+    }
 
-    public int[] MinMax(int []number){
-        int best_val=Evalstate_w(number);
-        int []best_node=number;
-        int []Node;
-        for(int i=0;i<64;i++){
-            if(number[i]==11) {
-                Node = rook_generatemove_max_w(number, i, 2);
-                if (Evalstate_w(Node) > best_val)
-                    best_node = Node;
+    public int[] MaxMove(int []node,int depth) {
+        int[] P_Node = node.clone(); //매개변수로 받은 배열 복사
+        int best_val = Evalstate_w(P_Node);
+        int[] best_Node = P_Node.clone();
+        int[] Node;
+        if (depth == 0) return best_Node;
+        else {
+            for (int i = 0; i < 64; i++) {
+                if (P_Node[i] == 11) {
+                    Node = rook_generatemove_max_w(P_Node, i, depth).clone();
+                    if (Evalstate_w(Node) > best_val)
+                        best_Node = Node.clone();
+                }
             }
+            return best_Node;
         }
-        return best_node;
+    }
+    public int[] MinMove(int []node,int depth) {
+        int[] P_Node = node.clone(); //매개변수로 받은 배열 복사
+        int best_val = Evalstate_w(P_Node);
+        int[] best_Node = P_Node.clone();
+        int[] Node;
+        if (depth == 0) return best_Node;
+        else {
+            for (int i = 0; i < 64; i++) {
+                if (P_Node[i] == 11) {
+                    Node = rook_generatemove_min_b(P_Node, i, depth).clone();
+                    if (Evalstate_w(Node) < best_val)
+                        best_Node = Node.clone();
+                }
+            }
+            return best_Node;
+        }
     }
 
     public int Evalstate_w(int []number){// 현재 상태를 평가하는 평가함수 (일단 ai가 백 이라는 가정으로 작성)
@@ -1277,26 +1303,26 @@ public class Ai_w_Activity extends AppCompatActivity {
         return value;
     }
 
-    public int[] rook_generatemove_max_w(int []number,int spot,int depth) {
+    public int[] rook_generatemove_max_w(int []P_Node,int spot,int depth) {
         int []move;
-        int []node = number;
-        int []best_move=number;
-        if (depth == 0) return number;
+        int []node = P_Node.clone();
+        int []best_move=P_Node.clone();
+        if (depth == 0) return best_move;
         else {
             for (int a = spot + 8; a < 64; a = a + 8) {//하
                 if (in_board(a)) {
                     if (black(a)) {
                         node[a] = node[spot];
                         node[spot] = 0;
-                        move = rook_generatemove_min_w(node, a, depth - 1);
+                        move = MinMove(node,depth-1).clone();
                         if (Evalstate_w(move) > Evalstate_w(best_move)) {
                             best_move=move;
                         }
                     }
-                    if (number[a] != 0) break;
+                    if (P_Node[a] != 0) break;
                     node[a] = node[spot];
                     node[spot] = 0;
-                    move = rook_generatemove_min_w(node, a, depth - 1);
+                    move = MinMove(node,depth-1).clone();
                     if (Evalstate_w(move) > Evalstate_w(best_move)) {
                         best_move=move;
                     }
@@ -1307,15 +1333,15 @@ public class Ai_w_Activity extends AppCompatActivity {
                     if (black(a)) {
                         node[a] = node[spot];
                         node[spot] = 0;
-                        move = rook_generatemove_max_w(node, a, depth - 1);
+                        move = MinMove(node,depth-1).clone();
                         if (Evalstate_w(move) > Evalstate_w(best_move)) {
                             best_move=move;
                         }
                     }
-                    if (number[a] != 0) break;
+                    if (P_Node[a] != 0) break;
                     node[a] = node[spot];
                     node[spot] = 0;
-                    move = rook_generatemove_max_w(node, a, depth - 1);
+                    move = MinMove(node,depth-1).clone();
                     if (Evalstate_w(move) > Evalstate_w(best_move)) {
                         best_move=move;
                     }
@@ -1327,15 +1353,15 @@ public class Ai_w_Activity extends AppCompatActivity {
                     if( black(t)) {
                         node[t] = node[spot];
                         node[spot] = 0;
-                        move = rook_generatemove_max_w(node, t, depth - 1);
+                        move = MinMove(node,depth-1).clone();
                         if (Evalstate_w(move) > Evalstate_w(best_move)) {
                             best_move=move;
                         }
                     }
-                    if (number[t] != 0) break;
+                    if (P_Node[t] != 0) break;
                     node[t] = node[spot];
                     node[spot] = 0;
-                    move = rook_generatemove_max_w(node, t, depth - 1);
+                    move = MinMove(node,depth-1).clone();
                     if (Evalstate_w(move) > Evalstate_w(best_move)) {
                         best_move=move;
                     }
@@ -1347,15 +1373,15 @@ public class Ai_w_Activity extends AppCompatActivity {
                     if( black(t)) {
                         node[t] = node[spot];
                         node[spot] = 0;
-                        move = rook_generatemove_max_w(node, t, depth - 1);
+                        move = MinMove(node,depth-1).clone();
                         if (Evalstate_w(move) > Evalstate_w(best_move)) {
                             best_move=move;
                         }
                     }
-                    if (number[t] != 0) break;
+                    if (P_Node[t] != 0) break;
                     node[t] = node[spot];
                     node[spot] = 0;
-                    move = rook_generatemove_max_w(node, t, depth - 1);
+                    move = MinMove(node,depth-1).clone();
                     if (Evalstate_w(move) > Evalstate_w(best_move)) {
                         best_move=move;
                     }
@@ -1364,23 +1390,23 @@ public class Ai_w_Activity extends AppCompatActivity {
             return best_move;
         }
     }
-    public int[] rook_generatemove_min_w(int []number,int spot,int depth) {
+    public int[] rook_generatemove_min_b(int []P_Node,int spot,int depth) {
         int []move;
-        int[] node = number;
-        int []best_move=number;
-        if (depth == 0) return number;
+        int[] node = P_Node.clone();
+        int []best_move=P_Node.clone();
+        if (depth == 0) return best_move;
         else {
             for (int a = spot + 8; a < 64; a = a + 8) {//하
                 if (in_board(a)) {
                     if (black(a)) {
                         node[a] = node[spot];
                         node[spot] = 0;
-                        move = rook_generatemove_max_w(node, a, depth - 1);
+                        move = MaxMove(node,depth-1).clone();
                         if (Evalstate_w(move) < Evalstate_w(best_move)) {
                             best_move=move;
                         }
                     }
-                    if (number[a] != 0) break;
+                    if (P_Node[a] != 0) break;
                     node[a] = node[spot];
                     node[spot] = 0;
                     move = rook_generatemove_max_w(node, a, depth - 1);
@@ -1395,15 +1421,15 @@ public class Ai_w_Activity extends AppCompatActivity {
                     if (black(a)) {
                         node[a] = node[spot];
                         node[spot] = 0;
-                        move = rook_generatemove_max_w(node, a, depth - 1);
+                        move = MaxMove(node,depth-1).clone();
                         if (Evalstate_w(move) < Evalstate_w(best_move)) {
                             best_move=move;
                         }
                     }
-                    if (number[a] != 0) break;
+                    if (P_Node[a] != 0) break;
                     node[a] = node[spot];
                     node[spot] = 0;
-                    move = rook_generatemove_max_w(node, a, depth - 1);
+                    move = MaxMove(node,depth-1).clone();
                     if (Evalstate_w(move) < Evalstate_w(best_move)) {
                         best_move=move;
                     }
@@ -1415,15 +1441,15 @@ public class Ai_w_Activity extends AppCompatActivity {
                     if( black(t)) {
                         node[t] = node[spot];
                         node[spot] = 0;
-                        move = rook_generatemove_max_w(node, t, depth - 1);
+                        move = MaxMove(node,depth-1).clone();
                         if (Evalstate_w(move) < Evalstate_w(best_move)) {
                             best_move=move;
                         }
                     }
-                    if (number[t] != 0) break;
+                    if (P_Node[t] != 0) break;
                     node[t] = node[spot];
                     node[spot] = 0;
-                    move = rook_generatemove_max_w(node, t, depth - 1);
+                    move = MaxMove(node,depth-1).clone();
                     if (Evalstate_w(move) < Evalstate_w(best_move)) {
                         best_move=move;
                     }
@@ -1435,15 +1461,15 @@ public class Ai_w_Activity extends AppCompatActivity {
                     if( black(t)) {
                         node[t] = node[spot];
                         node[spot] = 0;
-                        move = rook_generatemove_max_w(node, t, depth - 1);
+                        move = MaxMove(node,depth-1).clone();
                         if (Evalstate_w(move) < Evalstate_w(best_move)) {
                             best_move=move;
                         }
                     }
-                    if (number[t] != 0) break;
+                    if (P_Node[t] != 0) break;
                     node[t] = node[spot];
                     node[spot] = 0;
-                    move = rook_generatemove_max_w(node, t, depth - 1);
+                    move = MaxMove(node,depth-1).clone();
                     if (Evalstate_w(move) < Evalstate_w(best_move)) {
                         best_move=move;
                     }
