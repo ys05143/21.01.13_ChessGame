@@ -1266,6 +1266,34 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(Node);
                     }
                 }
+                else if (P_Node[i] == 12) {
+                    Node = knight_generatemove_max_w(P_Node, i, depth).clone();
+                    if (Evalstate_w(Node) >= best_val) {
+                        best_Node = Node.clone();
+                        best_val = Evalstate_w(Node);
+                    }
+                }
+                else if (P_Node[i] == 13) {
+                    Node = bishop_generatemove_max_w(P_Node, i, depth).clone();
+                    if (Evalstate_w(Node) >= best_val) {
+                        best_Node = Node.clone();
+                        best_val = Evalstate_w(Node);
+                    }
+                }
+                else if (P_Node[i] == 14) {
+                    Node = queen_generatemove_max_w(P_Node, i, depth).clone();
+                    if (Evalstate_w(Node) >= best_val) {
+                        best_Node = Node.clone();
+                        best_val = Evalstate_w(Node);
+                    }
+                }
+                else if (P_Node[i] == 16 || P_Node[i] == 17) {
+                    Node = pawn_generatemove_max_w(P_Node, i, depth).clone();
+                    if (Evalstate_w(Node) >= best_val) {
+                        best_Node = Node.clone();
+                        best_val = Evalstate_w(Node);
+                    }
+                }
             }
             return best_Node;
         }
