@@ -1335,6 +1335,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         return value;
     }
 
+    //  ------------------------------- generatemove_max_w ---------------------------------------------------
     public int[] rook_generatemove_max_w(int []P_Node,int spot,int depth) {
         int []move;
         int []node = P_Node.clone();
@@ -1427,6 +1428,160 @@ public class Ai_w_Activity extends AppCompatActivity {
             }
             return best_move;
         }
+    }
+    public int[] knight_generatemove_max_w(int []P_Node,int spot,int depth) {
+        int []move;
+        int []node = P_Node.clone();
+        int []best_move=P_Node.clone();
+        int best_val = Evalstate_w(best_move);
+        int []temp_node ;
+        if (depth == 0) return best_move;
+        int a;
+        a=spot+(8*2)+1 ;//우 대각 아래(2) down-2 right-1
+        if(in_board(a)&&8-spot%8-1>=1)  //끝쪽에 있을때 넘어가기 방지
+        {    if (!(P_Node[a]>=11&&P_Node[a]<=17)) {
+            // 위치 바꿔주기
+            node[a] = node[spot];
+            node[spot] = 0;
+            // 한 칸 옮겼을때 상태 저장
+            temp_node = node.clone() ;
+            // 깊이 0까지 탐색
+            move = MinMove(node,depth-1).clone();
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            if (Evalstate_w(move) >= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(move);
+            }
+            node= P_Node.clone(); // 원상태로
+            }
+        }
+        a=spot+(8*2)-1 ; //좌 대각 아래(2) down-2 left-1
+        if(in_board(a)&& spot%8>=1) //끝쪽에 있을때 넘어가기 방지
+        {   if (!(P_Node[a]>=11&&P_Node[a]<=17)) {
+            // 위치 바꿔주기
+            node[a] = node[spot];
+            node[spot] = 0;
+            // 한 칸 옮겼을때 상태 저장
+            temp_node = node.clone() ;
+            // 깊이 0까지 탐색
+            move = MinMove(node,depth-1).clone();
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            if (Evalstate_w(move) >= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(move);
+            }
+            node= P_Node.clone(); // 원상태로
+            }
+        }
+        a=spot-(8*2)+1 ; //우 대각 위(2) up-2 right-1
+        if(in_board(a)&&8-spot%8-1>=1)  //끝쪽에 있을때 넘어가기 방지
+        {   if (!(P_Node[a]>=11&&P_Node[a]<=17)) {
+            // 위치 바꿔주기
+            node[a] = node[spot];
+            node[spot] = 0;
+            // 한 칸 옮겼을때 상태 저장
+            temp_node = node.clone() ;
+            // 깊이 0까지 탐색
+            move = MinMove(node,depth-1).clone();
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            if (Evalstate_w(move) >= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(move);
+            }
+            node= P_Node.clone(); // 원상태로
+            }
+        }
+        a=spot-(8*2)-1 ; //좌 대각 위(2) up-2 left-1
+        if(in_board(a)&& spot%8>=1) //끝쪽에 있을때 넘어가기 방지
+        {  if (!(P_Node[a]>=11&&P_Node[a]<=17)) {
+            // 위치 바꿔주기
+            node[a] = node[spot];
+            node[spot] = 0;
+            // 한 칸 옮겼을때 상태 저장
+            temp_node = node.clone() ;
+            // 깊이 0까지 탐색
+            move = MinMove(node,depth-1).clone();
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            if (Evalstate_w(move) >= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(move);
+            }
+            node= P_Node.clone(); // 원상태로
+            }
+        }
+        a=spot+(8*1)+2 ; //우 대각 아래(1) right-2 down-1
+        if(in_board(a)&& 8-spot%8-1>=2) //끝쪽에 있을때 넘어가기 방지
+        {   if (!(P_Node[a]>=11&&P_Node[a]<=17)) {
+            // 위치 바꿔주기
+            node[a] = node[spot];
+            node[spot] = 0;
+            // 한 칸 옮겼을때 상태 저장
+            temp_node = node.clone() ;
+            // 깊이 0까지 탐색
+            move = MinMove(node,depth-1).clone();
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            if (Evalstate_w(move) >= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(move);
+            }
+            node= P_Node.clone(); // 원상태로
+            }
+        }
+        a=spot+(8*1)-2 ;//좌 대각 아래(1) left-2 down-1
+        if(in_board(a)&& spot%8>=2) //끝쪽에 있을때 넘어가기 방지
+        {  if (!(P_Node[a]>=11&&P_Node[a]<=17)) {
+            // 위치 바꿔주기
+            node[a] = node[spot];
+            node[spot] = 0;
+            // 한 칸 옮겼을때 상태 저장
+            temp_node = node.clone() ;
+            // 깊이 0까지 탐색
+            move = MinMove(node,depth-1).clone();
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            if (Evalstate_w(move) >= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(move);
+            }
+            node= P_Node.clone(); // 원상태로
+            }
+        }
+        a=spot-(8*1)+2 ; //우 대각 위(1) right-2 up -1
+        if(in_board(a)&& 8-spot%8-1>=2) //끝쪽에 있을때 넘어가기 방지
+        {   if (!(P_Node[a]>=11&&P_Node[a]<=17)) {
+            // 위치 바꿔주기
+            node[a] = node[spot];
+            node[spot] = 0;
+            // 한 칸 옮겼을때 상태 저장
+            temp_node = node.clone() ;
+            // 깊이 0까지 탐색
+            move = MinMove(node,depth-1).clone();
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            if (Evalstate_w(move) >= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(move);
+            }
+            node= P_Node.clone(); // 원상태로
+            }
+        }
+        a=spot-(8*1)-2 ; //좌 대각 위(1) left-2 up - 1
+        if(in_board(a)&& spot%8>=2) //끝쪽에 있을때 넘어가기 방지
+        {  if (!(P_Node[a]>=11&&P_Node[a]<=17)) {
+            // 위치 바꿔주기
+            node[a] = node[spot];
+            node[spot] = 0;
+            // 한 칸 옮겼을때 상태 저장
+            temp_node = node.clone() ;
+            // 깊이 0까지 탐색
+            move = MinMove(node,depth-1).clone();
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            if (Evalstate_w(move) >= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(move);
+            }
+            node= P_Node.clone(); // 원상태로
+            }
+        }
+        return best_move ;
     }
     public int[] rook_generatemove_min_b(int []P_Node,int spot,int depth) {
         int []move;
@@ -1521,5 +1676,159 @@ public class Ai_w_Activity extends AppCompatActivity {
             }
             return best_move;
         }
+    }
+    public int[] knight_generatemove_min_b(int []P_Node,int spot,int depth) {
+        int []move;
+        int []node = P_Node.clone();
+        int []best_move=P_Node.clone();
+        int best_val = Evalstate_w(best_move);
+        int []temp_node ;
+        if (depth == 0) return best_move;
+        int a;
+        a=spot+(8*2)+1 ;//우 대각 아래(2) down-2 right-1
+        if(in_board(a)&&8-spot%8-1>=1)  //끝쪽에 있을때 넘어가기 방지
+        {    if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
+            // 위치 바꿔주기
+            node[a] = node[spot];
+            node[spot] = 0;
+            // 한 칸 옮겼을때 상태 저장
+            temp_node = node.clone() ;
+            // 깊이 0까지 탐색
+            move = MaxMove(node,depth-1).clone();
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            if (Evalstate_w(move) <= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(move);
+            }
+            node= P_Node.clone(); // 원상태로
+        }
+        }
+        a=spot+(8*2)-1 ; //좌 대각 아래(2) down-2 left-1
+        if(in_board(a)&& spot%8>=1) //끝쪽에 있을때 넘어가기 방지
+        {   if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
+            // 위치 바꿔주기
+            node[a] = node[spot];
+            node[spot] = 0;
+            // 한 칸 옮겼을때 상태 저장
+            temp_node = node.clone() ;
+            // 깊이 0까지 탐색
+            move = MaxMove(node,depth-1).clone();
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            if (Evalstate_w(move) <= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(move);
+            }
+            node= P_Node.clone(); // 원상태로
+        }
+        }
+        a=spot-(8*2)+1 ; //우 대각 위(2) up-2 right-1
+        if(in_board(a)&&8-spot%8-1>=1)  //끝쪽에 있을때 넘어가기 방지
+        {   if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
+            // 위치 바꿔주기
+            node[a] = node[spot];
+            node[spot] = 0;
+            // 한 칸 옮겼을때 상태 저장
+            temp_node = node.clone() ;
+            // 깊이 0까지 탐색
+            move = MaxMove(node,depth-1).clone();
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            if (Evalstate_w(move) <= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(move);
+            }
+            node= P_Node.clone(); // 원상태로
+        }
+        }
+        a=spot-(8*2)-1 ; //좌 대각 위(2) up-2 left-1
+        if(in_board(a)&& spot%8>=1) //끝쪽에 있을때 넘어가기 방지
+        {  if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
+            // 위치 바꿔주기
+            node[a] = node[spot];
+            node[spot] = 0;
+            // 한 칸 옮겼을때 상태 저장
+            temp_node = node.clone() ;
+            // 깊이 0까지 탐색
+            move = MaxMove(node,depth-1).clone();
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            if (Evalstate_w(move) <= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(move);
+            }
+            node= P_Node.clone(); // 원상태로
+        }
+        }
+        a=spot+(8*1)+2 ; //우 대각 아래(1) right-2 down-1
+        if(in_board(a)&& 8-spot%8-1>=2) //끝쪽에 있을때 넘어가기 방지
+        {   if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
+            // 위치 바꿔주기
+            node[a] = node[spot];
+            node[spot] = 0;
+            // 한 칸 옮겼을때 상태 저장
+            temp_node = node.clone() ;
+            // 깊이 0까지 탐색
+            move = MinMove(node,depth-1).clone();
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            if (Evalstate_w(move) <= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(move);
+            }
+            node= P_Node.clone(); // 원상태로
+        }
+        }
+        a=spot+(8*1)-2 ;//좌 대각 아래(1) left-2 down-1
+        if(in_board(a)&& spot%8>=2) //끝쪽에 있을때 넘어가기 방지
+        {  if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
+            // 위치 바꿔주기
+            node[a] = node[spot];
+            node[spot] = 0;
+            // 한 칸 옮겼을때 상태 저장
+            temp_node = node.clone() ;
+            // 깊이 0까지 탐색
+            move = MaxMove(node,depth-1).clone();
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            if (Evalstate_w(move) <= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(move);
+            }
+            node= P_Node.clone(); // 원상태로
+        }
+        }
+        a=spot-(8*1)+2 ; //우 대각 위(1) right-2 up -1
+        if(in_board(a)&& 8-spot%8-1>=2) //끝쪽에 있을때 넘어가기 방지
+        {   if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
+            // 위치 바꿔주기
+            node[a] = node[spot];
+            node[spot] = 0;
+            // 한 칸 옮겼을때 상태 저장
+            temp_node = node.clone() ;
+            // 깊이 0까지 탐색
+            move = MaxMove(node,depth-1).clone();
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            if (Evalstate_w(move) <= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(move);
+            }
+            node= P_Node.clone(); // 원상태로
+        }
+        }
+        a=spot-(8*1)-2 ; //좌 대각 위(1) left-2 up - 1
+        if(in_board(a)&& spot%8>=2) //끝쪽에 있을때 넘어가기 방지
+        {  if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
+            // 위치 바꿔주기
+            node[a] = node[spot];
+            node[spot] = 0;
+            // 한 칸 옮겼을때 상태 저장
+            temp_node = node.clone() ;
+            // 깊이 0까지 탐색
+            move = MaxMove(node,depth-1).clone();
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            if (Evalstate_w(move) <= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(move);
+            }
+            node= P_Node.clone(); // 원상태로
+        }
+        }
+        return best_move ;
     }
 }
