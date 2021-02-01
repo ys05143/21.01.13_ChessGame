@@ -32,14 +32,14 @@ public class Ai_w_Activity extends AppCompatActivity {
 
     //   rook_b-1, knight_b-2, bishop_b-3, queen_b-4, king_b-5, pawn_b-6, first_pawn_b-7  *dot - 0
     //   rook_w-11, knight_w=12, bishop-13, queen_w-14, king_w-15, pawn_w-16, first_pawn_w-17
-    int number[] = {1, 2, 3, 4, 5, 3, 2, 1,
-            7, 7, 7, 7, 7, 7, 7, 7,
-            0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0,
+    int number[] = {11, 12, 13, 15, 14, 13, 12, 11,
             17, 17, 17, 17, 17, 17, 17, 17,
-            11, 12, 13, 14, 15, 13, 12, 11};
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            7, 7, 7, 7, 7, 7, 7, 7,
+            1, 2, 3, 5, 4, 3, 2, 1};
     int kill_red[] = {0, 0, 0, 0, 0, 0, 0, 0, // red인 말들만 죽일수있음
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
@@ -59,14 +59,13 @@ public class Ai_w_Activity extends AppCompatActivity {
 
     Button give_up_w;
     Button draw_w;
-    Button give_up_b;
-    Button draw_b;
+
     Drawable[] temp = new Drawable[1];// 버튼 클릭 시 이미지 임시 저장
     int[] temp_index = new int[1]; // 첫번째 버튼의 번호 저장(첫번째 누른 block의 인덱스)
     int[] choose_num = new int[1]; // 첫번째 버튼의 말의 종류 저장 (1~6)
     boolean[] flag = {false}; // 버튼 2번눌렀을때
     int count = 0;
-    boolean turn = true; //순서 표시, 처음에는 백 먼저
+    boolean turn = false; //순서 표시, 처음에는 백 먼저
     /*int [][]board_state=new int [50][64];//현재 보드 저장
     int repeat[]={ 0,0,0,0,0,0,0,0,0,0,
             0,0,0,0,0,0,0,0,0,0,
@@ -85,8 +84,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         //  ImageView - ID  match
         for (int i = 0; i < 64; i++)
             block[i] = (ImageView) findViewById(block_id[i]);
-        draw_b = (Button) findViewById(R.id.draw_b);
-        give_up_b = (Button) findViewById(R.id.give_up_b);
+
         draw_w = (Button) findViewById(R.id.draw_w);
         give_up_w = (Button) findViewById(R.id.give_up_w);
 
@@ -494,30 +492,21 @@ public class Ai_w_Activity extends AppCompatActivity {
                 move(63);
             }
         });
-        give_up_b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                give_up(1);
-            }
-        });
+
         give_up_w.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 give_up(2);
             }
         });
-        draw_b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                draw_suggestion();
-            }
-        });
+
         draw_w.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 draw_suggestion();
             }
         });
+        AI(); turn=true;
     }
 
     //-----------------------------MOVE() 부분 -----------------------------------------------
@@ -805,37 +794,37 @@ public class Ai_w_Activity extends AppCompatActivity {
     }
 
     public void f_pawn(int spot, boolean bw) { //처음 움직이는 pawn의 이동함수 완료
-        if (bw == true) { //pawn_b
+        if (bw == false) { //pawn_w
             for (int a = spot + 8; a <= spot + 16; a = a + 8) {
                 if (in_board(a)) {
                     if (number[a] != 0) break;
                     block[a].setVisibility(View.VISIBLE);
                 }
             }
-            if (in_board(spot + 9) && white(spot + 9)) //우 대각 아래에 상대방 말이 있을 때
+            if (in_board(spot + 9) && black(spot + 9)) //우 대각 아래에 상대방 말이 있을 때
             {
                 if (8 - spot % 8 - 1 >= 1)
                     red(spot + 9);
             }
-            if (in_board(spot + 7) && white(spot + 7)) //좌 대각 아래에 상대방 말이 있을 때
+            if (in_board(spot + 7) && black(spot + 7)) //좌 대각 아래에 상대방 말이 있을 때
             {
                 if (spot % 8 >= 1)
                     red(spot + 7);
             }
         }
-        if (bw == false) { //pawn_W
+        if (bw == true) { //pawn_b
             for (int a = spot - 8; a >= spot - 16; a = a - 8) {
                 if (in_board(a)) {
                     if (number[a] != 0) break;
                     block[a].setVisibility(View.VISIBLE);
                 }
             }
-            if (in_board(spot - 9) && black(spot - 9)) //좌 대각 위에 상대방 말이 있을 때
+            if (in_board(spot - 9) && white(spot - 9)) //좌 대각 위에 상대방 말이 있을 때
             {
                 if (spot % 8 >= 1)
                     red(spot - 9);
             }
-            if (in_board(spot - 7) && black(spot - 7)) //우 대각 위에 상대방 말이 있을 때
+            if (in_board(spot - 7) && white(spot - 7)) //우 대각 위에 상대방 말이 있을 때
             {
                 if (8 - spot % 8 - 1 >= 1)
                     red(spot - 7);
@@ -845,19 +834,19 @@ public class Ai_w_Activity extends AppCompatActivity {
     }
 
     public void pawn(int spot, boolean bw) { //일반 pawn의 이동함수 완료
-        if (bw == true) {
+        if (bw == false) { //white
             for (int a = spot + 8; a <= spot + 8; a = a + 8) {
                 if (in_board(a)) {
                     if (number[a] != 0) break;
                     block[a].setVisibility(View.VISIBLE);
                 }
             }
-            if (in_board(spot + 9) && white(spot + 9)) //우 대각 아래에 상대방 말이 있을 때
+            if (in_board(spot + 9) && black(spot + 9)) //우 대각 아래에 상대방 말이 있을 때
             {
                 if (8 - spot % 8 - 1 >= 1)
                     red(spot + 9);
             }
-            if (in_board(spot + 7) && white(spot + 7)) //좌 대각 아래에 상대방 말이 있을 때
+            if (in_board(spot + 7) && black(spot + 7)) //좌 대각 아래에 상대방 말이 있을 때
             {
                 if (spot % 8 >= 1)
                     red(spot + 7);
@@ -867,19 +856,19 @@ public class Ai_w_Activity extends AppCompatActivity {
             if (8 - spot % 8 - 1 >= 1 && enpassant[spot - 1] == 1 && number[spot + 7] == 0)
                 red(spot - 1);
         }
-        if (bw == false) {
+        if (bw == true) { //black
             for (int a = spot - 8; a >= spot - 8; a = a - 8) {
                 if (in_board(a)) {
                     if (number[a] != 0) break;
                     block[a].setVisibility(View.VISIBLE);
                 }
             }
-            if (in_board(spot - 9) && black(spot - 9)) //좌 대각 위에 상대방 말이 있을 때
+            if (in_board(spot - 9) && white(spot - 9)) //좌 대각 위에 상대방 말이 있을 때
             {
                 if (spot % 8 >= 1)
                     red(spot - 9);
             }
-            if (in_board(spot - 7) && black(spot - 7)) //우 대각 위에 상대방 말이 있을 때
+            if (in_board(spot - 7) && white(spot - 7)) //우 대각 위에 상대방 말이 있을 때
             {
                 if (8 - spot % 8 - 1 >= 1)
                     red(spot - 7);
@@ -2173,9 +2162,9 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] temp_node;
         if (depth == 0) return best_move;
         else {
-            for (int a = spot - 8; a >= spot - 8; a = a - 8) {
+            for(int a = spot + 8; a <= spot + 8; a = a + 8) {
                 if (in_board(a)) {
-                    if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) {
+                    if (P_Node[a]==0) {
                         node[a] = node[spot];
                         node[spot] = 0;
                         // 한 칸 옮겼을때 상태 저장
@@ -2190,32 +2179,14 @@ public class Ai_w_Activity extends AppCompatActivity {
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
-                }
-            }
-            if (in_board(spot - 9) && (P_Node[spot-9] >= 1 && P_Node[spot-9] <= 7)) //좌 대각 위에 상대방 말이 있을 때
-            {
-                if (spot % 8 >= 1){
-                    // 위치 바꿔주기
-                    node[spot-9] = node[spot];
-                    node[spot] = 0;
-                    // 한 칸 옮겼을때 상태 저장
-                    temp_node = node.clone();
-                    // 깊이 0까지 탐색
-                    move = MinMove(node, depth - 1).clone();
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) >= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                    }
-                    node = P_Node.clone(); // 원상태로
-                }
-            }
 
-            if (in_board(spot - 7) && (P_Node[spot-7] >= 1 && P_Node[spot-7] <= 7)) //우 대각 위에 상대방 말이 있을 때
+                }
+            }
+            if (in_board(spot + 9) && (P_Node[spot+9] >= 11 && P_Node[spot+9] <= 17)) //우 대각 아래에 상대방 말이 있을 때
             {
                 if (8 - spot % 8 - 1 >= 1){
                     // 위치 바꿔주기
-                    node[spot-7] = node[spot];
+                    node[spot+9] = node[spot];
                     node[spot] = 0;
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
@@ -2228,14 +2199,32 @@ public class Ai_w_Activity extends AppCompatActivity {
                     }
                     node = P_Node.clone(); // 원상태로
                 }
+            }
 
+            if (in_board(spot + 7) && (P_Node[spot+7] >= 11 && P_Node[spot+7] <= 17)) //좌 대각 아래에 상대방 말이 있을 때
+            {
+                if (spot % 8 >= 1){
+                    // 위치 바꿔주기
+                    node[spot+7] = node[spot];
+                    node[spot] = 0;
+                    // 한 칸 옮겼을때 상태 저장
+                    temp_node = node.clone();
+                    // 깊이 0까지 탐색
+                    move = MinMove(node, depth - 1).clone();
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(move) >= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(move);
+                    }
+                    node = P_Node.clone(); // 원상태로
+                }
             }
             // 양파상
-            if (spot % 8 >= 1 && enpassant[spot - 1] == 1 && P_Node[spot - 9] == 0){
+            if (spot % 8 >= 1 && enpassant[spot + 1] == 1 && P_Node[spot + 9] == 0){
                 // 위치 바꿔주기
-                node[spot-9] = node[spot];
+                node[spot+9] = node[spot];
                 node[spot] = 0;
-                node[spot-1]=0;
+                node[spot+1]=0;
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
@@ -2247,11 +2236,11 @@ public class Ai_w_Activity extends AppCompatActivity {
                 }
                 node = P_Node.clone(); // 원상태로
             }
-            if (8 - spot % 8 - 1 >= 1 && enpassant[spot + 1] == 1 && P_Node[spot - 7] == 0) {
+            if (8 - spot % 8 - 1 >= 1 && enpassant[spot - 1] == 1 && P_Node[spot + 7] == 0){
                 // 위치 바꿔주기
-                node[spot-7] = node[spot];
+                node[spot+7] = node[spot];
                 node[spot] = 0;
-                node[spot+1]=0;
+                node[spot-1]=0;
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
@@ -2274,10 +2263,10 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] temp_node;
         if (depth == 0) return best_move;
         else {
-            for (int a = spot - 8; a >= spot - 16; a = a - 8) {
+            for (int a = spot + 8; a <= spot + 16; a = a + 8) {
                 if (in_board(a)) {
-                    if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) {
-                        node[a] = node[spot];
+                    if (P_Node[a]==0) {
+                        node[a] = 16;
                         node[spot] = 0;
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
@@ -2293,11 +2282,11 @@ public class Ai_w_Activity extends AppCompatActivity {
                     if (P_Node[a] != 0) break;
                 }
             }
-            if (in_board(spot - 9) &&(P_Node[spot-9] >= 1 && P_Node[spot-9] <= 7)) //좌 대각 위에 상대방 말이 있을 때
+            if (in_board(spot + 9) && (P_Node[spot+9] >= 11 && P_Node[spot+9] <= 17)) //우 대각 아래에 상대방 말이 있을 때
             {
-                if (spot % 8 >= 1){
+                if (8 - spot % 8 - 1 >= 1){
                     // 위치 바꿔주기
-                    node[spot-9] = node[spot];
+                    node[spot+9] = 16;
                     node[spot] = 0;
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
@@ -2310,13 +2299,12 @@ public class Ai_w_Activity extends AppCompatActivity {
                     }
                     node = P_Node.clone(); // 원상태로
                 }
-
             }
-            if (in_board(spot - 7) && black(spot - 7)) //우 대각 위에 상대방 말이 있을 때
+            if (in_board(spot + 7) && (P_Node[spot+7] >= 11 && P_Node[spot+7] <= 17)) //좌 대각 아래에 상대방 말이 있을 때
             {
-                if (8 - spot % 8 - 1 >= 1){
+                if (spot % 8 >= 1){
                     // 위치 바꿔주기
-                    node[spot-7] = node[spot];
+                    node[spot+7] = 16;
                     node[spot] = 0;
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
@@ -3017,9 +3005,9 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] temp_node;
         if (depth == 0) return best_move;
         else {
-            for (int a = spot + 8; a <= spot + 8; a = a + 8) {
+            for (int a = spot - 8; a >= spot - 8; a = a - 8) {
                 if (in_board(a)) {
-                    if (!(P_Node[a] >= 1 && P_Node[a] <= 7)) {
+                    if (P_Node[a]==0) {
                         node[a] = node[spot];
                         node[spot] = 0;
                         // 한 칸 옮겼을때 상태 저장
@@ -3036,31 +3024,11 @@ public class Ai_w_Activity extends AppCompatActivity {
                     if (P_Node[a] != 0) break;
                 }
             }
-            if (in_board(spot + 9) && (P_Node[spot+9] >= 11 && P_Node[spot+9] <= 17)) //우 대각 아래에 상대방 말이 있을 때
-            {
-                if (8 - spot % 8 - 1 >= 1){
-                    // 위치 바꿔주기
-                    node[spot+9] = node[spot];
-                    node[spot] = 0;
-                    // 한 칸 옮겼을때 상태 저장
-                    temp_node = node.clone();
-                    // 깊이 0까지 탐색
-                    move = MaxMove(node, depth - 1).clone();
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) <= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                    }
-                    node = P_Node.clone(); // 원상태로
-
-                }
-
-            }
-            if (in_board(spot + 7) &&(P_Node[spot+7] >= 11 && P_Node[spot+7] <= 17)) //좌 대각 아래에 상대방 말이 있을 때
+            if (in_board(spot - 9) && (P_Node[spot-9] >= 1 && P_Node[spot-9] <= 7)) //좌 대각 위에 상대방 말이 있을 때
             {
                 if (spot % 8 >= 1){
                     // 위치 바꿔주기
-                    node[spot+7] = node[spot];
+                    node[spot-9] = node[spot];
                     node[spot] = 0;
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
@@ -3072,33 +3040,30 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                     }
                     node = P_Node.clone(); // 원상태로
-
                 }
-
+            }
+            if (in_board(spot - 7) && (P_Node[spot-7] >= 1 && P_Node[spot-7] <= 7)) //우 대각 위에 상대방 말이 있을 때
+            {
+                if (8 - spot % 8 - 1 >= 1){
+                    // 위치 바꿔주기
+                    node[spot-7] = node[spot];
+                    node[spot] = 0;
+                    // 한 칸 옮겼을때 상태 저장
+                    temp_node = node.clone();
+                    // 깊이 0까지 탐색
+                    move = MaxMove(node, depth - 1).clone();
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(move) <= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(move);
+                    }
+                    node = P_Node.clone(); // 원상태로
+                }
             }
             // 양파상
-            if (spot % 8 >= 1 && enpassant[spot + 1] == 1 && P_Node[spot + 9] == 0) {
-
+            if (spot % 8 >= 1 && enpassant[spot - 1] == 1 && P_Node[spot - 9] == 0){
                 // 위치 바꿔주기
-                node[spot+9] = node[spot];
-                node[spot] = 0;
-                node[spot+1]=0;
-                // 한 칸 옮겼을때 상태 저장
-                temp_node = node.clone();
-                // 깊이 0까지 탐색
-                move = MinMove(node, depth - 1).clone();
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) >= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                }
-                node = P_Node.clone(); // 원상태로
-
-            }
-            if (8 - spot % 8 - 1 >= 1 && enpassant[spot - 1] == 1 && P_Node[spot + 7] == 0){
-
-                // 위치 바꿔주기
-                node[spot+7] = node[spot];
+                node[spot-9] = node[spot];
                 node[spot] = 0;
                 node[spot-1]=0;
                 // 한 칸 옮겼을때 상태 저장
@@ -3111,7 +3076,22 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                 }
                 node = P_Node.clone(); // 원상태로
-
+            }
+            if (8 - spot % 8 - 1 >= 1 && enpassant[spot + 1] == 1 && P_Node[spot - 7] == 0){
+                // 위치 바꿔주기
+                node[spot-7] = node[spot];
+                node[spot] = 0;
+                node[spot+1]=0;
+                // 한 칸 옮겼을때 상태 저장
+                temp_node = node.clone();
+                // 깊이 0까지 탐색
+                move = MinMove(node, depth - 1).clone();
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                if (Evalstate_w(move) >= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(move);
+                }
+                node = P_Node.clone(); // 원상태로
             }
 
         }
@@ -3125,10 +3105,10 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] temp_node;
         if (depth == 0) return best_move;
         else {
-            for (int a = spot + 8; a <= spot + 16; a = a + 8) {
+            for (int a = spot - 8; a >= spot - 16; a = a - 8) {
                 if (in_board(a)) {
-                    if (!(P_Node[a] >= 1 && P_Node[a] <= 7)) {
-                        node[a] = node[spot];
+                    if (P_Node[a]==0) {
+                        node[a] = 6;
                         node[spot] = 0;
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
@@ -3144,11 +3124,11 @@ public class Ai_w_Activity extends AppCompatActivity {
                     if (P_Node[a] != 0) break;
                 }
             }
-            if (in_board(spot + 9) && (P_Node[spot+9] >= 11 && P_Node[spot+9] <= 17)) //우 대각 아래에 상대방 말이 있을 때
+            if (in_board(spot - 9) && (P_Node[spot-9] >= 1 && P_Node[spot-9] <= 7)) //좌 대각 위에 상대방 말이 있을 때
             {
-                if (8 - spot % 8 - 1 >= 1){
+                if (spot % 8 >= 1){
                     // 위치 바꿔주기
-                    node[spot+9] = node[spot];
+                    node[spot-9] = 6;
                     node[spot] = 0;
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
@@ -3161,13 +3141,12 @@ public class Ai_w_Activity extends AppCompatActivity {
                     }
                     node = P_Node.clone(); // 원상태로
                 }
-
             }
-            if (in_board(spot + 7) && (P_Node[spot+7] >= 11 && P_Node[spot+7] <= 17)) //좌 대각 아래에 상대방 말이 있을 때
+            if (in_board(spot - 7) && (P_Node[spot-7] >= 1 && P_Node[spot-7] <= 7)) //우 대각 위에 상대방 말이 있을 때
             {
-                if (spot % 8 >= 1){
+                if (8 - spot % 8 - 1 >= 1){
                     // 위치 바꿔주기
-                    node[spot+7] = node[spot];
+                    node[spot-7] = 6;
                     node[spot] = 0;
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();

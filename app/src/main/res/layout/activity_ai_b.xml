@@ -1025,33 +1025,6 @@
 
     </TableLayout>
 
-    <Button
-        android:id="@+id/draw_b"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginBottom="45dp"
-        android:text="draw"
-        app:backgroundTint="@color/brown"
-        app:layout_constraintBottom_toTopOf="@+id/board"
-        app:layout_constraintEnd_toStartOf="@+id/give_up_b"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/give_up_b"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginBottom="45dp"
-        android:text="GG"
-        app:backgroundTint="@color/brown"
-        app:layout_constraintBottom_toTopOf="@+id/board"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/draw_b"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/give_up_w"

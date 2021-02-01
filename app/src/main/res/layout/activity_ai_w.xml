@@ -39,7 +39,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="visible"
-                    app:srcCompat="@drawable/rook_b" />
+                    app:srcCompat="@drawable/rook_w" />
             </FrameLayout>
 
             <FrameLayout
@@ -53,7 +53,7 @@
                     android:id="@+id/B8"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/knight_b" />
+                    app:srcCompat="@drawable/knight_w" />
             </FrameLayout>
 
             <FrameLayout
@@ -67,7 +67,7 @@
                     android:id="@+id/C8"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/bishop_b" />
+                    app:srcCompat="@drawable/bishop_w" />
             </FrameLayout>
 
             <FrameLayout
@@ -81,7 +81,7 @@
                     android:id="@+id/D8"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/queen_b" />
+                    app:srcCompat="@drawable/king_w" />
             </FrameLayout>
 
             <FrameLayout
@@ -95,7 +95,7 @@
                     android:id="@+id/E8"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/king_b" />
+                    app:srcCompat="@drawable/queen_w" />
             </FrameLayout>
 
             <FrameLayout
@@ -109,7 +109,7 @@
                     android:id="@+id/F8"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/bishop_b" />
+                    app:srcCompat="@drawable/bishop_w" />
             </FrameLayout>
 
             <FrameLayout
@@ -123,7 +123,7 @@
                     android:id="@+id/G8"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/knight_b" />
+                    app:srcCompat="@drawable/knight_w" />
             </FrameLayout>
 
             <FrameLayout
@@ -137,7 +137,7 @@
                     android:id="@+id/H8"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/rook_b" />
+                    app:srcCompat="@drawable/rook_w" />
             </FrameLayout>
 
 
@@ -160,7 +160,7 @@
                     android:id="@+id/A7"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_b" />
+                    app:srcCompat="@drawable/pawn_w" />
             </FrameLayout>
 
             <FrameLayout
@@ -174,7 +174,7 @@
                     android:id="@+id/B7"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_b" />
+                    app:srcCompat="@drawable/pawn_w" />
             </FrameLayout>
 
             <FrameLayout
@@ -188,7 +188,7 @@
                     android:id="@+id/C7"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_b" />
+                    app:srcCompat="@drawable/pawn_w" />
             </FrameLayout>
 
             <FrameLayout
@@ -202,7 +202,7 @@
                     android:id="@+id/D7"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_b" />
+                    app:srcCompat="@drawable/pawn_w" />
             </FrameLayout>
 
             <FrameLayout
@@ -216,7 +216,7 @@
                     android:id="@+id/E7"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_b" />
+                    app:srcCompat="@drawable/pawn_w" />
             </FrameLayout>
 
             <FrameLayout
@@ -230,7 +230,7 @@
                     android:id="@+id/F7"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_b" />
+                    app:srcCompat="@drawable/pawn_w" />
             </FrameLayout>
 
             <FrameLayout
@@ -244,7 +244,7 @@
                     android:id="@+id/G7"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_b" />
+                    app:srcCompat="@drawable/pawn_w" />
             </FrameLayout>
 
             <FrameLayout
@@ -258,7 +258,7 @@
                     android:id="@+id/H7"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_b" />
+                    app:srcCompat="@drawable/pawn_w" />
             </FrameLayout>
 
 
@@ -797,7 +797,7 @@
                     android:id="@+id/A2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_w" />
+                    app:srcCompat="@drawable/pawn_b" />
             </FrameLayout>
 
             <FrameLayout
@@ -811,7 +811,7 @@
                     android:id="@+id/B2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_w" />
+                    app:srcCompat="@drawable/pawn_b" />
             </FrameLayout>
 
             <FrameLayout
@@ -825,7 +825,7 @@
                     android:id="@+id/C2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_w" />
+                    app:srcCompat="@drawable/pawn_b" />
             </FrameLayout>
 
             <FrameLayout
@@ -837,9 +837,9 @@
 
                 <ImageView
                     android:id="@+id/D2"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_w" />
+                    app:srcCompat="@drawable/pawn_b" />
             </FrameLayout>
 
             <FrameLayout
@@ -853,7 +853,7 @@
                     android:id="@+id/E2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_w" />
+                    app:srcCompat="@drawable/pawn_b" />
             </FrameLayout>
 
             <FrameLayout
@@ -867,7 +867,7 @@
                     android:id="@+id/F2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_w" />
+                    app:srcCompat="@drawable/pawn_b" />
             </FrameLayout>
 
             <FrameLayout
@@ -881,7 +881,7 @@
                     android:id="@+id/G2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_w" />
+                    app:srcCompat="@drawable/pawn_b" />
             </FrameLayout>
 
             <FrameLayout
@@ -895,7 +895,7 @@
                     android:id="@+id/H2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pawn_w" />
+                    app:srcCompat="@drawable/pawn_b" />
             </FrameLayout>
 
 
@@ -918,7 +918,7 @@
                     android:id="@+id/A1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/rook_w" />
+                    app:srcCompat="@drawable/rook_b" />
             </FrameLayout>
 
             <FrameLayout
@@ -932,7 +932,7 @@
                     android:id="@+id/B1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/knight_w" />
+                    app:srcCompat="@drawable/knight_b" />
             </FrameLayout>
 
             <FrameLayout
@@ -946,7 +946,7 @@
                     android:id="@+id/C1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/bishop_w" />
+                    app:srcCompat="@drawable/bishop_b" />
             </FrameLayout>
 
             <FrameLayout
@@ -960,7 +960,7 @@
                     android:id="@+id/D1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/queen_w" />
+                    app:srcCompat="@drawable/king_b" />
             </FrameLayout>
 
             <FrameLayout
@@ -974,7 +974,7 @@
                     android:id="@+id/E1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/king_w" />
+                    app:srcCompat="@drawable/queen_b" />
             </FrameLayout>
 
             <FrameLayout
@@ -988,7 +988,7 @@
                     android:id="@+id/F1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/bishop_w" />
+                    app:srcCompat="@drawable/bishop_b" />
             </FrameLayout>
 
             <FrameLayout
@@ -1002,7 +1002,7 @@
                     android:id="@+id/G1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/knight_w" />
+                    app:srcCompat="@drawable/knight_b" />
             </FrameLayout>
 
             <FrameLayout
@@ -1016,7 +1016,7 @@
                     android:id="@+id/H1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/rook_w" />
+                    app:srcCompat="@drawable/rook_b" />
             </FrameLayout>
 
 
@@ -1025,33 +1025,7 @@
 
     </TableLayout>
 
-    <Button
-        android:id="@+id/draw_b"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginBottom="45dp"
-        android:text="draw"
-        app:backgroundTint="@color/brown"
-        app:layout_constraintBottom_toTopOf="@+id/board"
-        app:layout_constraintEnd_toStartOf="@+id/give_up_b"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/give_up_b"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginBottom="45dp"
-        android:text="GG"
-        app:backgroundTint="@color/brown"
-        app:layout_constraintBottom_toTopOf="@+id/board"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/draw_b"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/give_up_w"
@@ -1060,7 +1034,7 @@
         android:layout_marginTop="45dp"
         android:layout_marginBottom="80dp"
         android:text="GG"
-        app:backgroundTint="@color/beige"
+        app:backgroundTint="@color/brown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/draw_w"
         app:layout_constraintStart_toStartOf="parent"
@@ -1075,7 +1049,7 @@
         android:layout_marginTop="45dp"
         android:layout_marginBottom="80dp"
         android:text="draw"
-        app:backgroundTint="@color/beige"
+        app:backgroundTint="@color/brown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/give_up_w"
