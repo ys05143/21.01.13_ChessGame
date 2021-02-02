@@ -1459,12 +1459,14 @@ public class Ai_b_Activity extends AppCompatActivity {
             else if (number[i] == 2) value = value - 3;//나이트
             else if (number[i] == 3) value = value - 3;//비숍
             else if (number[i] == 4) value = value - 9;//퀸
-            else if (number[i] == 7 || number[i] == 6 || number[i] == 8) value = value - 1;//폰
+            else if (number[i] == 7 || number[i] == 6) value = value - 1;//폰
+            else if (number[i]==5) value=value-1000;
             else if (number[i] == 11) value = value + 5;
             else if (number[i] == 12) value = value + 3;
             else if (number[i] == 13) value = value + 3;
             else if (number[i] == 14) value = value + 9;
-            else if (number[i] == 17 || number[i] == 16 || number[i] == 18) value = value + 1;
+            else if (number[i] == 17 || number[i] == 16) value = value + 1;
+            else if (number[i]==15) value=value+1000;
         }
         return value;
     }
@@ -2152,7 +2154,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         else {
             for (int a = spot - 8; a >= spot - 8; a = a - 8) {
                 if (in_board(a)) {
-                    if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) {
+                    if (P_Node[a]==0) { //white가 아니면 -> 점이면 (직선으로는 말을 잡을 수 없음)
                         node[a] = node[spot];
                         node[spot] = 0;
                         // 한 칸 옮겼을때 상태 저장
@@ -2254,7 +2256,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             for (int a = spot - 8; a >= spot - 16; a = a - 8) {
                 if (in_board(a)) {
                     if (P_Node[a]==0) { //점일때
-                        node[a] = node[spot];
+                        node[a] = 16;
                         node[spot] = 0;
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
@@ -2274,7 +2276,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             {
                 if (spot % 8 >= 1){
                     // 위치 바꿔주기
-                    node[spot-9] = node[spot];
+                    node[spot-9] = 16;
                     node[spot] = 0;
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
@@ -2289,11 +2291,11 @@ public class Ai_b_Activity extends AppCompatActivity {
                 }
 
             }
-            if (in_board(spot - 7) && black(spot - 7)) //우 대각 위에 상대방 말이 있을 때
+            if (in_board(spot - 7) && (P_Node[spot-9] >= 1 && P_Node[spot-9] <= 7)) //우 대각 위에 상대방 말이 있을 때
             {
                 if (8 - spot % 8 - 1 >= 1){
                     // 위치 바꿔주기
-                    node[spot-7] = node[spot];
+                    node[spot-7] = 16;
                     node[spot] = 0;
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
@@ -2996,7 +2998,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         else {
             for (int a = spot + 8; a <= spot + 8; a = a + 8) {
                 if (in_board(a)) {
-                    if (!(P_Node[a] >= 1 && P_Node[a] <= 7)) {
+                    if (P_Node[a]==0) { //black 이 아니면 -> 점일때만 (직선으로는 잡을수 없음)
                         node[a] = node[spot];
                         node[spot] = 0;
                         // 한 칸 옮겼을때 상태 저장
@@ -3105,7 +3107,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             for (int a = spot + 8; a <= spot + 16; a = a + 8) {
                 if (in_board(a)) {
                     if (P_Node[a]==0) { //점일때
-                        node[a] = node[spot];
+                        node[a] = 6;
                         node[spot] = 0;
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
@@ -3125,7 +3127,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             {
                 if (8 - spot % 8 - 1 >= 1){
                     // 위치 바꿔주기
-                    node[spot+9] = node[spot];
+                    node[spot+9] = 6;
                     node[spot] = 0;
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
@@ -3144,7 +3146,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             {
                 if (spot % 8 >= 1){
                     // 위치 바꿔주기
-                    node[spot+7] = node[spot];
+                    node[spot+7] = 6;
                     node[spot] = 0;
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();

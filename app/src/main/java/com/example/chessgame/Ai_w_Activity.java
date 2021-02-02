@@ -1471,12 +1471,14 @@ public class Ai_w_Activity extends AppCompatActivity {
             else if (number[i] == 2) value = value - 3;//나이트
             else if (number[i] == 3) value = value - 3;//비숍
             else if (number[i] == 4) value = value - 9;//퀸
-            else if (number[i] == 7 || number[i] == 6 || number[i] == 8) value = value - 1;//폰
+            else if (number[i] == 7 || number[i] == 6 ) value = value - 1;//폰
+            else if (number[i]==5) value=value-1000;
             else if (number[i] == 11) value = value + 5;
             else if (number[i] == 12) value = value + 3;
             else if (number[i] == 13) value = value + 3;
             else if (number[i] == 14) value = value + 9;
-            else if (number[i] == 17 || number[i] == 16 || number[i] == 18) value = value + 1;
+            else if (number[i] == 17 || number[i] == 16 ) value = value + 1;
+            else if (number[i]==15) value=value+1000;
         }
         return value;
     }
@@ -2182,7 +2184,7 @@ public class Ai_w_Activity extends AppCompatActivity {
 
                 }
             }
-            if (in_board(spot + 9) && (P_Node[spot+9] >= 11 && P_Node[spot+9] <= 17)) //우 대각 아래에 상대방 말이 있을 때
+            if (in_board(spot + 9) && (P_Node[spot+9] >= 1 && P_Node[spot+9] <= 7)) //우 대각 아래에 상대방 말이 있을 때
             {
                 if (8 - spot % 8 - 1 >= 1){
                     // 위치 바꿔주기
@@ -2201,7 +2203,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 }
             }
 
-            if (in_board(spot + 7) && (P_Node[spot+7] >= 11 && P_Node[spot+7] <= 17)) //좌 대각 아래에 상대방 말이 있을 때
+            if (in_board(spot + 7) && (P_Node[spot+7] >= 1 && P_Node[spot+7] <= 7)) //좌 대각 아래에 상대방 말이 있을 때
             {
                 if (spot % 8 >= 1){
                     // 위치 바꿔주기
@@ -2282,7 +2284,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     if (P_Node[a] != 0) break;
                 }
             }
-            if (in_board(spot + 9) && (P_Node[spot+9] >= 11 && P_Node[spot+9] <= 17)) //우 대각 아래에 상대방 말이 있을 때
+            if (in_board(spot + 9) && (P_Node[spot+9] >= 1 && P_Node[spot+9] <= 7)) //우 대각 아래에 상대방 말이 있을 때
             {
                 if (8 - spot % 8 - 1 >= 1){
                     // 위치 바꿔주기
@@ -2300,7 +2302,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     node = P_Node.clone(); // 원상태로
                 }
             }
-            if (in_board(spot + 7) && (P_Node[spot+7] >= 11 && P_Node[spot+7] <= 17)) //좌 대각 아래에 상대방 말이 있을 때
+            if (in_board(spot + 7) && (P_Node[spot+7] >= 1 && P_Node[spot+7] <= 7)) //좌 대각 아래에 상대방 말이 있을 때
             {
                 if (spot % 8 >= 1){
                     // 위치 바꿔주기
@@ -3024,7 +3026,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     if (P_Node[a] != 0) break;
                 }
             }
-            if (in_board(spot - 9) && (P_Node[spot-9] >= 1 && P_Node[spot-9] <= 7)) //좌 대각 위에 상대방 말이 있을 때
+            if (in_board(spot - 9) && (P_Node[spot-9] >= 11 && P_Node[spot-9] <= 17)) //좌 대각 위에 상대방 말이 있을 때
             {
                 if (spot % 8 >= 1){
                     // 위치 바꿔주기
@@ -3042,7 +3044,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     node = P_Node.clone(); // 원상태로
                 }
             }
-            if (in_board(spot - 7) && (P_Node[spot-7] >= 1 && P_Node[spot-7] <= 7)) //우 대각 위에 상대방 말이 있을 때
+            if (in_board(spot - 7) && (P_Node[spot-7] >= 11 && P_Node[spot-7] <= 17)) //우 대각 위에 상대방 말이 있을 때
             {
                 if (8 - spot % 8 - 1 >= 1){
                     // 위치 바꿔주기
@@ -3124,7 +3126,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     if (P_Node[a] != 0) break;
                 }
             }
-            if (in_board(spot - 9) && (P_Node[spot-9] >= 1 && P_Node[spot-9] <= 7)) //좌 대각 위에 상대방 말이 있을 때
+            if (in_board(spot - 9) && (P_Node[spot-9] >= 11 && P_Node[spot-9] <= 17)) //좌 대각 위에 상대방 말이 있을 때
             {
                 if (spot % 8 >= 1){
                     // 위치 바꿔주기
@@ -3142,7 +3144,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     node = P_Node.clone(); // 원상태로
                 }
             }
-            if (in_board(spot - 7) && (P_Node[spot-7] >= 1 && P_Node[spot-7] <= 7)) //우 대각 위에 상대방 말이 있을 때
+            if (in_board(spot - 7) && (P_Node[spot-7] >= 11 && P_Node[spot-7] <= 7)) //우 대각 위에 상대방 말이 있을 때
             {
                 if (8 - spot % 8 - 1 >= 1){
                     // 위치 바꿔주기
