@@ -14,6 +14,7 @@ import android.widget.Toast;
 import org.w3c.dom.Node;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class Ai_w_Activity extends AppCompatActivity {
 
@@ -1323,7 +1324,8 @@ public class Ai_w_Activity extends AppCompatActivity {
                 block[i].setVisibility(View.INVISIBLE);
             }
         }
-        turn = true;
+        if(game_ended(number)==true) end_game(1);
+        else turn = true;
     }
 
     public int[] MinMax(int[] number) {
@@ -1489,7 +1491,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val = Evalstate_w(best_move);
         int[] temp_node;
-        if (depth == 0) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
         else {
             for (int a = spot + 8; a < 64; a = a + 8) {//하
                 if (in_board(a)) {
@@ -1582,7 +1584,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int []best_move=P_Node.clone();
         int best_val = Evalstate_w(best_move);
         int []temp_node ;
-        if (depth == 0) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
         int a;
         a=spot+(8*2)+1 ;//우 대각 아래(2) down-2 right-1
         if(in_board(a)&&8-spot%8-1>=1)  //끝쪽에 있을때 넘어가기 방지
@@ -1736,7 +1738,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val = Evalstate_w(best_move);
         int[] temp_node;
-        if (depth == 0) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
         else {
             for (int a = 0; a < 8 - ((spot % 8) + 1); a++) {//우 대각 아래
                 int t = spot + (9 * (a + 1));
@@ -1831,7 +1833,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val = Evalstate_w(best_move);
         int[] temp_node;
-        if (depth == 0) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
 
         for (int a = spot + 8; a < 64; a = a + 8) {//하
             if (in_board(a)) {
@@ -2007,7 +2009,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int []best_move=P_Node.clone();
         int best_val = Evalstate_w(best_move);
         int []temp_node ;
-        if (depth == 0) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
         int k = spot + 1; //우
         if (in_board(k) && 8 - spot % 8 - 1 >= 1) {
             if (!(P_Node[k] >= 11 && P_Node[k] <= 17)) {
@@ -2162,13 +2164,37 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val = Evalstate_w(best_move);
         int[] temp_node;
-        if (depth == 0) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
         else {
             for(int a = spot + 8; a <= spot + 8; a = a + 8) {
                 if (in_board(a)) {
                     if (P_Node[a]==0) {
-                        node[a] = node[spot];
-                        node[spot] = 0;
+                        if(a>=56&&a<=63){//change_pawn 상황일때
+                            if(in_board(a-(8*2)+1)&&8-a%8-1>=1&&P_Node[a-(8*2)+1]==5) {//u-2,r-1
+                                node[a] = 12;
+                                node[spot] = 0;
+                            }
+                            else if(in_board(a-(8*2)-1)&&spot%8>=1&&P_Node[a-(8*2)-1]==5) {//u-2,l-1
+                                node[a] = 12;
+                                node[spot] = 0;
+                            }
+                            else if(in_board(a-(8*1)+1)&&8-a%8-1>=1&&P_Node[a-(8*1)+2]==5) {//u-1,r-2
+                                node[a] = 12;
+                                node[spot] = 0;
+                            }
+                            else if(in_board(a-(8*1)-2)&&spot%8>=1&&P_Node[a-(8*1)-2]==5) {//u-1,l-2
+                                node[a] = 12;
+                                node[spot] = 0;
+                            }
+                            else{
+                                node[a] = 14;
+                                node[spot] = 0;
+                            }
+                        }
+                        else {
+                            node[a] = node[spot];
+                            node[spot] = 0;
+                        }
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
@@ -2187,9 +2213,34 @@ public class Ai_w_Activity extends AppCompatActivity {
             if (in_board(spot + 9) && (P_Node[spot+9] >= 1 && P_Node[spot+9] <= 7)) //우 대각 아래에 상대방 말이 있을 때
             {
                 if (8 - spot % 8 - 1 >= 1){
+                    int t=spot+9;
                     // 위치 바꿔주기
-                    node[spot+9] = node[spot];
-                    node[spot] = 0;
+                    if(t>=56&&t<=63){
+                        if(in_board(t-(8*2)+1)&&8-t%8-1>=1&&P_Node[t-(8*2)+1]==5) {//u-2,r-1에 킹이 있다면
+                            node[t] = 12;
+                            node[spot] = 0;
+                        }
+                        else if(in_board(t-(8*2)-1)&&spot%8>=1&&P_Node[t-(8*2)-1]==5) {//u-2,l-1
+                            node[t] = 12;
+                            node[spot] = 0;
+                        }
+                        else if(in_board(t-(8*1)+1)&&8-t%8-1>=1&&P_Node[t-(8*1)+2]==5) {//u-1,r-2
+                            node[t] = 12;
+                            node[spot] = 0;
+                        }
+                        else if(in_board(t-(8*1)-2)&&spot%8>=1&&P_Node[t-(8*1)-2]==5) {//u-1,l-2
+                            node[t] = 12;
+                            node[spot] = 0;
+                        }
+                        else{
+                            node[t] = 14;
+                            node[spot] = 0;
+                        }
+                    }
+                    else {
+                        node[spot+9] = node[spot];
+                        node[spot] = 0;
+                    }
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
@@ -2206,9 +2257,34 @@ public class Ai_w_Activity extends AppCompatActivity {
             if (in_board(spot + 7) && (P_Node[spot+7] >= 1 && P_Node[spot+7] <= 7)) //좌 대각 아래에 상대방 말이 있을 때
             {
                 if (spot % 8 >= 1){
+                    int t=spot+7;
                     // 위치 바꿔주기
-                    node[spot+7] = node[spot];
-                    node[spot] = 0;
+                    if(t>=56&&t<=63){
+                        if(in_board(t-(8*2)+1)&&8-t%8-1>=1&&P_Node[t-(8*2)+1]==5) {//u-2,r-1에 킹이 있다면
+                            node[t] = 12;
+                            node[spot] = 0;
+                        }
+                        else if(in_board(t-(8*2)-1)&&spot%8>=1&&P_Node[t-(8*2)-1]==5) {//u-2,l-1
+                            node[t] = 12;
+                            node[spot] = 0;
+                        }
+                        else if(in_board(t-(8*1)+1)&&8-t%8-1>=1&&P_Node[t-(8*1)+2]==5) {//u-1,r-2
+                            node[t] = 12;
+                            node[spot] = 0;
+                        }
+                        else if(in_board(t-(8*1)-2)&&spot%8>=1&&P_Node[t-(8*1)-2]==5) {//u-1,l-2
+                            node[t] = 12;
+                            node[spot] = 0;
+                        }
+                        else{
+                            node[t] = 14;
+                            node[spot] = 0;
+                        }
+                    }
+                    else {
+                        node[spot+7] = node[spot];
+                        node[spot] = 0;
+                    }
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
@@ -2263,7 +2339,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val = Evalstate_w(best_move);
         int[] temp_node;
-        if (depth == 0) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
         else {
             for (int a = spot + 8; a <= spot + 16; a = a + 8) {
                 if (in_board(a)) {
@@ -2331,7 +2407,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val = Evalstate_w(best_move);
         int[] temp_node;
-        if (depth == 0) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
         else {
             for (int a = spot + 8; a < 64; a = a + 8) {//하
                 if (in_board(a)) {
@@ -2425,7 +2501,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int []best_move=P_Node.clone();
         int best_val = Evalstate_w(best_move);
         int []temp_node ;
-        if (depth == 0) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
         int a;
         a=spot+(8*2)+1 ;//우 대각 아래(2) down-2 right-1
         if(in_board(a)&&8-spot%8-1>=1)  //끝쪽에 있을때 넘어가기 방지
@@ -2579,7 +2655,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val = Evalstate_w(best_move);
         int[] temp_node;
-        if (depth == 0) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
         else {
             for (int a = 0; a < 8 - ((spot % 8) + 1); a++) {//우 대각 아래
                 int t = spot + (9 * (a + 1));
@@ -2674,7 +2750,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val = Evalstate_w(best_move);
         int[] temp_node;
-        if (depth == 0) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
 
         for (int a = spot + 8; a < 64; a = a + 8) {//하
             if (in_board(a)) {
@@ -2850,7 +2926,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int []best_move=P_Node.clone();
         int best_val = Evalstate_w(best_move);
         int []temp_node ;
-        if (depth == 0) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
         int k = spot + 1; //우
         if (in_board(k) && 8 - spot % 8 - 1 >= 1) {
             if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
@@ -3005,13 +3081,37 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val = Evalstate_w(best_move);
         int[] temp_node;
-        if (depth == 0) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
         else {
             for (int a = spot - 8; a >= spot - 8; a = a - 8) {
                 if (in_board(a)) {
                     if (P_Node[a]==0) {
-                        node[a] = node[spot];
-                        node[spot] = 0;
+                        if(a>=0&&a<=7){//change_pawn 상황일때
+                            if(in_board(a+(8*2)+1)&&8-a%8-1>=1&&P_Node[a+(8*2)+1]==15){ //d-2,r-1에 킹이 있으면 knight로 바로 변경
+                                node[a]=2;
+                                node[spot]=0;
+                            }
+                            else if(in_board(a+(8*2)-1)&&a%8>=1&&P_Node[a+(8*2)-1]==15){ //d-2,1-1에 킹이 있으면 knight로 바로 변경
+                                node[a]=2;
+                                node[spot]=0;
+                            }
+                            else if(in_board(a+(8*1)+2)&&8-a%8-1>=2&&P_Node[a+(8*1)+2]==15){ //d-1,r-2에 킹이 있으면 knight로 바로 변경
+                                node[a]=2;
+                                node[spot]=0;
+                            }
+                            else if(in_board(a+(8*1)-2)&&a%8>=2&&P_Node[a+(8*1)-2]==15){ //d-1,l-2에 킹이 있으면 knight로 바로 변경
+                                node[a]=2;
+                                node[spot]=0;
+                            }
+                            else { //knight로 굳이 바꿀 상황이 아니면 그냥 퀸으로 변경
+                                node[a] = 4;
+                                node[spot] = 0;
+                            }
+                        }
+                        else { //change_pawn 상황이 아니면
+                            node[a] = node[spot];
+                            node[spot] = 0;
+                        }
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
@@ -3029,9 +3129,34 @@ public class Ai_w_Activity extends AppCompatActivity {
             if (in_board(spot - 9) && (P_Node[spot-9] >= 11 && P_Node[spot-9] <= 17)) //좌 대각 위에 상대방 말이 있을 때
             {
                 if (spot % 8 >= 1){
+                    int t=spot-9;
                     // 위치 바꿔주기
-                    node[spot-9] = node[spot];
-                    node[spot] = 0;
+                    if(t>=0&&t<=7){
+                        if(in_board(t+(8*2)+1)&&8-t%8-1>=1&&P_Node[t+(8*2)+1]==15){ //d-2,r-1에 킹이 있으면 knight로 바로 변경
+                            node[t]=2;
+                            node[spot]=0;
+                        }
+                        else if(in_board(t+(8*2)-1)&&t%8>=1&&P_Node[t+(8*2)-1]==15){ //d-2,1-1에 킹이 있으면 knight로 바로 변경
+                            node[t]=2;
+                            node[spot]=0;
+                        }
+                        else if(in_board(t+(8*1)+2)&&8-t%8-1>=2&&P_Node[t+(8*1)+2]==15){ //d-1,r-2에 킹이 있으면 knight로 바로 변경
+                            node[t]=2;
+                            node[spot]=0;
+                        }
+                        else if(in_board(t+(8*1)-2)&&t%8>=2&&P_Node[t+(8*1)-2]==15){ //d-1,l-2에 킹이 있으면 knight로 바로 변경
+                            node[t]=2;
+                            node[spot]=0;
+                        }
+                        else{
+                            node[t] = 4;
+                            node[spot] = 0;
+                        }
+                    }
+                    else {
+                        node[spot-9] = node[spot];
+                        node[spot] = 0;
+                    }
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
@@ -3047,9 +3172,34 @@ public class Ai_w_Activity extends AppCompatActivity {
             if (in_board(spot - 7) && (P_Node[spot-7] >= 11 && P_Node[spot-7] <= 17)) //우 대각 위에 상대방 말이 있을 때
             {
                 if (8 - spot % 8 - 1 >= 1){
+                    int t=spot-7;
                     // 위치 바꿔주기
-                    node[spot-7] = node[spot];
-                    node[spot] = 0;
+                    if(t>=0&&t<=7){
+                        if(in_board(t+(8*2)+1)&&8-t%8-1>=1&&P_Node[t+(8*2)+1]==15){ //d-2,r-1에 킹이 있으면 knight로 바로 변경
+                            node[t]=2;
+                            node[spot]=0;
+                        }
+                        else if(in_board(t+(8*2)-1)&&t%8>=1&&P_Node[t+(8*2)-1]==15){ //d-2,1-1에 킹이 있으면 knight로 바로 변경
+                            node[t]=2;
+                            node[spot]=0;
+                        }
+                        else if(in_board(t+(8*1)+2)&&8-t%8-1>=2&&P_Node[t+(8*1)+2]==15){ //d-1,r-2에 킹이 있으면 knight로 바로 변경
+                            node[t]=2;
+                            node[spot]=0;
+                        }
+                        else if(in_board(t+(8*1)-2)&&t%8>=2&&P_Node[t+(8*1)-2]==15){ //d-1,l-2에 킹이 있으면 knight로 바로 변경
+                            node[t]=2;
+                            node[spot]=0;
+                        }
+                        else{
+                            node[t] = 4;
+                            node[spot] = 0;
+                        }
+                    }
+                    else {
+                        node[spot-7] = node[spot];
+                        node[spot] = 0;
+                    }
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
@@ -3105,7 +3255,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val = Evalstate_w(best_move);
         int[] temp_node;
-        if (depth == 0) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
         else {
             for (int a = spot - 8; a >= spot - 16; a = a - 8) {
                 if (in_board(a)) {
@@ -3164,6 +3314,15 @@ public class Ai_w_Activity extends AppCompatActivity {
             }
             return best_move;
         }
+    }
+
+    public boolean game_ended(int[] P_Node){
+        int a=0;
+        for(int i=0;i<64;i++) {
+            if(P_Node[i]==5||P_Node[i]==15) a++;
+        }
+        if(a<2) return true;
+        else return false;
     }
 
 }
