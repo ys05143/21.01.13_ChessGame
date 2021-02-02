@@ -1297,7 +1297,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_b));
                 block[i].setVisibility(View.VISIBLE);
             }//킹
-            else if (number[i] == 7 || number[i] == 6 || number[i] == 8) {
+            else if (number[i] == 7 || number[i] == 6) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_b));
                 block[i].setVisibility(View.VISIBLE);
             }//폰
@@ -1316,7 +1316,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             } else if (number[i] == 15) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_w));
                 block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 17 || number[i] == 16 || number[i] == 18) {
+            } else if (number[i] == 17 || number[i] == 16) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_w));
                 block[i].setVisibility(View.VISIBLE);
             } else if (number[i] == 0) {
