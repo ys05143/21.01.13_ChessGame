@@ -2338,7 +2338,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             for (int a = spot - 8; a >= spot - 16; a = a - 8) {
                 if (in_board(a)) {
                     if (P_Node[a]==0) { //점일때
-                        node[a] = node[spot];
+                        node[a] = 16;
                         node[spot] = 0;
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
@@ -2358,7 +2358,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             {
                 if (spot % 8 >= 1){
                     // 위치 바꿔주기
-                    node[spot-9] = node[spot];
+                    node[spot-9] = 16;
                     node[spot] = 0;
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
@@ -2377,7 +2377,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             {
                 if (8 - spot % 8 - 1 >= 1){
                     // 위치 바꿔주기
-                    node[spot-7] = node[spot];
+                    node[spot-7] = 16;
                     node[spot] = 0;
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
@@ -3263,7 +3263,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             for (int a = spot + 8; a <= spot + 16; a = a + 8) {
                 if (in_board(a)) {
                     if (P_Node[a]==0) { //점일때
-                        node[a] = node[spot];
+                        node[a] = 6;
                         node[spot] = 0;
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
@@ -3283,7 +3283,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             {
                 if (8 - spot % 8 - 1 >= 1){
                     // 위치 바꿔주기
-                    node[spot+9] = node[spot];
+                    node[spot+9] = 6;
                     node[spot] = 0;
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
@@ -3302,7 +3302,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             {
                 if (spot % 8 >= 1){
                     // 위치 바꿔주기
-                    node[spot+7] = node[spot];
+                    node[spot+7] = 6;
                     node[spot] = 0;
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
