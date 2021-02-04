@@ -1335,30 +1335,30 @@ public class Ai_w_Activity extends AppCompatActivity {
 
     public int[] MaxMove(int[] node, int depth,int alpha,int beta) {
         int[] P_Node = node.clone(); //매개변수로 받은 배열 복사
-        int best_val = -10000;
-        int[] best_Node = P_Node.clone();
-        int[] Node = new int[64];
+        int best_val = Evalstate_w(P_Node);
+        int[] best_Node = node.clone();
+        int[] Node = node.clone();
         if (depth == 0) return best_Node;
         else {
             for (int i = 0; i < 64; i++) {
                 if (P_Node[i] == 11) {
-                    Node = rook_generatemove_max_w(P_Node, i, depth,best_val,beta).clone();
+                    Node = rook_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
                 } else if (P_Node[i] == 12) {
-                    Node = knight_generatemove_max_w(P_Node, i, depth,best_val,beta).clone();
+                    Node = knight_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
                 } else if (P_Node[i] == 13) {
-                    Node = bishop_generatemove_max_w(P_Node, i, depth,best_val,beta).clone();
+                    Node = bishop_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
                }
               else if (P_Node[i] == 14) {
-                    Node = queen_generatemove_max_w(P_Node, i, depth,best_val,beta).clone();
+                    Node = queen_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
                 }
                 else if (P_Node[i] == 15) {
-                    Node = king_generatemove_max_w(P_Node, i, depth,best_val,beta).clone();
+                    Node = king_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
                 }
                 else if (P_Node[i] == 16) {
-                    Node = pawn_generatemove_max_w(P_Node, i, depth,best_val,beta).clone();
+                    Node = pawn_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
                 }
                 else if (P_Node[i] == 17) {
-                    Node = f_pawn_generatemove_max_w(P_Node, i, depth,best_val,beta).clone();
+                    Node = f_pawn_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
                 }
                 if(Arrays.equals(Node,P_Node)) continue;
                 if (Evalstate_w(Node) >= best_val) {
@@ -1366,7 +1366,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(Node);
                     alpha = best_val ;
                 }
-                if ( beta <= alpha ) return best_Node;
+
             }
             return best_Node.clone();
         }
@@ -1374,30 +1374,30 @@ public class Ai_w_Activity extends AppCompatActivity {
 
     public int[] MinMove(int[] node, int depth,int alpha,int beta) {
         int[] P_Node = node.clone(); //매개변수로 받은 배열 복사
-        int best_val = 10000;
-        int[] best_Node = P_Node.clone();
-        int[] Node = new int[64];
+        int best_val = Evalstate_w(P_Node);
+        int[] best_Node = node.clone();
+        int[] Node = node.clone() ;
         if (depth == 0) return best_Node;
         else {
             for (int i = 0; i < 64; i++) {
                 if (P_Node[i] == 1) {
-                    Node = rook_generatemove_min_b(P_Node, i, depth,alpha,best_val).clone();
+                    Node = rook_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
                 } else if (P_Node[i] == 2) {
-                    Node = knight_generatemove_min_b(P_Node, i, depth,alpha,best_val).clone();
+                    Node = knight_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
                 } else if (P_Node[i] == 3) {
-                    Node = bishop_generatemove_min_b(P_Node, i, depth,alpha,best_val).clone();
+                    Node = bishop_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
                 }
                 else if (P_Node[i] == 4) {
-                    Node = queen_generatemove_min_b(P_Node, i, depth,alpha,best_val).clone();
+                    Node = queen_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
                 }
                 else if (P_Node[i] == 5) {
-                    Node = king_generatemove_min_b(P_Node, i, depth,alpha,best_val).clone();
+                    Node = king_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
                 }
                 else if (P_Node[i] == 6) {
-                    Node = pawn_generatemove_min_b(P_Node, i, depth,alpha,best_val).clone();
+                    Node = pawn_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
                 }
                 else if (P_Node[i] == 7) {
-                    Node = f_pawn_generatemove_min_b(P_Node, i, depth,alpha,best_val).clone();
+                    Node = f_pawn_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
                 }
                 if(Arrays.equals(Node,P_Node)) continue;
                 if (Evalstate_w(Node) <= best_val) {
@@ -1405,9 +1405,9 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(Node);
                     beta = best_val ;
                 }
-                if ( beta <= alpha ) return best_Node;
+
             }
-            return best_Node;
+            return best_Node.clone();
         }
     }
 
@@ -1436,7 +1436,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val =  Evalstate_w(P_Node);
         int[] temp_node;
-        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         else {
             for (int a = spot + 8; a < 64; a = a + 8) {//하
                 if (in_board(a)) {
@@ -1455,7 +1455,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             alpha = best_val ;
                         }
-                       if(beta <= alpha ) return best_move ;
+                       if(beta <= alpha ) return best_move.clone() ;
 
                         node = P_Node.clone(); // 원상태로
                     }
@@ -1478,7 +1478,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             alpha = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -1501,7 +1501,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             alpha = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -1525,13 +1525,13 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             alpha = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
                 }
             }
-            return best_move;
+            return best_move.clone();
         }
     }
     public int[] knight_generatemove_max_w(int []P_Node,int spot,int depth,int alpha,int beta) {
@@ -1540,7 +1540,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int []best_move=P_Node.clone();
         int best_val =  Evalstate_w(P_Node);
         int []temp_node ;
-        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         int a;
         a=spot+(8*2)+1 ;//우 대각 아래(2) down-2 right-1
         if(in_board(a)&&8-spot%8-1>=1)  //끝쪽에 있을때 넘어가기 방지
@@ -1559,7 +1559,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 best_val = Evalstate_w(move);
                 alpha = best_val ;
             }
-            if(beta <= alpha ) return best_move ;
+            if(beta <= alpha ) return best_move.clone() ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1580,7 +1580,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 best_val = Evalstate_w(move);
                 alpha = best_val ;
             }
-            if(beta <= alpha ) return best_move ;
+            if(beta <= alpha ) return best_move.clone() ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1600,7 +1600,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 best_val = Evalstate_w(move);
                 alpha = best_val ;
             }
-            if(beta <= alpha ) return best_move ;
+            if(beta <= alpha ) return best_move.clone() ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1620,7 +1620,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 best_val = Evalstate_w(move);
                 alpha = best_val ;
             }
-            if(beta <= alpha ) return best_move ;
+            if(beta <= alpha ) return best_move.clone() ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1640,7 +1640,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 best_val = Evalstate_w(move);
                 alpha = best_val ;
             }
-            if(beta <= alpha ) return best_move ;
+            if(beta <= alpha ) return best_move.clone() ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1661,7 +1661,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 best_val = Evalstate_w(move);
                 alpha = best_val ;
             }
-            if(beta <= alpha ) return best_move ;
+            if(beta <= alpha ) return best_move.clone() ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1682,7 +1682,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 best_val = Evalstate_w(move);
                 alpha = best_val ;
             }
-            if(beta <= alpha ) return best_move ;
+            if(beta <= alpha ) return best_move.clone() ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1703,11 +1703,11 @@ public class Ai_w_Activity extends AppCompatActivity {
                 best_val = Evalstate_w(move);
                 alpha = best_val ;
             }
-            if(beta <= alpha ) return best_move ;
+            if(beta <= alpha ) return best_move.clone() ;
             node= P_Node.clone(); // 원상태로
         }
         }
-        return best_move ;
+        return best_move.clone() ;
     }
     public int[] bishop_generatemove_max_w(int[] P_Node, int spot, int depth,int alpha,int beta) {
         int[] move;
@@ -1715,7 +1715,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val = Evalstate_w(P_Node);
         int[] temp_node;
-        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         else {
             for (int a = 0; a < 8 - ((spot % 8) + 1); a++) {//우 대각 아래
                 int t = spot + (9 * (a + 1));
@@ -1735,7 +1735,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             alpha = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -1759,7 +1759,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             alpha = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -1783,7 +1783,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             alpha = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -1807,13 +1807,13 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             alpha = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
                 }
             }
-            return best_move;
+            return best_move.clone();
         }
     }
     public int[] queen_generatemove_max_w(int []P_Node,int spot,int depth,int alpha,int beta) {
@@ -1822,7 +1822,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val =  Evalstate_w(P_Node);
         int[] temp_node;
-        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
 
         for (int a = spot + 8; a < 64; a = a + 8) {//하
             if (in_board(a)) {
@@ -1839,7 +1839,9 @@ public class Ai_w_Activity extends AppCompatActivity {
                     if (Evalstate_w(move) >= best_val) {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
+                        alpha = best_val ;
                     }
+                    if(beta <= alpha ) return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[a] != 0) break;
@@ -1855,15 +1857,14 @@ public class Ai_w_Activity extends AppCompatActivity {
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
                     move = MinMove(node, depth - 1,alpha,beta).clone();
-                    // (임시)
-                    if( Evalstate_w(move) < alpha ) return best_move ;
+
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
                     if (Evalstate_w(move) >= best_val) {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                         alpha = best_val ;
-                    }
-                    if(beta <= alpha ) return best_move ;
+                }
+                 if(beta <= alpha ) return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[a] != 0) break;
@@ -1887,7 +1888,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         alpha = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -1911,7 +1912,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         alpha = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -1935,7 +1936,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         alpha = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -1959,7 +1960,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         alpha = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -1983,7 +1984,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         alpha = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2007,7 +2008,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         alpha = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2021,7 +2022,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int []best_move=P_Node.clone();
         int best_val =  Evalstate_w(P_Node);
         int []temp_node ;
-        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();;
         int k = spot + 1; //우
         if (in_board(k) && 8 - spot % 8 - 1 >= 1) {
             if (!(P_Node[k] >= 11 && P_Node[k] <= 17)) {
@@ -2039,7 +2040,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     alpha = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2060,7 +2061,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     alpha = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2081,7 +2082,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     alpha = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2103,7 +2104,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     alpha = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2125,7 +2126,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     alpha = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone() ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2146,7 +2147,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     alpha = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone() ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2167,7 +2168,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     alpha = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone() ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2188,11 +2189,11 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     alpha = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone() ;
                 node = P_Node.clone(); // 원상태로
             }
         }
-        return best_move ;
+        return best_move.clone() ;
     }
     public int[] pawn_generatemove_max_w(int []P_Node, int spot, int depth,int alpha,int beta){
         int[] move;
@@ -2200,7 +2201,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val =  Evalstate_w(P_Node);
         int[] temp_node;
-        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         else {
             for(int a = spot + 8; a <= spot + 8; a = a + 8) {
                 if (in_board(a)) {
@@ -2242,7 +2243,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             alpha = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2291,7 +2292,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         alpha = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone() ;
                     node = P_Node.clone(); // 원상태로
                 }
             }
@@ -2338,7 +2339,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         alpha = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone() ;
                     node = P_Node.clone(); // 원상태로
                 }
             }
@@ -2359,7 +2360,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     alpha = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone() ;
                 node = P_Node.clone(); // 원상태로
             }
             if (8 - spot % 8 - 1 >= 1 && enpassant[spot - 1] == 1 && P_Node[spot + 7] == 0){
@@ -2378,7 +2379,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     alpha = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone() ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2408,7 +2409,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             alpha = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2431,7 +2432,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         alpha = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone() ;
                     node = P_Node.clone(); // 원상태로
                 }
             }
@@ -2452,11 +2453,11 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         alpha = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone() ;
                     node = P_Node.clone(); // 원상태로
                 }
             }
-            return best_move;
+            return best_move.clone();
         }
     }
 
@@ -2467,7 +2468,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val = Evalstate_w(P_Node);
         int[] temp_node;
-        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         else {
             for (int a = spot + 8; a < 64; a = a + 8) {//하
                 if (in_board(a)) {
@@ -2486,7 +2487,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             beta = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2510,7 +2511,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             beta = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2534,7 +2535,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             beta = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2558,13 +2559,13 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             beta = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
                 }
             }
-            return best_move;
+            return best_move.clone();
         }
     }
     public int[] knight_generatemove_min_b(int []P_Node,int spot,int depth,int alpha,int beta) {
@@ -2573,7 +2574,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int []best_move=P_Node.clone();
         int best_val =  Evalstate_w(P_Node);
         int []temp_node ;
-        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         int a;
         a=spot+(8*2)+1 ;//우 대각 아래(2) down-2 right-1
         if(in_board(a)&&8-spot%8-1>=1)  //끝쪽에 있을때 넘어가기 방지
@@ -2592,7 +2593,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 best_val = Evalstate_w(move);
                 beta = best_val ;
             }
-            if(beta <= alpha ) return best_move ;
+            if(beta <= alpha ) return best_move.clone() ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2613,7 +2614,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 best_val = Evalstate_w(move);
                 beta = best_val ;
             }
-            if(beta <= alpha ) return best_move ;
+            if(beta <= alpha ) return best_move.clone() ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2634,7 +2635,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 best_val = Evalstate_w(move);
                 beta = best_val ;
             }
-            if(beta <= alpha ) return best_move ;
+            if(beta <= alpha ) return best_move.clone() ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2655,7 +2656,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 best_val = Evalstate_w(move);
                 beta = best_val ;
             }
-            if(beta <= alpha ) return best_move ;
+            if(beta <= alpha ) return best_move.clone() ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2676,7 +2677,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 best_val = Evalstate_w(move);
                 beta = best_val ;
             }
-            if(beta <= alpha ) return best_move ;
+            if(beta <= alpha ) return best_move.clone() ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2697,7 +2698,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 best_val = Evalstate_w(move);
                 beta = best_val ;
             }
-            if(beta <= alpha ) return best_move ;
+            if(beta <= alpha ) return best_move.clone() ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2718,7 +2719,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 best_val = Evalstate_w(move);
                 beta = best_val ;
             }
-            if(beta <= alpha ) return best_move ;
+            if(beta <= alpha ) return best_move.clone() ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2739,7 +2740,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 best_val = Evalstate_w(move);
                 beta = best_val ;
             }
-            if(beta <= alpha ) return best_move ;
+            if(beta <= alpha ) return best_move.clone() ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2751,7 +2752,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val =  Evalstate_w(P_Node);
         int[] temp_node;
-        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         else {
             for (int a = 0; a < 8 - ((spot % 8) + 1); a++) {//우 대각 아래
                 int t = spot + (9 * (a + 1));
@@ -2771,7 +2772,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             beta = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -2795,7 +2796,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             beta = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -2819,7 +2820,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             beta = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -2843,13 +2844,13 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             beta = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
                 }
             }
-            return best_move;
+            return best_move.clone();
         }
     }
     public int[] queen_generatemove_min_b(int []P_Node,int spot,int depth,int alpha,int beta) {
@@ -2858,7 +2859,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val = beta;
         int[] temp_node;
-        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
 
         for (int a = spot + 8; a < 64; a = a + 8) {//하
             if (in_board(a)) {
@@ -2877,7 +2878,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         beta = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone() ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[a] != 0) break;
@@ -2900,7 +2901,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         beta = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone() ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[a] != 0) break;
@@ -2924,7 +2925,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         beta = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone() ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2948,7 +2949,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         beta = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone() ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2972,7 +2973,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         beta = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone() ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2996,7 +2997,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         beta = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone() ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -3020,7 +3021,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         beta = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone() ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -3044,13 +3045,13 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         beta = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone() ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
             }
         }
-        return best_move ;
+        return best_move.clone() ;
     }
     public int[] king_generatemove_min_b(int []P_Node,int spot,int depth,int alpha,int beta) {
         int []move;
@@ -3058,7 +3059,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int []best_move=P_Node.clone();
         int best_val = beta ;
         int []temp_node ;
-        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         int k = spot + 1; //우
         if (in_board(k) && 8 - spot % 8 - 1 >= 1) {
             if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
@@ -3076,7 +3077,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     beta = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone() ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3097,7 +3098,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     beta = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone() ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3118,7 +3119,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     beta = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone() ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3140,7 +3141,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     beta = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone() ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3162,7 +3163,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     beta = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone() ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3183,7 +3184,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     beta = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone() ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3204,7 +3205,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     beta = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone() ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3225,7 +3226,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     beta = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone() ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3237,7 +3238,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val =  Evalstate_w(P_Node);
         int[] temp_node;
-        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         else {
             for (int a = spot - 8; a >= spot - 8; a = a - 8) {
                 if (in_board(a)) {
@@ -3279,7 +3280,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             beta = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -3327,7 +3328,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         beta = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone() ;
                     node = P_Node.clone(); // 원상태로
                 }
             }
@@ -3373,7 +3374,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         beta = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone() ;
                     node = P_Node.clone(); // 원상태로
                 }
             }
@@ -3394,7 +3395,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     beta = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone() ;
                 node = P_Node.clone(); // 원상태로
             }
             if (8 - spot % 8 - 1 >= 1 && enpassant[spot + 1] == 1 && P_Node[spot - 7] == 0){
@@ -3413,12 +3414,12 @@ public class Ai_w_Activity extends AppCompatActivity {
                     best_val = Evalstate_w(move);
                     beta = best_val ;
                 }
-                if(beta <= alpha ) return best_move ;
+                if(beta <= alpha ) return best_move.clone() ;
                 node = P_Node.clone(); // 원상태로
             }
 
         }
-        return best_move;
+        return best_move.clone();
     }
     public int[] f_pawn_generatemove_min_b(int []P_Node, int spot, int depth,int alpha,int beta){
         int[] move;
@@ -3426,7 +3427,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         int[] best_move = P_Node.clone();
         int best_val =  Evalstate_w(P_Node);
         int[] temp_node;
-        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         else {
             for (int a = spot - 8; a >= spot - 16; a = a - 8) {
                 if (in_board(a)) {
@@ -3444,7 +3445,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                             best_val = Evalstate_w(move);
                             beta = best_val ;
                         }
-                        if(beta <= alpha ) return best_move ;
+                        if(beta <= alpha ) return best_move.clone() ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -3467,7 +3468,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         beta = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone() ;
                     node = P_Node.clone(); // 원상태로
                 }
             }
@@ -3488,7 +3489,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         best_val = Evalstate_w(move);
                         beta = best_val ;
                     }
-                    if(beta <= alpha ) return best_move ;
+                    if(beta <= alpha ) return best_move.clone() ;
                     node = P_Node.clone(); // 원상태로
                 }
             }
