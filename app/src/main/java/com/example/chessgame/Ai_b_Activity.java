@@ -1263,6 +1263,7 @@ public class Ai_b_Activity extends AppCompatActivity {
 
      public void AI() {
         number = MinMax(number).clone();//ai가 minmax 알고리즘으로 찾은 배열을 number로 지정
+         int a=0; int b=0;
         for (int i = 0; i < 64; i++) { //알고리즘으로 나온 결과로 판을 바꾸는 것
             if (number[i] == 1) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_b));
@@ -1283,6 +1284,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             else if (number[i] == 5) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_b));
                 block[i].setVisibility(View.VISIBLE);
+                a++;
             }//킹
             else if (number[i] == 7 || number[i] == 6 ) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_b));
@@ -1291,96 +1293,80 @@ public class Ai_b_Activity extends AppCompatActivity {
             else if (number[i] == 11) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_w));
                 block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 12) {
+            }
+            else if (number[i] == 12) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_w));
                 block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 13) {
+            }
+            else if (number[i] == 13) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.bishop_w));
                 block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 14) {
+            }
+            else if (number[i] == 14) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.queen_w));
                 block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 15) {
+            }
+            else if (number[i] == 15) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_w));
                 block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 17 || number[i] == 16 ) {
+                b++;
+            }
+            else if (number[i] == 17 || number[i] == 16 ) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_w));
                 block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 0) {
+            }
+            else if (number[i] == 0) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.dot));
                 block[i].setVisibility(View.INVISIBLE);
             }
         }
-        if(game_ended(number)==true) end_game(2);
-        else turn = false;
+
+        if (a!=1&&b==1) end_game(1);
+        else if (a==1&&b!=1) end_game(2);
+        turn = false;
     }
 
     public int[] MinMax(int[] number) {
-        return MinMove(number, 3);
+        return MinMove(number, 5);
     }
+    int alpha=-10000; int beta=10000;
 
     public int[] MaxMove(int[] node, int depth) {
         int[] P_Node = node.clone(); //매개변수로 받은 배열 복사
         int best_val = Evalstate_w(P_Node);
-        int[] best_Node = P_Node.clone();
-        int[] Node;
-        if (depth == 0) return best_Node;
+        int[] best_Node = node.clone();
+        int[] Node = node.clone();
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_Node.clone();
         else {
             for (int i = 0; i < 64; i++) {
                 if (P_Node[i] == 11) {
                     Node = rook_generatemove_max_w(P_Node, i, depth).clone();
-                    if(Arrays.equals(Node,P_Node)) continue;
-                    if (Evalstate_w(Node) >= best_val) {
-                        best_Node = Node.clone();
-                        best_val = Evalstate_w(Node);
-                    }
                 } else if (P_Node[i] == 12) {
                     Node = knight_generatemove_max_w(P_Node, i, depth).clone();
-                    if(Arrays.equals(Node,P_Node)) continue;
-                    if (Evalstate_w(Node) >= best_val) {
-                        best_Node = Node.clone();
-                        best_val = Evalstate_w(Node);
-                    }
                 } else if (P_Node[i] == 13) {
                     Node = bishop_generatemove_max_w(P_Node, i, depth).clone();
-                    if(Arrays.equals(Node,P_Node)) continue;
-                    if (Evalstate_w(Node) >= best_val) {
-                        best_Node = Node.clone();
-                        best_val = Evalstate_w(Node);
-                    }
-               }
-              else if (P_Node[i] == 14) {
+                }
+                else if (P_Node[i] == 14) {
                     Node = queen_generatemove_max_w(P_Node, i, depth).clone();
-                    if(Arrays.equals(Node,P_Node)) continue;
-                    if (Evalstate_w(Node) >= best_val) {
-                        best_Node = Node.clone();
-                        best_val = Evalstate_w(Node);
-                    }
                 }
                 else if (P_Node[i] == 15) {
                     Node = king_generatemove_max_w(P_Node, i, depth).clone();
-                    if(Arrays.equals(Node,P_Node)) continue;
-                    if (Evalstate_w(Node) >= best_val) {
-                        best_Node = Node.clone();
-                        best_val = Evalstate_w(Node);
-                    }
                 }
                 else if (P_Node[i] == 16) {
                     Node = pawn_generatemove_max_w(P_Node, i, depth).clone();
-                    if(Arrays.equals(Node,P_Node)) continue;
-                    if (Evalstate_w(Node) >= best_val) {
-                        best_Node = Node.clone();
-                        best_val = Evalstate_w(Node);
-                    }
                 }
                 else if (P_Node[i] == 17) {
                     Node = f_pawn_generatemove_max_w(P_Node, i, depth).clone();
-                    if(Arrays.equals(Node,P_Node)) continue;
-                    if (Evalstate_w(Node) >= best_val) {
-                        best_Node = Node.clone();
-                        best_val = Evalstate_w(Node);
-                    }
                 }
+                if(Arrays.equals(Node,P_Node)) continue;
+
+                if (Evalstate_w(Node) >= best_val) {
+                    best_Node = Node.clone();
+                    best_val = Evalstate_w(Node);
+
+                }
+
+
             }
             return best_Node.clone();
         }
@@ -1389,67 +1375,38 @@ public class Ai_b_Activity extends AppCompatActivity {
     public int[] MinMove(int[] node, int depth) {
         int[] P_Node = node.clone(); //매개변수로 받은 배열 복사
         int best_val = Evalstate_w(P_Node);
-        int[] best_Node = P_Node.clone();
-        int[] Node;
-        if (depth == 0) return best_Node;
+        int[] best_Node = node.clone();
+        int[] Node = node.clone() ;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return best_Node.clone();
         else {
             for (int i = 0; i < 64; i++) {
                 if (P_Node[i] == 1) {
                     Node = rook_generatemove_min_b(P_Node, i, depth).clone();
-                    if(Arrays.equals(Node,P_Node)) continue;
-                    if (Evalstate_w(Node) <= best_val) {
-                        best_Node = Node.clone();
-                        best_val = Evalstate_w(Node);
-                    }
                 } else if (P_Node[i] == 2) {
                     Node = knight_generatemove_min_b(P_Node, i, depth).clone();
-                    if(Arrays.equals(Node,P_Node)) continue;
-                    if (Evalstate_w(Node) <= best_val) {
-                        best_Node = Node.clone();
-                        best_val = Evalstate_w(Node);
-                    }
                 } else if (P_Node[i] == 3) {
                     Node = bishop_generatemove_min_b(P_Node, i, depth).clone();
-                    if(Arrays.equals(Node,P_Node)) continue;
-                    if (Evalstate_w(Node) <= best_val) {
-                        best_Node = Node.clone();
-                        best_val = Evalstate_w(Node);
-                    }
                 }
                 else if (P_Node[i] == 4) {
                     Node = queen_generatemove_min_b(P_Node, i, depth).clone();
-                    if(Arrays.equals(Node,P_Node)) continue;
-                    if (Evalstate_w(Node) <= best_val) {
-                        best_Node = Node.clone();
-                        best_val = Evalstate_w(Node);
-                    }
                 }
                 else if (P_Node[i] == 5) {
                     Node = king_generatemove_min_b(P_Node, i, depth).clone();
-                    if(Arrays.equals(Node,P_Node)) continue;
-                    if (Evalstate_w(Node) <= best_val) {
-                        best_Node = Node.clone();
-                        best_val = Evalstate_w(Node);
-                    }
                 }
                 else if (P_Node[i] == 6) {
                     Node = pawn_generatemove_min_b(P_Node, i, depth).clone();
-                    if(Arrays.equals(Node,P_Node)) continue;
-                    if (Evalstate_w(Node) <= best_val) {
-                        best_Node = Node.clone();
-                        best_val = Evalstate_w(Node);
-                    }
                 }
                 else if (P_Node[i] == 7) {
                     Node = f_pawn_generatemove_min_b(P_Node, i, depth).clone();
-                    if(Arrays.equals(Node,P_Node)) continue;
-                    if (Evalstate_w(Node) >= best_val) {
-                        best_Node = Node.clone();
-                        best_val = Evalstate_w(Node);
-                    }
                 }
+                if(Arrays.equals(Node,P_Node)) continue;
+                if (Evalstate_w(Node) <= best_val) {
+                    best_Node = Node.clone();
+                    best_val = Evalstate_w(Node);
+                }
+
             }
-            return best_Node;
+            return best_Node.clone();
         }
     }
 
@@ -1499,6 +1456,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val>alpha) alpha=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -1519,6 +1478,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val>alpha) alpha=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -1540,6 +1501,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val>alpha) alpha=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -1561,6 +1524,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val>alpha) alpha=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -1592,6 +1557,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                 best_val = Evalstate_w(move);
             }
+            if(best_val>alpha) alpha=best_val;
+            else return best_move.clone();
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1610,6 +1577,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                 best_val = Evalstate_w(move);
             }
+            if(best_val>alpha) alpha=best_val;
+            else return best_move.clone();
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1628,6 +1597,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                 best_val = Evalstate_w(move);
             }
+            if(best_val>alpha) alpha=best_val;
+            else return best_move.clone();
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1646,6 +1617,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                 best_val = Evalstate_w(move);
             }
+            if(best_val>alpha) alpha=best_val;
+            else return best_move.clone();
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1664,6 +1637,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                 best_val = Evalstate_w(move);
             }
+            if(best_val>alpha) alpha=best_val;
+            else return best_move.clone();
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1682,6 +1657,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                 best_val = Evalstate_w(move);
             }
+            if(best_val>alpha) alpha=best_val;
+            else return best_move.clone();
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1700,6 +1677,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                 best_val = Evalstate_w(move);
             }
+            if(best_val>alpha) alpha=best_val;
+            else return best_move.clone();
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1718,6 +1697,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                 best_val = Evalstate_w(move);
             }
+            if(best_val>alpha) alpha=best_val;
+            else return best_move.clone();
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1747,6 +1728,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val>alpha) alpha=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -1768,6 +1751,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val>alpha) alpha=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -1789,6 +1774,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val>alpha) alpha=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -1810,6 +1797,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val>alpha) alpha=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -1841,6 +1830,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val>alpha) alpha=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[a] != 0) break;
@@ -1861,6 +1852,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val>alpha) alpha=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[a] != 0) break;
@@ -1882,6 +1875,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val>alpha) alpha=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -1903,6 +1898,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val>alpha) alpha=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -1924,6 +1921,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val>alpha) alpha=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -1945,6 +1944,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val>alpha) alpha=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -1966,6 +1967,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val>alpha) alpha=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -1987,6 +1990,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val>alpha) alpha=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2016,6 +2021,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val>alpha) alpha=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2034,6 +2041,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val>alpha) alpha=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2052,6 +2061,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val>alpha) alpha=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2071,6 +2082,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val>alpha) alpha=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2090,6 +2103,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val>alpha) alpha=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2108,6 +2123,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val>alpha) alpha=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2126,6 +2143,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val>alpha) alpha=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2144,6 +2163,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val>alpha) alpha=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2195,6 +2216,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val>alpha) alpha=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2240,6 +2263,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val>alpha) alpha=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
             }
@@ -2284,6 +2309,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val>alpha) alpha=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
 
@@ -2303,6 +2330,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val>alpha) alpha=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
             if (8 - spot % 8 - 1 >= 1 && enpassant[spot + 1] == 1 && P_Node[spot - 7] == 0) {
@@ -2319,6 +2348,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val>alpha) alpha=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2346,6 +2377,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val>alpha) alpha=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2366,6 +2399,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val>alpha) alpha=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
 
@@ -2385,6 +2420,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val>alpha) alpha=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
             }
@@ -2416,6 +2453,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val<beta) beta=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2437,6 +2476,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val<beta) beta=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2458,6 +2499,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val<beta) beta=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2479,6 +2522,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val<beta) beta=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2510,6 +2555,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                 best_val = Evalstate_w(move);
             }
+            if(best_val<beta) beta=best_val;
+            else return best_move.clone();
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2528,6 +2575,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                 best_val = Evalstate_w(move);
             }
+            if(best_val<beta) beta=best_val;
+            else return best_move.clone();
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2546,6 +2595,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                 best_val = Evalstate_w(move);
             }
+            if(best_val<beta) beta=best_val;
+            else return best_move.clone();
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2564,6 +2615,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                 best_val = Evalstate_w(move);
             }
+            if(best_val<beta) beta=best_val;
+            else return best_move.clone();
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2582,6 +2635,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                 best_val = Evalstate_w(move);
             }
+            if(best_val<beta) beta=best_val;
+            else return best_move.clone();
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2600,6 +2655,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                 best_val = Evalstate_w(move);
             }
+            if(best_val<beta) beta=best_val;
+            else return best_move.clone();
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2618,6 +2675,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                 best_val = Evalstate_w(move);
             }
+            if(best_val<beta) beta=best_val;
+            else return best_move.clone();
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2636,6 +2695,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                 best_val = Evalstate_w(move);
             }
+            if(best_val<beta) beta=best_val;
+            else return best_move.clone();
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2665,6 +2726,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val<beta) beta=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -2686,6 +2749,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val<beta) beta=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -2707,6 +2772,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val<beta) beta=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -2728,6 +2795,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val<beta) beta=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -2759,6 +2828,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val<beta) beta=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[a] != 0) break;
@@ -2779,6 +2850,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val<beta) beta=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[a] != 0) break;
@@ -2800,6 +2873,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val<beta) beta=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2821,6 +2896,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val<beta) beta=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2842,6 +2919,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val<beta) beta=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2863,6 +2942,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val<beta) beta=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2884,6 +2965,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val<beta) beta=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2905,6 +2988,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val<beta) beta=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2934,6 +3019,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val<beta) beta=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2952,6 +3039,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val<beta) beta=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2970,6 +3059,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val<beta) beta=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2989,6 +3080,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val<beta) beta=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3008,6 +3101,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val<beta) beta=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3026,6 +3121,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val<beta) beta=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3044,6 +3141,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val<beta) beta=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3062,6 +3161,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val<beta) beta=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3113,6 +3214,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val<beta) beta=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -3158,6 +3261,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val<beta) beta=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
 
                 }
@@ -3203,6 +3308,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val<beta) beta=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
 
                 }
@@ -3224,6 +3331,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val<beta) beta=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
 
             }
@@ -3242,6 +3351,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                     best_val = Evalstate_w(move);
                 }
+                if(best_val<beta) beta=best_val;
+                else return best_move.clone();
                 node = P_Node.clone(); // 원상태로
 
             }
@@ -3271,6 +3382,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                             best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                             best_val = Evalstate_w(move);
                         }
+                        if(best_val<beta) beta=best_val;
+                        else return best_move.clone();
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -3291,6 +3404,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val<beta) beta=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
 
@@ -3310,6 +3425,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
                         best_val = Evalstate_w(move);
                     }
+                    if(best_val<beta) beta=best_val;
+                    else return best_move.clone();
                     node = P_Node.clone(); // 원상태로
                 }
             }
@@ -3320,8 +3437,8 @@ public class Ai_b_Activity extends AppCompatActivity {
 
     public boolean game_ended(int[] P_Node){
         int a=0;
-        for(int i=0;i<64;i++) {
-            if(P_Node[i]==5||P_Node[i]==15) a++;
+        for(int i=0;i<64;i++){
+            if(P_Node[i]==5||P_Node[i]==15) a++;//king이 둘다있으면 a는 2가 된다.
         }
         if(a<2) return true;
         else return false;
