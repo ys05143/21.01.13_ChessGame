@@ -3483,7 +3483,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     node = P_Node.clone(); // 원상태로
                 }
             }
-            if (in_board(spot - 7) && (P_Node[spot-7] >= 11 && P_Node[spot-7] <= 7)) //우 대각 위에 상대방 말이 있을 때
+            if (in_board(spot - 7) && (P_Node[spot-7] >= 11 && P_Node[spot-7] <= 17)) //우 대각 위에 상대방 말이 있을 때
             {
                 if (8 - spot % 8 - 1 >= 1){
                     // 위치 바꿔주기
