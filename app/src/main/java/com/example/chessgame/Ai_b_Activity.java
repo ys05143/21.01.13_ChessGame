@@ -1328,68 +1328,124 @@ public class Ai_b_Activity extends AppCompatActivity {
     }
 
 
-    NODE[] n=new NODE[64]; int temp_num=0;
+    int temp_num=0;
     public int[] MinMax(int[] number) {
-        return MaxMove(number.clone());
+        NODE[] n=new NODE[64];
+        int [] ans=MinMove(number.clone(),n);
+        for(int i=0;i<64;i++){
+            n[i]=null;
+        }
+        temp_num=0;
+        return ans.clone();
     }
 
-    public int[] MaxMove(int[] Node) {
+    public int[] MaxMove(int[] Node,NODE [] n) {
         int[] P_Node=Node.clone();
         int []result = new int[2];
         int best_val = -10000;
         int temp=0;
         for (int i = 0; i < 64; i++) {
             if (P_Node[i] == 17) {
-                result = f_pawn_generatemove_max_w(P_Node, i);
+                result = f_pawn_generatemove_max_w(Node.clone(), i, n);
+                if(best_val<=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
             } else if (P_Node[i] == 16) {
-                result = pawn_generatemove_max_w(P_Node, i);
+                result = pawn_generatemove_max_w(Node.clone(), i, n);
+                if(best_val<=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
             } else if (P_Node[i] == 11) {
-                result = rook_generatemove_max_w(P_Node, i);
+                result = rook_generatemove_max_w(Node.clone(), i, n);
+                if(best_val<=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
             } else if (P_Node[i] == 12) {
-                result = knight_generatemove_max_w(P_Node, i);
+                result = knight_generatemove_max_w(Node.clone(), i, n);
+                if(best_val<=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
             } else if (P_Node[i] == 13) {
-                result = bishop_generatemove_max_w(P_Node, i);
+                result = bishop_generatemove_max_w(Node.clone(), i, n);
+                if(best_val<=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
             } else if (P_Node[i] == 14) {
-                result = queen_generatemove_max_w(P_Node, i);
+                result = queen_generatemove_max_w(Node.clone(), i, n);
+                if(best_val<=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
             } else if (P_Node[i] == 15) {
-                result = king_generatemove_max_w(P_Node, i);
+                result = king_generatemove_max_w(Node.clone(), i, n);
+                if(best_val<=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
             }
-            if(best_val<=result[1]){
-                best_val=result[1];
-                temp=result[0];
-            }
+
         }
-        return n[temp].board;
+        return n[temp].board.clone();
     }
 
 
-    public int[] MinMove(int[] Node) {
+    public int[] MinMove(int[] Node,NODE [] n) {
         int[] P_Node=Node.clone();
         int []result = new int[2];
         int best_val = 10000;
         int temp=0;
         for (int i = 0; i < 64; i++) {
             if (P_Node[i] == 7) {
-                result = f_pawn_generatemove_min_b(P_Node, i);
+                result = f_pawn_generatemove_min_b(Node.clone(), i, n);
+                if(best_val>=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
             } else if (P_Node[i] == 6) {
-                result = pawn_generatemove_min_b(P_Node, i);
+                result = pawn_generatemove_min_b(Node.clone(), i, n);
+                if(best_val>=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
             } else if (P_Node[i] == 1) {
-                result = rook_generatemove_min_b(P_Node, i);
+                result = rook_generatemove_min_b(Node.clone(), i, n);
+                if(best_val>=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
             } else if (P_Node[i] == 2) {
-                result = knight_generatemove_min_b(P_Node, i);
+                result = knight_generatemove_min_b(Node.clone(), i, n);
+                if(best_val>=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
             } else if (P_Node[i] == 3) {
-                result = bishop_generatemove_min_b(P_Node, i);
+                result = bishop_generatemove_min_b(Node.clone(), i, n);
+                if(best_val>=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
             } else if (P_Node[i] == 4) {
-                result = queen_generatemove_min_b(P_Node, i);
+                result = queen_generatemove_min_b(Node.clone(), i, n);
+                if(best_val>=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
             } else if (P_Node[i] == 5) {
-                result = king_generatemove_min_b(P_Node, i);
+                result = king_generatemove_min_b(Node.clone(), i, n);
+                if(best_val>=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
             }
-            if(best_val>=result[1]){
-                best_val=result[1];
-                temp=result[0];
-            }
+
         }
-        return n[temp].board;
+        return n[temp].board.clone();
     }
 
 
@@ -1506,7 +1562,7 @@ public class Ai_b_Activity extends AppCompatActivity {
 //        return value;
 //    }
 
-    public int[] rook_generatemove_max_w(int[] P_Node, int spot) {
+    public int[] rook_generatemove_max_w(int[] P_Node, int spot, NODE [] n) {
         int[] node = P_Node.clone();
         int[] return_val=new int[2];
             for (int a = spot + 8; a < 64; a = a + 8) {//하
@@ -1523,6 +1579,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -1541,6 +1598,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -1560,6 +1618,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -1579,13 +1638,14 @@ public class Ai_b_Activity extends AppCompatActivity {
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
             }
             return return_val.clone();
     }
-    public int[] knight_generatemove_max_w(int []P_Node,int spot) {
+    public int[] knight_generatemove_max_w(int[] P_Node, int spot, NODE [] n) {
         int[] node = P_Node.clone();
         int[] return_val = new int[2];
         int a;
@@ -1604,6 +1664,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0] = temp_num;
                     }
                     temp_num++;
+                    node = P_Node.clone();
                 }
             }
             a = spot + (8 * 2) - 1; //좌 대각 아래(2) down-2 left-1
@@ -1621,6 +1682,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                    node = P_Node.clone();
                 }
             }
             a = spot - (8 * 2) + 1; //우 대각 위(2) up-2 right-1
@@ -1638,6 +1700,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             a = spot - (8 * 2) - 1; //좌 대각 위(2) up-2 left-1
@@ -1655,6 +1718,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             a = spot + (8 * 1) + 2; //우 대각 아래(1) right-2 down-1
@@ -1672,6 +1736,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             a = spot + (8 * 1) - 2;//좌 대각 아래(1) left-2 down-1
@@ -1688,7 +1753,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[1] = n[temp_num].output;
                         return_val[0]=temp_num;
                     }
-                    temp_num++;
+                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             a = spot - (8 * 1) + 2; //우 대각 위(1) right-2 up -1
@@ -1706,6 +1772,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             a = spot - (8 * 1) - 2; //좌 대각 위(1) left-2 up - 1
@@ -1723,11 +1790,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             return return_val.clone();
         }
-    public int[] bishop_generatemove_max_w(int[] P_Node, int spot) {
+    public int[] bishop_generatemove_max_w(int[] P_Node, int spot, NODE [] n) {
         int[] node = P_Node.clone();
         int [] return_val=new int[2];
             for (int a = 0; a < 8 - ((spot % 8) + 1); a++) {//우 대각 아래
@@ -1745,6 +1813,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -1764,6 +1833,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -1783,6 +1853,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -1802,13 +1873,14 @@ public class Ai_b_Activity extends AppCompatActivity {
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
             }
             return return_val.clone();
         }
-    public int[] queen_generatemove_max_w(int []P_Node,int spot) {
+    public int[] queen_generatemove_max_w(int[] P_Node, int spot, NODE [] n) {
         int[] node = P_Node.clone();
         int [] return_val=new int[2];
         for (int a = spot + 8; a < 64; a = a + 8) {//하
@@ -1825,6 +1897,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[a] != 0) break;
             }
@@ -1843,6 +1916,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[a] != 0) break;
             }
@@ -1862,6 +1936,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[t] != 0) break;
             }
@@ -1881,6 +1956,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[t] != 0) break;
             }
@@ -1900,6 +1976,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[t] != 0) break;
             }
@@ -1919,6 +1996,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[t] != 0) break;
             }
@@ -1938,6 +2016,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[t] != 0) break;
             }
@@ -1957,13 +2036,14 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[t] != 0) break;
             }
         }
         return return_val.clone();
     }
-    public int[] king_generatemove_max_w(int []P_Node,int spot) {
+    public int[] king_generatemove_max_w(int[] P_Node, int spot, NODE [] n) {
         int[] node = P_Node.clone();
         int [] return_val=new int[2];
             int k = spot + 1; //우
@@ -1980,6 +2060,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             k = spot - 1;  //좌
@@ -1996,6 +2077,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             k = spot + 7; //좌대각 아래
@@ -2012,6 +2094,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             k = spot + 8; //아래
@@ -2029,6 +2112,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             k = spot + 9;
@@ -2046,6 +2130,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             k = spot - 7; //우대각 위
@@ -2062,6 +2147,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             k = spot - 8; //위
@@ -2078,6 +2164,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             k = spot - 9; //좌대각위
@@ -2094,11 +2181,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             return return_val.clone();
         }
-    public int[] pawn_generatemove_max_w(int []P_Node, int spot) {
+    public int[] pawn_generatemove_max_w(int[] P_Node, int spot, NODE [] n) {
         int[] node = P_Node.clone();
         int[] return_val = new int[2];
         for (int a = spot - 8; a >= spot - 8; a = a - 8) {
@@ -2133,6 +2221,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0] = temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[a] != 0) break;
             }
@@ -2171,6 +2260,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                     return_val[0] = temp_num;
                 }
                 temp_num++;
+                        node = P_Node.clone();
             }
         }
         if (in_board(spot - 7) && (P_Node[spot - 7] >= 1 && P_Node[spot - 7] <= 7)) //우 대각 위에 상대방 말이 있을 때
@@ -2207,6 +2297,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                     return_val[0] = temp_num;
                 }
                 temp_num++;
+                        node = P_Node.clone();
             }
         }
         // 양파상
@@ -2223,6 +2314,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                 return_val[0] = temp_num;
             }
             temp_num++;
+                        node = P_Node.clone();
         }
         if (8 - spot % 8 - 1 >= 1 && enpassant[spot + 1] == 1 && P_Node[spot - 7] == 0) {
             // 위치 바꿔주기
@@ -2237,17 +2329,18 @@ public class Ai_b_Activity extends AppCompatActivity {
                 return_val[0] = temp_num;
             }
             temp_num++;
+                        node = P_Node.clone();
         }
         return return_val.clone();
     }
-    public int[] f_pawn_generatemove_max_w(int []P_Node, int spot){
+    public int[] f_pawn_generatemove_max_w(int[] P_Node, int spot, NODE [] n){
         int[] node = P_Node.clone();;
         int [] return_val=new int[2];
             for (int a = spot - 8; a >= spot - 16; a = a - 8) {
                 if (in_board(a)) {
                     if (P_Node[a]==0) {
                         // 위치 바꿔주기
-                        node[a] = 6;
+                        node[a] = 16;
                         node[spot] = 0;
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
@@ -2257,6 +2350,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -2265,7 +2359,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             {
                 if (spot % 8 >= 1){
                     // 위치 바꿔주기
-                    node[spot-9] = 6;
+                    node[spot-9] = 16;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
@@ -2275,13 +2369,14 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             if (in_board(spot - 7) && (P_Node[spot-7] >= 1 && P_Node[spot-7] <= 7)) //우 대각 위에 상대방 말이 있을 때
             {
                 if (8 - spot % 8 - 1 >= 1){
                     // 위치 바꿔주기
-                    node[spot-7] = 6;
+                    node[spot-7] = 16;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
@@ -2291,6 +2386,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             return return_val.clone();
@@ -2298,7 +2394,7 @@ public class Ai_b_Activity extends AppCompatActivity {
 
 
 
-    public int[] rook_generatemove_min_b(int[] P_Node, int spot) {
+    public int[] rook_generatemove_min_b(int[] P_Node, int spot, NODE [] n) {
         int[] node = P_Node.clone();
         int [] return_val=new int[2];
             for (int a = spot + 8; a < 64; a = a + 8) {//하
@@ -2310,11 +2406,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
+                        if (n[temp_num].output <= return_val[1]) {
                             return_val[1] = n[temp_num].output;
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -2329,11 +2426,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
+                        if (n[temp_num].output <= return_val[1]) {
                             return_val[1] = n[temp_num].output;
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -2348,11 +2446,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
+                        if (n[temp_num].output <= return_val[1]) {
                             return_val[1] = n[temp_num].output;
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -2367,18 +2466,19 @@ public class Ai_b_Activity extends AppCompatActivity {
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
+                        if (n[temp_num].output <= return_val[1]) {
                             return_val[1] = n[temp_num].output;
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
             }
             return return_val.clone();
         }
-    public int[] knight_generatemove_min_b(int []P_Node,int spot) {
+    public int[] knight_generatemove_min_b(int[] P_Node, int spot, NODE [] n) {
         int []node = P_Node.clone();
         int [] return_val=new int[2];
         int a;
@@ -2391,11 +2491,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 깊이 0까지 탐색
             n[temp_num]=new NODE(node);
             // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output >= return_val[1]) {
+            if (n[temp_num].output <= return_val[1]) {
                 return_val[1] = n[temp_num].output;
                 return_val[0]=temp_num;
             }
             temp_num++;
+                        node = P_Node.clone();
         }
         }
         a=spot+(8*2)-1 ; //좌 대각 아래(2) down-2 left-1
@@ -2407,11 +2508,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 깊이 0까지 탐색
             n[temp_num]=new NODE(node);
             // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output >= return_val[1]) {
+            if (n[temp_num].output <= return_val[1]) {
                 return_val[1] = n[temp_num].output;
                 return_val[0]=temp_num;
             }
             temp_num++;
+                        node = P_Node.clone();
         }
         }
         a=spot-(8*2)+1 ; //우 대각 위(2) up-2 right-1
@@ -2423,11 +2525,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 깊이 0까지 탐색
             n[temp_num]=new NODE(node);
             // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output >= return_val[1]) {
+            if (n[temp_num].output <= return_val[1]) {
                 return_val[1] = n[temp_num].output;
                 return_val[0]=temp_num;
             }
             temp_num++;
+                        node = P_Node.clone();
         }
         }
         a=spot-(8*2)-1 ; //좌 대각 위(2) up-2 left-1
@@ -2439,11 +2542,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 깊이 0까지 탐색
             n[temp_num]=new NODE(node);
             // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output >= return_val[1]) {
+            if (n[temp_num].output <= return_val[1]) {
                 return_val[1] = n[temp_num].output;
                 return_val[0]=temp_num;
             }
             temp_num++;
+                        node = P_Node.clone();
         }
         }
         a=spot+(8*1)+2 ; //우 대각 아래(1) right-2 down-1
@@ -2455,11 +2559,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 깊이 0까지 탐색
             n[temp_num]=new NODE(node);
             // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output >= return_val[1]) {
+            if (n[temp_num].output <= return_val[1]) {
                 return_val[1] = n[temp_num].output;
                 return_val[0]=temp_num;
             }
             temp_num++;
+                        node = P_Node.clone();
         }
         }
         a=spot+(8*1)-2 ;//좌 대각 아래(1) left-2 down-1
@@ -2471,11 +2576,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 깊이 0까지 탐색
             n[temp_num]=new NODE(node);
             // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output >= return_val[1]) {
+            if (n[temp_num].output <= return_val[1]) {
                 return_val[1] = n[temp_num].output;
                 return_val[0]=temp_num;
             }
             temp_num++;
+                        node = P_Node.clone();
         }
         }
         a=spot-(8*1)+2 ; //우 대각 위(1) right-2 up -1
@@ -2487,11 +2593,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 깊이 0까지 탐색
             n[temp_num]=new NODE(node);
             // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output >= return_val[1]) {
+            if (n[temp_num].output <= return_val[1]) {
                 return_val[1] = n[temp_num].output;
                 return_val[0]=temp_num;
             }
             temp_num++;
+                        node = P_Node.clone();
         }
         }
         a=spot-(8*1)-2 ; //좌 대각 위(1) left-2 up - 1
@@ -2503,16 +2610,17 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 깊이 0까지 탐색
             n[temp_num]=new NODE(node);
             // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output >= return_val[1]) {
+            if (n[temp_num].output <= return_val[1]) {
                 return_val[1] = n[temp_num].output;
                 return_val[0]=temp_num;
             }
             temp_num++;
+                        node = P_Node.clone();
         }
         }
         return return_val.clone();
     }
-    public int[] bishop_generatemove_min_b(int[] P_Node, int spot){
+    public int[] bishop_generatemove_min_b(int[] P_Node, int spot, NODE [] n){
         int[] node = P_Node.clone();
         int [] return_val=new int[2];
             for (int a = 0; a < 8 - ((spot % 8) + 1); a++) {//우 대각 아래
@@ -2525,11 +2633,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
+                        if (n[temp_num].output <= return_val[1]) {
                             return_val[1] = n[temp_num].output;
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -2544,11 +2653,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
+                        if (n[temp_num].output <= return_val[1]) {
                             return_val[1] = n[temp_num].output;
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -2563,11 +2673,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
+                        if (n[temp_num].output <= return_val[1]) {
                             return_val[1] = n[temp_num].output;
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -2582,18 +2693,19 @@ public class Ai_b_Activity extends AppCompatActivity {
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
+                        if (n[temp_num].output <= return_val[1]) {
                             return_val[1] = n[temp_num].output;
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
             }
             return return_val.clone();
         }
-    public int[] queen_generatemove_min_b(int []P_Node,int spot) {
+    public int[] queen_generatemove_min_b(int[] P_Node, int spot, NODE [] n) {
         int[] node = P_Node.clone();
         int [] return_val=new int[2];
         for (int a = spot + 8; a < 64; a = a + 8) {//하
@@ -2605,11 +2717,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
+                    if (n[temp_num].output <= return_val[1]) {
                         return_val[1] = n[temp_num].output;
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[a] != 0) break;
             }
@@ -2623,11 +2736,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
+                    if (n[temp_num].output <= return_val[1]) {
                         return_val[1] = n[temp_num].output;
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[a] != 0) break;
             }
@@ -2642,11 +2756,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
+                    if (n[temp_num].output <= return_val[1]) {
                         return_val[1] = n[temp_num].output;
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[t] != 0) break;
             }
@@ -2661,11 +2776,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
+                    if (n[temp_num].output <= return_val[1]) {
                         return_val[1] = n[temp_num].output;
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[t] != 0) break;
             }
@@ -2680,11 +2796,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
+                    if (n[temp_num].output <= return_val[1]) {
                         return_val[1] = n[temp_num].output;
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[t] != 0) break;
             }
@@ -2699,11 +2816,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
+                    if (n[temp_num].output <= return_val[1]) {
                         return_val[1] = n[temp_num].output;
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[t] != 0) break;
             }
@@ -2718,11 +2836,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
+                    if (n[temp_num].output <= return_val[1]) {
                         return_val[1] = n[temp_num].output;
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[t] != 0) break;
             }
@@ -2737,18 +2856,19 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
+                    if (n[temp_num].output <= return_val[1]) {
                         return_val[1] = n[temp_num].output;
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
                 if (P_Node[t] != 0) break;
             }
         }
         return return_val.clone() ;
     }
-    public int[] king_generatemove_min_b(int []P_Node,int spot) {
+    public int[] king_generatemove_min_b(int[] P_Node, int spot, NODE [] n) {
         int []node = P_Node.clone();
         int [] return_val=new int[2];
         int k = spot + 1; //우
@@ -2760,11 +2880,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
                 // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output >= return_val[1]) {
+                if (n[temp_num].output <= return_val[1]) {
                     return_val[1] = n[temp_num].output;
                     return_val[0]=temp_num;
                 }
                 temp_num++;
+                        node = P_Node.clone();
             }
         }
         k = spot - 1;  //좌
@@ -2776,11 +2897,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
                 // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output >= return_val[1]) {
+                if (n[temp_num].output <= return_val[1]) {
                     return_val[1] = n[temp_num].output;
                     return_val[0]=temp_num;
                 }
                 temp_num++;
+                        node = P_Node.clone();
             }
         }
         k = spot + 7; //좌대각 아래
@@ -2792,11 +2914,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
                 // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output >= return_val[1]) {
+                if (n[temp_num].output <= return_val[1]) {
                     return_val[1] = n[temp_num].output;
                     return_val[0]=temp_num;
                 }
                 temp_num++;
+                        node = P_Node.clone();
             }
         }
         k = spot + 8; //아래
@@ -2809,11 +2932,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
                 // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output >= return_val[1]) {
+                if (n[temp_num].output <= return_val[1]) {
                     return_val[1] = n[temp_num].output;
                     return_val[0]=temp_num;
                 }
                 temp_num++;
+                        node = P_Node.clone();
             }
         }
         k = spot + 9;
@@ -2826,11 +2950,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
                 // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output >= return_val[1]) {
+                if (n[temp_num].output <= return_val[1]) {
                     return_val[1] = n[temp_num].output;
                     return_val[0]=temp_num;
                 }
                 temp_num++;
+                        node = P_Node.clone();
             }
         }
         k = spot - 7; //우대각 위
@@ -2842,11 +2967,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
                 // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output >= return_val[1]) {
+                if (n[temp_num].output <= return_val[1]) {
                     return_val[1] = n[temp_num].output;
                     return_val[0]=temp_num;
                 }
                 temp_num++;
+                        node = P_Node.clone();
             }
         }
         k = spot - 8; //위
@@ -2858,11 +2984,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
                 // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output >= return_val[1]) {
+                if (n[temp_num].output <= return_val[1]) {
                     return_val[1] = n[temp_num].output;
                     return_val[0]=temp_num;
                 }
                 temp_num++;
+                        node = P_Node.clone();
             }
         }
         k = spot - 9; //좌대각위
@@ -2874,16 +3001,17 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
                 // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output >= return_val[1]) {
+                if (n[temp_num].output <= return_val[1]) {
                     return_val[1] = n[temp_num].output;
                     return_val[0]=temp_num;
                 }
                 temp_num++;
+                        node = P_Node.clone();
             }
         }
         return return_val.clone();
     }
-    public int[] pawn_generatemove_min_b(int []P_Node, int spot){
+    public int[] pawn_generatemove_min_b(int[] P_Node, int spot, NODE [] n){
         int[] node = P_Node.clone();
         int [] return_val=new int[2];
             for(int a = spot + 8; a <= spot + 8; a = a + 8) {
@@ -2918,11 +3046,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
+                        if (n[temp_num].output <= return_val[1]) {
                             return_val[1] = n[temp_num].output;
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
 
@@ -2962,11 +3091,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
+                    if (n[temp_num].output <= return_val[1]) {
                         return_val[1] = n[temp_num].output;
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
 
@@ -3004,11 +3134,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
+                    if (n[temp_num].output <= return_val[1]) {
                         return_val[1] = n[temp_num].output;
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             // 양파상
@@ -3020,11 +3151,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
                 // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output >= return_val[1]) {
+                if (n[temp_num].output <= return_val[1]) {
                     return_val[1] = n[temp_num].output;
                     return_val[0]=temp_num;
                 }
                 temp_num++;
+                        node = P_Node.clone();
             }
             if (8 - spot % 8 - 1 >= 1 && enpassant[spot - 1] == 1 && P_Node[spot + 7] == 0){
                 // 위치 바꿔주기
@@ -3034,31 +3166,33 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
                 // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output >= return_val[1]) {
+                if (n[temp_num].output <= return_val[1]) {
                     return_val[1] = n[temp_num].output;
                     return_val[0]=temp_num;
                 }
                 temp_num++;
+                        node = P_Node.clone();
             }
 
         return return_val.clone();
     }
-    public int[] f_pawn_generatemove_min_b(int []P_Node, int spot){
+    public int[] f_pawn_generatemove_min_b(int[] P_Node, int spot, NODE [] n){
         int[] node = P_Node.clone();
         int [] return_val=new int[2];
             for (int a = spot + 8; a <= spot + 16; a = a + 8) {
                 if (in_board(a)) {
                     if (P_Node[a]==0) {
-                        node[a] = 16;
+                        node[a] = 6;
                         node[spot] = 0;
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
+                        if (n[temp_num].output <= return_val[1]) {
                             return_val[1] = n[temp_num].output;
                             return_val[0]=temp_num;
                         }
                         temp_num++;
+                        node = P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -3067,32 +3201,34 @@ public class Ai_b_Activity extends AppCompatActivity {
             {
                 if (8 - spot % 8 - 1 >= 1){
                     // 위치 바꿔주기
-                    node[spot+9] = 16;
+                    node[spot+9] = 6;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
+                    if (n[temp_num].output <= return_val[1]) {
                         return_val[1] = n[temp_num].output;
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             if (in_board(spot + 7) && (P_Node[spot+7] >= 11 && P_Node[spot+7] <= 17)) //좌 대각 아래에 상대방 말이 있을 때
             {
                 if (spot % 8 >= 1){
                     // 위치 바꿔주기
-                    node[spot+7] = 16;
+                    node[spot+7] = 6;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
+                    if (n[temp_num].output <= return_val[1]) {
                         return_val[1] = n[temp_num].output;
                         return_val[0]=temp_num;
                     }
                     temp_num++;
+                        node = P_Node.clone();
                 }
             }
             return return_val.clone();

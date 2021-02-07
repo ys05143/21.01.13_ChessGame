@@ -6,47 +6,90 @@ import java.util.Arrays;
 
 public class NODE {
     int [] board; int score; int output;
+
     boolean in_board(int index) {
         if(index>=0&&index<64) return true;
         else return false ;
     }
-
+int alpha=-10000; int beta=10000;
     public int MaxMove(int[] node, int depth,int al,int be) {
         int[] P_Node = node.clone(); //매개변수로 받은 배열 복사
         int result = 0;
         int best_val=Evalstate_w(P_Node);
-        int alpha=al; int beta=be;
+//        alpha=-10000; beta=10000;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
             for (int i = 0; i < 64; i++) {
                 if (P_Node[i] == 17) {
-                    result = f_pawn_generatemove_max_w(P_Node, i, depth,alpha,beta);
+                    result = f_pawn_generatemove_max_w(node.clone(), i, depth,alpha,beta);
+                    if (result >= best_val) {
+                        best_val = result;
+                    }
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 16) {
-                    result = pawn_generatemove_max_w(P_Node, i, depth,alpha,beta);
+                    result = pawn_generatemove_max_w(node.clone(), i, depth,alpha,beta);
+                    if (result >= best_val) {
+                        best_val = result;
+                    }
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 11) {
-                    result = rook_generatemove_max_w(P_Node, i, depth,alpha,beta);
+                    result = rook_generatemove_max_w(node.clone(), i, depth,alpha,beta);
+                    if (result >= best_val) {
+                        best_val = result;
+                    }
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 12) {
-                    result = knight_generatemove_max_w(P_Node, i, depth,alpha,beta);
+                    result = knight_generatemove_max_w(node.clone(), i, depth,alpha,beta);
+                    if (result >= best_val) {
+                        best_val = result;
+                    }
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 13) {
-                    result = bishop_generatemove_max_w(P_Node, i, depth,alpha,beta);
+                    result = bishop_generatemove_max_w(node.clone(), i, depth,alpha,beta);
+                    if (result >= best_val) {
+                        best_val = result;
+                    }
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 14) {
-                    result = queen_generatemove_max_w(P_Node, i, depth,alpha,beta);
+                    result = queen_generatemove_max_w(node.clone(), i, depth,alpha,beta);
+                    if (result >= best_val) {
+                        best_val = result;
+                    }
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 15) {
-                    result = king_generatemove_max_w(P_Node, i, depth,alpha,beta);
+                    result = king_generatemove_max_w(node.clone(), i, depth,alpha,beta);
+                    if (result >= best_val) {
+                        best_val = result;
+                    }
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
                 }
-
-                if (result >= best_val) {
-                    best_val = result;
-                }
-                if(result>=beta) return best_val;
-                else if(result>alpha) beta=result;
-
             }
             return best_val;
         }
@@ -56,37 +99,80 @@ public class NODE {
         int[] P_Node = node.clone(); //매개변수로 받은 배열 복사
         int result = 0;
         int best_val=Evalstate_w(P_Node);
-        int alpha=al; int beta=be;
+//        alpha=-10000; beta=10000;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
             for (int i = 0; i < 64; i++) {
                 if (P_Node[i] == 7) {
-                    result = f_pawn_generatemove_min_b(P_Node, i, depth,alpha,beta);
+                    result = f_pawn_generatemove_min_b(node.clone(), i, depth,alpha,beta);
+                    if (result <= best_val) {
+                        best_val = result;
+                    }
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 6) {
-                    result = pawn_generatemove_min_b(P_Node, i, depth,alpha,beta);
+                    result = pawn_generatemove_min_b(node.clone(), i, depth,alpha,beta);
+                    if (result <= best_val) {
+                        best_val = result;
+                    }
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 1) {
-                    result = rook_generatemove_min_b(P_Node, i, depth,alpha,beta);
+                    result = rook_generatemove_min_b(node.clone(), i, depth,alpha,beta);
+                    if (result <= best_val) {
+                        best_val = result;
+                    }
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 2) {
-                    result = knight_generatemove_min_b(P_Node, i, depth,alpha,beta);
+                    result = knight_generatemove_min_b(node.clone(), i, depth,alpha,beta);
+                    if (result <= best_val) {
+                        best_val = result;
+                    }
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 3) {
-                    result = bishop_generatemove_min_b(P_Node, i, depth,alpha,beta);
+                    result = bishop_generatemove_min_b(node.clone(), i, depth,alpha,beta);
+                    if (result <= best_val) {
+                        best_val = result;
+                    }
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 4) {
-                    result = queen_generatemove_min_b(P_Node, i, depth,alpha,beta);
+                    result = queen_generatemove_min_b(node.clone(), i, depth,alpha,beta);
+                    if (result <= best_val) {
+                        best_val = result;
+                    }
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 5) {
-                    result = king_generatemove_min_b(P_Node, i, depth,alpha,beta);
+                    result = king_generatemove_min_b(node.clone(), i, depth,alpha,beta);
+                    if (result <= best_val) {
+                        best_val = result;
+                    }
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
                 }
-
-                if (result <= best_val) {
-                    best_val = result;
-                }
-                if(result<=alpha) return best_val;
-                else if(result<beta) beta=result;
             }
             return best_val;
         }
@@ -114,7 +200,7 @@ public class NODE {
     public int rook_generatemove_max_w(int[] P_Node, int spot, int depth,int al,int be) {
         int[] node = P_Node.clone();
         int best_val =  Evalstate_w(P_Node);
-        int alpha=al; int beta=be;
+        //        int alpha=al; int beta=be;
         int result=0;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
@@ -130,8 +216,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if(result>=beta) return best_val;
-                        else if(result>alpha) alpha=result;
+                       if(alpha<best_val){
+                           alpha=best_val;
+                       }
+                       if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -148,10 +237,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-
-                        if(result>=beta) return best_val;
-                        else if(result>alpha) alpha=result;
-
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -169,8 +259,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if(result>=beta) return best_val;
-                        else if(result>alpha) alpha=result;
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -188,8 +281,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if(result>=beta) return best_val;
-                        else if(result>alpha) alpha=result;
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -200,8 +296,7 @@ public class NODE {
     public int knight_generatemove_max_w(int []P_Node,int spot,int depth,int al,int be) {
         int[] node = P_Node.clone();
         int best_val = Evalstate_w(P_Node);
-        int alpha = al;
-        int beta = be;
+//        int alpha = al; int beta = be;
         int result = 0;
         if ((depth == 0) || (game_ended(P_Node) == true)) return best_val;
         else {
@@ -219,8 +314,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if (result >= beta) return best_val;
-                    else if (result > alpha) alpha = result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             a = spot + (8 * 2) - 1; //좌 대각 아래(2) down-2 left-1
@@ -236,8 +334,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if (result >= beta) return best_val;
-                    else if (result > alpha) alpha = result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             a = spot - (8 * 2) + 1; //우 대각 위(2) up-2 right-1
@@ -253,8 +354,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if (result >= beta) return best_val;
-                    else if (result > alpha) alpha = result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             a = spot - (8 * 2) - 1; //좌 대각 위(2) up-2 left-1
@@ -270,8 +374,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if (result >= beta) return best_val;
-                    else if (result > alpha) alpha = result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             a = spot + (8 * 1) + 2; //우 대각 아래(1) right-2 down-1
@@ -287,8 +394,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if (result >= beta) return best_val;
-                    else if (result > alpha) alpha = result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             a = spot + (8 * 1) - 2;//좌 대각 아래(1) left-2 down-1
@@ -304,8 +414,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if (result >= beta) return best_val;
-                    else if (result > alpha) alpha = result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             a = spot - (8 * 1) + 2; //우 대각 위(1) right-2 up -1
@@ -321,8 +434,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if (result >= beta) return best_val;
-                    else if (result > alpha) alpha = result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             a = spot - (8 * 1) - 2; //좌 대각 위(1) left-2 up - 1
@@ -338,8 +454,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if (result >= beta) return best_val;
-                    else if (result > alpha) alpha = result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             return best_val;
@@ -348,7 +467,7 @@ public class NODE {
     public int bishop_generatemove_max_w(int[] P_Node, int spot, int depth,int al,int be) {
         int[] node = P_Node.clone();
         int best_val = Evalstate_w(P_Node);
-        int alpha=al; int beta=be;
+        //        int alpha=al; int beta=be;
         int result;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
@@ -365,8 +484,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if(result>=beta) return best_val;
-                        else if(result>alpha) alpha=result;
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -384,8 +506,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if(result>=beta) return best_val;
-                        else if(result>alpha) alpha=result;
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -403,8 +528,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if(result>=beta) return best_val;
-                        else if(result>alpha) alpha=result;
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -422,8 +550,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if(result>=beta) return best_val;
-                        else if(result>alpha) alpha=result;
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -434,8 +565,7 @@ public class NODE {
     public int queen_generatemove_max_w(int []P_Node,int spot,int depth,int al,int be) {
         int[] node = P_Node.clone();
         int best_val = Evalstate_w(P_Node);
-        int alpha = al;
-        int beta = be;
+//        int alpha = al; int beta = be;
         int result = 0;
         if ((depth == 0) || (game_ended(P_Node) == true)) return best_val;
         else {
@@ -451,8 +581,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if (result >= beta) return best_val;
-                        else if (result > alpha) alpha = result;
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -469,8 +602,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if (result >= beta) return best_val;
-                        else if (result > alpha) alpha = result;
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -488,8 +624,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if (result >= beta) return best_val;
-                        else if (result > alpha) alpha = result;
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -507,8 +646,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if (result >= beta) return best_val;
-                        else if (result > alpha) alpha = result;
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -526,8 +668,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if (result >= beta) return best_val;
-                        else if (result > alpha) alpha = result;
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -545,8 +690,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if (result >= beta) return best_val;
-                        else if (result > alpha) alpha = result;
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -564,8 +712,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if (result >= beta) return best_val;
-                        else if (result > alpha) alpha = result;
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -583,8 +734,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if (result >= beta) return best_val;
-                        else if (result > alpha) alpha = result;
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -595,8 +749,7 @@ public class NODE {
     public int king_generatemove_max_w(int []P_Node,int spot,int depth,int al,int be) {
         int[] node = P_Node.clone();
         int best_val = Evalstate_w(P_Node);
-        int alpha = al;
-        int beta = be;
+//        int alpha = al; int beta = be;
         int result = 0;
         if ((depth == 0) || (game_ended(P_Node) == true)) return best_val;
         else {
@@ -612,8 +765,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if (result >= beta) return best_val;
-                    else if (result > alpha) alpha = result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             k = spot - 1;  //좌
@@ -628,8 +784,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if (result >= beta) return best_val;
-                    else if (result > alpha) alpha = result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             k = spot + 7; //좌대각 아래
@@ -644,8 +803,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if (result >= beta) return best_val;
-                    else if (result > alpha) alpha = result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             k = spot + 8; //아래
@@ -661,8 +823,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if (result >= beta) return best_val;
-                    else if (result > alpha) alpha = result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             k = spot + 9;
@@ -678,8 +843,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if (result >= beta) return best_val;
-                    else if (result > alpha) alpha = result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             k = spot - 7; //우대각 위
@@ -694,8 +862,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if (result >= beta) return best_val;
-                    else if (result > alpha) alpha = result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             k = spot - 8; //위
@@ -710,8 +881,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if (result >= beta) return best_val;
-                    else if (result > alpha) alpha = result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             k = spot - 9; //좌대각위
@@ -726,8 +900,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if (result >= beta) return best_val;
-                    else if (result > alpha) alpha = result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             return best_val;
@@ -736,7 +913,7 @@ public class NODE {
     public int pawn_generatemove_max_w(int []P_Node, int spot, int depth,int al,int be) {
         int[] node = P_Node.clone();
         int best_val =  Evalstate_w(P_Node);
-        int alpha=al; int beta=be;
+        //        int alpha=al; int beta=be;
         int result=0;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
@@ -775,8 +952,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if(result>=beta) return best_val;
-                        else if(result>alpha) alpha=result;
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -818,8 +998,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if(result>=beta) return best_val;
-                    else if(result>alpha) alpha=result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             if (in_board(spot - 7) && (P_Node[spot-7] >= 1 && P_Node[spot-7] <= 7)) //우 대각 위에 상대방 말이 있을 때
@@ -859,8 +1042,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if(result>=beta) return best_val;
-                    else if(result>alpha) alpha=result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             // 양파상
@@ -913,14 +1099,14 @@ public class NODE {
     public int f_pawn_generatemove_max_w(int []P_Node, int spot, int depth,int al,int be){
         int[] node = P_Node.clone();
         int best_val =  Evalstate_w(P_Node);
-        int alpha=al; int beta=be;
+        //        int alpha=al; int beta=be;
         int result=0;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
             for (int a = spot - 8; a >= spot - 16; a = a - 8) {
                 if (in_board(a)) {
                     if (P_Node[a]==0) {
-                        node[a] = 6;
+                        node[a] = 16;
                         node[spot] = 0;
                         // 깊이 0까지 탐색
                         result=MinMove(node, depth - 1,alpha,beta);
@@ -928,8 +1114,11 @@ public class NODE {
                         if (result >= best_val) {
                             best_val = result;
                         }
-                        if(result>=beta) return best_val;
-                        else if(result>alpha) alpha=result;
+                        if(alpha<best_val){
+                            alpha=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -938,7 +1127,7 @@ public class NODE {
             {
                 if (spot % 8 >= 1){
                     // 위치 바꿔주기
-                    node[spot-9] = 6;
+                    node[spot-9] = 16;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
                     result=MinMove(node, depth - 1,alpha,beta);
@@ -946,15 +1135,18 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if(result>=beta) return best_val;
-                    else if(result>alpha) alpha=result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             if (in_board(spot - 7) && (P_Node[spot-7] >= 1 && P_Node[spot-7] <= 7)) //우 대각 위에 상대방 말이 있을 때
             {
                 if (8 - spot % 8 - 1 >= 1){
                     // 위치 바꿔주기
-                    node[spot-7] = 6;
+                    node[spot-7] = 16;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
                     result=MinMove(node, depth - 1,alpha,beta);
@@ -962,8 +1154,11 @@ public class NODE {
                     if (result >= best_val) {
                         best_val = result;
                     }
-                    if(result>=beta) return best_val;
-                    else if(result>alpha) alpha=result;
+                    if(alpha<best_val){
+                        alpha=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             return best_val;
@@ -974,7 +1169,7 @@ public class NODE {
     public int rook_generatemove_min_b(int[] P_Node, int spot, int depth,int al,int be) {
         int[] node = P_Node.clone();
         int best_val = Evalstate_w(P_Node);
-        int alpha=al; int beta=be;
+        //        int alpha=al; int beta=be;
         int result=0;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
@@ -990,8 +1185,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if(result<=alpha) return best_val;
-                        else if(result<beta) beta=result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -1009,8 +1207,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if(result<=alpha) return best_val;
-                        else if(result<beta) beta=result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -1028,8 +1229,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if(result<=alpha) return best_val;
-                        else if(result<beta) beta=result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -1047,8 +1251,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if(result<=alpha) return best_val;
-                        else if(result<beta) beta=result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -1059,8 +1266,7 @@ public class NODE {
     public int knight_generatemove_min_b(int []P_Node,int spot,int depth,int al,int be) {
         int[] node = P_Node.clone();
         int best_val = Evalstate_w(P_Node);
-        int alpha = al;
-        int beta = be;
+//        int alpha = al; int beta = be;
         int result = 0;
         if ((depth == 0) || (game_ended(P_Node) == true)) return best_val;
         else {
@@ -1078,8 +1284,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if (result <= alpha) return best_val;
-                    else if (result < beta) beta = result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             a = spot + (8 * 2) - 1; //좌 대각 아래(2) down-2 left-1
@@ -1095,8 +1304,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if (result <= alpha) return best_val;
-                    else if (result < beta) beta = result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             a = spot - (8 * 2) + 1; //우 대각 위(2) up-2 right-1
@@ -1112,8 +1324,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if (result <= alpha) return best_val;
-                    else if (result < beta) beta = result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             a = spot - (8 * 2) - 1; //좌 대각 위(2) up-2 left-1
@@ -1129,8 +1344,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if (result <= alpha) return best_val;
-                    else if (result < beta) beta = result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             a = spot + (8 * 1) + 2; //우 대각 아래(1) right-2 down-1
@@ -1146,8 +1364,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if (result <= alpha) return best_val;
-                    else if (result < beta) beta = result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             a = spot + (8 * 1) - 2;//좌 대각 아래(1) left-2 down-1
@@ -1163,8 +1384,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if (result <= alpha) return best_val;
-                    else if (result < beta) beta = result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             a = spot - (8 * 1) + 2; //우 대각 위(1) right-2 up -1
@@ -1180,8 +1404,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if (result <= alpha) return best_val;
-                    else if (result < beta) beta = result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             a = spot - (8 * 1) - 2; //좌 대각 위(1) left-2 up - 1
@@ -1197,8 +1424,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if (result <= alpha) return best_val;
-                    else if (result < beta) beta = result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             return best_val;
@@ -1207,7 +1437,7 @@ public class NODE {
     public int bishop_generatemove_min_b(int[] P_Node, int spot, int depth,int al,int be){
         int[] node = P_Node.clone();
         int best_val =  Evalstate_w(P_Node);
-        int alpha=al; int beta=be;
+        //        int alpha=al; int beta=be;
         int result=0;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
@@ -1224,8 +1454,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if(result<=alpha) return best_val;
-                        else if(result<beta) beta=result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -1243,8 +1476,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if(result<=alpha) return best_val;
-                        else if(result<beta) beta=result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -1262,8 +1498,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if(result<=alpha) return best_val;
-                        else if(result<beta) beta=result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -1281,8 +1520,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if(result<=alpha) return best_val;
-                        else if(result<beta) beta=result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -1293,8 +1535,7 @@ public class NODE {
     public int queen_generatemove_min_b(int []P_Node,int spot,int depth,int al,int be) {
         int[] node = P_Node.clone();
         int best_val = Evalstate_w(P_Node);
-        int alpha = al;
-        int beta = be;
+//        int alpha = al; int beta = be;
         int result = 0;
         if ((depth == 0) || (game_ended(P_Node) == true)) return best_val;
         else {
@@ -1310,8 +1551,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if (result <= alpha) return best_val;
-                        else if (result < beta) beta = result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -1328,8 +1572,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if (result <= alpha) return best_val;
-                        else if (result < beta) beta = result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -1347,8 +1594,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if (result <= alpha) return best_val;
-                        else if (result < beta) beta = result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -1366,8 +1616,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if (result <= alpha) return best_val;
-                        else if (result < beta) beta = result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -1385,8 +1638,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if (result <= alpha) return best_val;
-                        else if (result < beta) beta = result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -1404,8 +1660,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if (result <= alpha) return best_val;
-                        else if (result < beta) beta = result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -1423,8 +1682,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if (result <= alpha) return best_val;
-                        else if (result < beta) beta = result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -1442,8 +1704,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if (result <= alpha) return best_val;
-                        else if (result < beta) beta = result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[t] != 0) break;
                 }
@@ -1454,8 +1719,7 @@ public class NODE {
     public int king_generatemove_min_b(int []P_Node,int spot,int depth,int al,int be) {
         int[] node = P_Node.clone();
         int best_val = Evalstate_w(P_Node);
-        int alpha = al;
-        int beta = be;
+//        int alpha = al; int beta = be;
         int result = 0;
         if ((depth == 0) || (game_ended(P_Node) == true)) return best_val;
         else {
@@ -1471,8 +1735,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if (result <= alpha) return best_val;
-                    else if (result < beta) beta = result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             k = spot - 1;  //좌
@@ -1487,8 +1754,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if (result <= alpha) return best_val;
-                    else if (result < beta) beta = result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             k = spot + 7; //좌대각 아래
@@ -1503,8 +1773,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if (result <= alpha) return best_val;
-                    else if (result < beta) beta = result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             k = spot + 8; //아래
@@ -1520,8 +1793,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if (result <= alpha) return best_val;
-                    else if (result < beta) beta = result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             k = spot + 9;
@@ -1537,8 +1813,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if (result <= alpha) return best_val;
-                    else if (result < beta) beta = result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             k = spot - 7; //우대각 위
@@ -1553,8 +1832,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if (result <= alpha) return best_val;
-                    else if (result < beta) beta = result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             k = spot - 8; //위
@@ -1569,8 +1851,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if (result <= alpha) return best_val;
-                    else if (result < beta) beta = result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             k = spot - 9; //좌대각위
@@ -1585,8 +1870,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if (result <= alpha) return best_val;
-                    else if (result < beta) beta = result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             return best_val;
@@ -1595,7 +1883,7 @@ public class NODE {
     public int pawn_generatemove_min_b(int []P_Node, int spot, int depth,int al,int be){
         int[] node = P_Node.clone();
         int best_val =  Evalstate_w(P_Node);
-        int alpha=al; int beta=be;
+        //        int alpha=al; int beta=be;
         int result=0;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
@@ -1634,8 +1922,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if(result<=alpha) return best_val;
-                        else if(result<beta) beta=result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
 
@@ -1678,8 +1969,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if(result<=alpha) return best_val;
-                    else if(result<beta) beta=result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
 
@@ -1720,8 +2014,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if(result<=alpha) return best_val;
-                    else if(result<beta) beta=result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             // 양파상
@@ -1773,14 +2070,14 @@ public class NODE {
     public int f_pawn_generatemove_min_b(int []P_Node, int spot, int depth,int al,int be){
         int[] node = P_Node.clone();
         int best_val = Evalstate_w(P_Node);
-        int alpha=al; int beta=be;
+//                int alpha=al; int beta=be;
         int result=0;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
             for (int a = spot + 8; a <= spot + 16; a = a + 8) {
                 if (in_board(a)) {
                     if (P_Node[a]==0) {
-                        node[a] = 16;
+                        node[a] = 6;
                         node[spot] = 0;
                         // 깊이 0까지 탐색
                         result=MaxMove(node, depth - 1,alpha,beta);
@@ -1788,8 +2085,11 @@ public class NODE {
                         if (result <= best_val) {
                             best_val = result;
                         }
-                        if(result<=alpha) return best_val;
-                        else if(result<beta) beta=result;
+                        if(beta>best_val){
+                            beta=best_val;
+                        }
+                        if(beta<=alpha) return best_val;
+                        node=P_Node.clone();
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -1798,7 +2098,7 @@ public class NODE {
             {
                 if (8 - spot % 8 - 1 >= 1){
                     // 위치 바꿔주기
-                    node[spot+9] = 16;
+                    node[spot+9] = 6;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
                     result=MaxMove(node, depth - 1,alpha,beta);
@@ -1806,15 +2106,18 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if(result<=alpha) return best_val;
-                    else if(result<beta) beta=result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             if (in_board(spot + 7) && (P_Node[spot+7] >= 11 && P_Node[spot+7] <= 17)) //좌 대각 아래에 상대방 말이 있을 때
             {
                 if (spot % 8 >= 1){
                     // 위치 바꿔주기
-                    node[spot+7] = 16;
+                    node[spot+7] = 6;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
                     result=MaxMove(node, depth - 1,alpha,beta);
@@ -1822,8 +2125,11 @@ public class NODE {
                     if (result <= best_val) {
                         best_val = result;
                     }
-                    if(result<=alpha) return best_val;
-                    else if(result<beta) beta=result;
+                    if(beta>best_val){
+                        beta=best_val;
+                    }
+                    if(beta<=alpha) return best_val;
+                    node=P_Node.clone();
                 }
             }
             return best_val;
@@ -1844,7 +2150,7 @@ public class NODE {
     public NODE(int [] a){
         this.board=a.clone();
         this.score=Evalstate_w(board);
-        output=MinMove(board, 5,-10000,10000);
+        output=MaxMove(board, 5,-10000,10000);
     }
 
 
