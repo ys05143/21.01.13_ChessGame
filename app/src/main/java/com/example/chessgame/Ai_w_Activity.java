@@ -17,6 +17,8 @@ import org.w3c.dom.Node;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
+import static java.lang.Math.max;
+
 public class Ai_w_Activity extends AppCompatActivity {
 
     // imageview ID 처리
@@ -1276,6 +1278,7 @@ public class Ai_w_Activity extends AppCompatActivity {
     //---------------------ai관련-----------------------------------------------------------
 
     public void AI() {
+        for(int i=0;i<64;i++) cut_node[i]=0;
         number = MinMax(number).clone();//ai가 minmax 알고리즘으로 찾은 배열을 number로 지정
         for (int i = 0; i < 64; i++) { //알고리즘으로 나온 결과로 판을 바꾸는 것
             if (number[i] == 1) {
@@ -1330,81 +1333,108 @@ public class Ai_w_Activity extends AppCompatActivity {
     }
 
     public int[] MinMax(int[] number) {
-        return MaxMove(number, 3,-10000,10000);
+        return MaxMove(number.clone(), 3,-10000,10000,number.clone());
     }
+int cut_node[] = new int [64] ;// cut 당했을 시
 
-    public int[] MaxMove(int[] node, int depth,int alpha,int beta) {
+    public int[] MaxMove(int[] node, int depth,int alpha,int beta,int[] node1) {
+
         int[] P_Node = node.clone(); //매개변수로 받은 배열 복사
-        int best_val = Evalstate_w(P_Node);
+        int best_val = -10000;
         int[] best_Node = node.clone();
         int[] Node = node.clone();
-        if (depth == 0) return best_Node;
+        int temp_node[] = new int[64] ; minus_infinity(temp_node);
+        if (depth == 0) {
+            for(int i=0;i<64;i++) node1[i] = best_Node[i] ;
+            return best_Node.clone() ;
+        }
         else {
             for (int i = 0; i < 64; i++) {
+                if(!(P_Node[i]>=11 && P_Node[i]<=17) ) continue ;
+                if(!(Arrays.equals(node1,number))) for(int j=0;j<64;j++) temp_node[j] = node1[j] ;
                 if (P_Node[i] == 11) {
-                    Node = rook_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
+                    Node = rook_generatemove_max_w(P_Node, i, depth,alpha,beta,node1).clone();
                 } else if (P_Node[i] == 12) {
-                    Node = knight_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
+                    Node = knight_generatemove_max_w(P_Node, i, depth,alpha,beta,node1).clone();
                 } else if (P_Node[i] == 13) {
-                    Node = bishop_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
+                    Node = bishop_generatemove_max_w(P_Node, i, depth,alpha,beta,node1).clone();
                }
               else if (P_Node[i] == 14) {
-                    Node = queen_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
+                    Node = queen_generatemove_max_w(P_Node, i, depth,alpha,beta,node1).clone();
                 }
                 else if (P_Node[i] == 15) {
-                    Node = king_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
+                    Node = king_generatemove_max_w(P_Node, i, depth,alpha,beta,node1).clone();
                 }
                 else if (P_Node[i] == 16) {
-                    Node = pawn_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
+                    Node = pawn_generatemove_max_w(P_Node, i, depth,alpha,beta,node1).clone();
                 }
                 else if (P_Node[i] == 17) {
-                    Node = f_pawn_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
+                    Node = f_pawn_generatemove_max_w(P_Node, i, depth,alpha,beta,node1).clone();
                 }
-                if(Arrays.equals(Node,P_Node)) continue;
-                if (Evalstate_w(Node) >= best_val) {
+                if(Arrays.equals(Node,cut_node)||Arrays.equals(Node,P_Node)) {
+                    for(int j=0;j<64;j++) node1[j] = temp_node[j] ;
+                    continue ;
+                }
+                if (Evalstate_w(node1) >= best_val) {
                     best_Node = Node.clone();
-                    best_val = Evalstate_w(Node);
-                    alpha = best_val ;
+                    best_val = Evalstate_w(node1);
+                    for(int j=0;j<64;j++) temp_node[j] = node1[j] ;
+                    if( best_val >=alpha  )alpha = best_val ;
+//                    if( alpha >=  beta ) return cut_node.clone();
                 }
-
+                else for(int j=0;j<64;j++) node1[j] = temp_node[j] ;
             }
             return best_Node.clone();
         }
     }
 
-    public int[] MinMove(int[] node, int depth,int alpha,int beta) {
+    public int[] MinMove(int[] node, int depth,int alpha,int beta,int[] node1) {
+
         int[] P_Node = node.clone(); //매개변수로 받은 배열 복사
-        int best_val = Evalstate_w(P_Node);
+        int best_val =  10000 ;
         int[] best_Node = node.clone();
         int[] Node = node.clone() ;
-        if (depth == 0) return best_Node;
+        int[] temp_node =new int[64] ; plus_infinity(temp_node);
+        if (depth == 0) {
+            for(int i=0;i<64;i++) node1[i] = best_Node[i] ;
+            return best_Node.clone() ;
+        }
         else {
             for (int i = 0; i < 64; i++) {
+                if(!(P_Node[i]>=1&& P_Node[i]==7)) continue ;
+                if(!(Arrays.equals(node1,number))) for(int j=0;j<64;j++) temp_node[j] = node1[j] ;
                 if (P_Node[i] == 1) {
-                    Node = rook_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
+                    Node = rook_generatemove_min_b(P_Node, i, depth,alpha,beta,node1).clone();
                 } else if (P_Node[i] == 2) {
-                    Node = knight_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
+                    Node = knight_generatemove_min_b(P_Node, i, depth,alpha,beta,node1).clone();
                 } else if (P_Node[i] == 3) {
-                    Node = bishop_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
+                    Node = bishop_generatemove_min_b(P_Node, i, depth,alpha,beta,node1).clone();
                 }
                 else if (P_Node[i] == 4) {
-                    Node = queen_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
+                    Node = queen_generatemove_min_b(P_Node, i, depth,alpha,beta,node1).clone();
                 }
                 else if (P_Node[i] == 5) {
-                    Node = king_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
+                    Node = king_generatemove_min_b(P_Node, i, depth,alpha,beta,node1).clone();
                 }
                 else if (P_Node[i] == 6) {
-                    Node = pawn_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
+                    Node = pawn_generatemove_min_b(P_Node, i, depth,alpha,beta,node1).clone();
                 }
                 else if (P_Node[i] == 7) {
-                    Node = f_pawn_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
+                    Node = f_pawn_generatemove_min_b(P_Node, i, depth,alpha,beta,node1).clone();
                 }
-                if(Arrays.equals(Node,P_Node)) continue;
-                if (Evalstate_w(Node) <= best_val) {
+                if(Arrays.equals(Node,cut_node)||Arrays.equals(Node,P_Node)) {
+                    for(int j=0;j<64;j++) node1[j] = temp_node[j] ;
+                    continue ;
+                }
+
+                if (Evalstate_w(node1) <= best_val ) {
                     best_Node = Node.clone();
-                    best_val = Evalstate_w(Node);
-                    beta = best_val ;
+                    best_val = Evalstate_w(node1);
+                    for(int j=0;j<64;j++) temp_node[j] = node1[j] ;
+                    if( best_val <= beta ) beta = best_val ;
+//                    if( beta <= alpha  ) return cut_node.clone();
                 }
+                else for(int j=0;j<64;j++) node1[j] = temp_node[j] ;
 
             }
             return best_Node.clone();
@@ -1429,13 +1459,20 @@ public class Ai_w_Activity extends AppCompatActivity {
         }
         return value;
     }
+    void minus_infinity(int[] node) {
+        for(int i=0;i<64;i++) node[i]= 5 ; // value = - 64000 ;
+    }
+    void plus_infinity(int[] node) {
+        for(int i=0;i<64;i++) node[i] = 15 ; // value = + 64000 ;
+    }
 
-    public int[] rook_generatemove_max_w(int[] P_Node, int spot, int depth,int alpha,int beta) {
+    public int[] rook_generatemove_max_w(int[] P_Node, int spot, int depth,int alpha,int beta,int[] node1) {
         int[] move;
         int[] node = P_Node.clone();
         int[] best_move = P_Node.clone();
-        int best_val =  Evalstate_w(P_Node);
+        int best_val =  -10000;
         int[] temp_node;
+        int[] node2 = new int[64]; minus_infinity(node2);
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         else {
             for (int a = spot + 8; a < 64; a = a + 8) {//하
@@ -1447,17 +1484,22 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) >= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            alpha = best_val ;
-                        }
-                       if(beta <= alpha ) return best_move.clone() ;
+                        node2 = node1.clone() ; // 현재까지의 best_val = node2
+                        move = MinMove(node, depth - 1,alpha,beta,node1).clone();
 
                         node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)) {
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
+                        }
+
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) >= best_val ) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -1471,15 +1513,21 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MinMove(node, depth - 1,alpha,beta).clone();
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) >= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            alpha = best_val ;
-                        }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        node2 = node1.clone() ;
+                        move = MinMove(node, depth - 1,alpha,beta,node1).clone();
                         node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)) {
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
+                        }
+
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) >= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -1494,15 +1542,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MinMove(node, depth - 1,alpha,beta).clone();
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) >= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            alpha = best_val ;
-                        }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        node2 = node1.clone() ;
+                        move = MinMove(node, depth - 1,alpha,beta,node1).clone();
                         node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)) {
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
+                        }
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) >= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -1517,16 +1570,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) >= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            alpha = best_val ;
-                        }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        node2 = node1.clone() ;
+                        move = MinMove(node, depth - 1,alpha,beta,node1).clone();
                         node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)) {
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
+                        }
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) >= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     }
                     if (P_Node[a] != 0) break;
                 }
@@ -1534,12 +1591,13 @@ public class Ai_w_Activity extends AppCompatActivity {
             return best_move.clone();
         }
     }
-    public int[] knight_generatemove_max_w(int []P_Node,int spot,int depth,int alpha,int beta) {
+    public int[] knight_generatemove_max_w(int []P_Node,int spot,int depth,int alpha,int beta,int[] node1) {
         int []move;
         int []node = P_Node.clone();
         int []best_move=P_Node.clone();
-        int best_val =  Evalstate_w(P_Node);
+        int best_val =  -10000;
         int []temp_node ;
+        int[] node2 = new int[64]; minus_infinity(node2);
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         int a;
         a=spot+(8*2)+1 ;//우 대각 아래(2) down-2 right-1
@@ -1551,15 +1609,18 @@ public class Ai_w_Activity extends AppCompatActivity {
             // 한 칸 옮겼을때 상태 저장
             temp_node = node.clone() ;
             // 깊이 0까지 탐색
-            move = MinMove(node,depth-1,alpha,beta).clone();
-
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (Evalstate_w(move) >= best_val ) {
-                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                best_val = Evalstate_w(move);
-                alpha = best_val ;
+            node2 = node1.clone() ;
+            move = MinMove(node,depth-1,alpha,beta,node1).clone();
+            if(Arrays.equals(move,cut_node)) {
+                for(int j=0;j<64;j++) node1[j] = node2[j] ;
             }
-            if(beta <= alpha ) return best_move.clone() ;
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            else if (Evalstate_w(node1) >= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(node1);
+                node2 = node1.clone();
+            }
+            else for(int j=0;j<64;j++) node1[j] = node2[j] ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1572,15 +1633,18 @@ public class Ai_w_Activity extends AppCompatActivity {
             // 한 칸 옮겼을때 상태 저장
             temp_node = node.clone() ;
             // 깊이 0까지 탐색
-            move = MinMove(node,depth-1,alpha,beta).clone();
-
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (Evalstate_w(move) >= best_val ) {
-                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                best_val = Evalstate_w(move);
-                alpha = best_val ;
+            node2 = node1.clone() ;
+            move = MinMove(node,depth-1,alpha,beta,node1).clone();
+            if(Arrays.equals(move,cut_node)) {
+                for(int j=0;j<64;j++) node1[j] = node2[j] ;
             }
-            if(beta <= alpha ) return best_move.clone() ;
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            else if (Evalstate_w(node1) >= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(node1);
+                node2 = node1.clone();
+            }
+            else for(int j=0;j<64;j++) node1[j] = node2[j] ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1593,14 +1657,18 @@ public class Ai_w_Activity extends AppCompatActivity {
             // 한 칸 옮겼을때 상태 저장
             temp_node = node.clone() ;
             // 깊이 0까지 탐색
-            move = MinMove(node,depth-1,alpha,beta).clone();
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (Evalstate_w(move) >= best_val ) {
-                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                best_val = Evalstate_w(move);
-                alpha = best_val ;
+            node2 = node1.clone() ;
+            move = MinMove(node,depth-1,alpha,beta,node1).clone();
+            if(Arrays.equals(move,cut_node)) {
+                for(int j=0;j<64;j++) node1[j] = node2[j] ;
             }
-            if(beta <= alpha ) return best_move.clone() ;
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            else if (Evalstate_w(node1) >= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(node1);
+                node2 = node1.clone();
+            }
+            else for(int j=0;j<64;j++) node1[j] = node2[j] ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1613,14 +1681,18 @@ public class Ai_w_Activity extends AppCompatActivity {
             // 한 칸 옮겼을때 상태 저장
             temp_node = node.clone() ;
             // 깊이 0까지 탐색
-            move = MinMove(node,depth-1,alpha,beta).clone();
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (Evalstate_w(move) >= best_val ) {
-                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                best_val = Evalstate_w(move);
-                alpha = best_val ;
+            node2 = node1.clone() ;
+            move = MinMove(node,depth-1,alpha,beta,node1).clone();
+            if(Arrays.equals(move,cut_node)) {
+                for(int j=0;j<64;j++) node1[j] = node2[j] ;
             }
-            if(beta <= alpha ) return best_move.clone() ;
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            else if (Evalstate_w(node1) >= best_val) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(node1);
+                node2 = node1.clone();
+            }
+            else for(int j=0;j<64;j++) node1[j] = node2[j] ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1633,14 +1705,18 @@ public class Ai_w_Activity extends AppCompatActivity {
             // 한 칸 옮겼을때 상태 저장
             temp_node = node.clone() ;
             // 깊이 0까지 탐색
-            move = MinMove(node,depth-1,alpha,beta).clone();
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (Evalstate_w(move) >= best_val ) {
-                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                best_val = Evalstate_w(move);
-                alpha = best_val ;
+            node2 = node1.clone() ;
+            move = MinMove(node,depth-1,alpha,beta,node1).clone();
+            if(Arrays.equals(move,cut_node))  {
+                for(int j=0;j<64;j++) node1[j] = node2[j] ;
             }
-            if(beta <= alpha ) return best_move.clone() ;
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            else if (Evalstate_w(node1) >= best_val) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(node1);
+                node2 = node1.clone();
+            }
+            else for(int j=0;j<64;j++) node1[j] = node2[j] ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1653,15 +1729,18 @@ public class Ai_w_Activity extends AppCompatActivity {
             // 한 칸 옮겼을때 상태 저장
             temp_node = node.clone() ;
             // 깊이 0까지 탐색
-            move = MinMove(node,depth-1,alpha,beta).clone();
-
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (Evalstate_w(move) >= best_val ) {
-                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                best_val = Evalstate_w(move);
-                alpha = best_val ;
+            node2 = node1.clone() ;
+            move = MinMove(node,depth-1,alpha,beta,node1).clone();
+            if(Arrays.equals(move,cut_node)) {
+                for(int j=0;j<64;j++) node1[j] = node2[j] ;
             }
-            if(beta <= alpha ) return best_move.clone() ;
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            else if (Evalstate_w(node1) >= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(node1);
+                node2 = node1.clone();
+            }
+            else for(int j=0;j<64;j++) node1[j] = node2[j] ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1674,15 +1753,18 @@ public class Ai_w_Activity extends AppCompatActivity {
             // 한 칸 옮겼을때 상태 저장
             temp_node = node.clone() ;
             // 깊이 0까지 탐색
-            move = MinMove(node,depth-1,alpha,beta).clone();
-
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (Evalstate_w(move) >= best_val ) {
-                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                best_val = Evalstate_w(move);
-                alpha = best_val ;
+            node2 = node1.clone() ;
+            move = MinMove(node,depth-1,alpha,beta,node1).clone();
+            if(Arrays.equals(move,cut_node))  {
+                for(int j=0;j<64;j++) node1[j] = node2[j] ;
             }
-            if(beta <= alpha ) return best_move.clone() ;
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            else if (Evalstate_w(node1) >= best_val) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(node1);
+                node2 = node1.clone();
+            }
+            else for(int j=0;j<64;j++) node1[j] = node2[j] ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -1695,26 +1777,30 @@ public class Ai_w_Activity extends AppCompatActivity {
             // 한 칸 옮겼을때 상태 저장
             temp_node = node.clone() ;
             // 깊이 0까지 탐색
-            move = MinMove(node,depth-1,alpha,beta).clone();
-
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (Evalstate_w(move) >= best_val ) {
-                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                best_val = Evalstate_w(move);
-                alpha = best_val ;
+            node2 = node1.clone() ;
+            move = MinMove(node,depth-1,alpha,beta,node1).clone();
+            if(Arrays.equals(move,cut_node))  {
+                for(int j=0;j<64;j++) node1[j] = node2[j] ;
             }
-            if(beta <= alpha ) return best_move.clone() ;
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            else if (Evalstate_w(node1) >= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(node1);
+                node2 = node1.clone();
+            }
+            else for(int j=0;j<64;j++) node1[j] = node2[j] ;
             node= P_Node.clone(); // 원상태로
         }
         }
         return best_move.clone() ;
     }
-    public int[] bishop_generatemove_max_w(int[] P_Node, int spot, int depth,int alpha,int beta) {
+    public int[] bishop_generatemove_max_w(int[] P_Node, int spot, int depth,int alpha,int beta,int[] node1) {
         int[] move;
         int[] node = P_Node.clone();
         int[] best_move = P_Node.clone();
-        int best_val = Evalstate_w(P_Node);
+        int best_val = -10000;
         int[] temp_node;
+        int[] node2 = new int[64]; minus_infinity(node2);
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         else {
             for (int a = 0; a < 8 - ((spot % 8) + 1); a++) {//우 대각 아래
@@ -1727,15 +1813,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) >= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            alpha = best_val ;
+                        node2 = node1.clone() ;
+                        move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                        node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)) {
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
                         }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) >= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -1751,15 +1842,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) >= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            alpha = best_val ;
+                        node2 = node1.clone() ;
+                        move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                        node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)){
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
                         }
-                        if(beta <= alpha ) return best_move.clone();
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) >= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -1775,15 +1871,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) >= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            alpha = best_val ;
+                        node2 = node1.clone() ;
+                        move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                        node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)) {
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
                         }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) >= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -1799,15 +1900,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) >= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            alpha = best_val ;
+                        node2 = node1.clone() ;
+                        move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                        node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)) {
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
                         }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) >= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -1816,12 +1922,13 @@ public class Ai_w_Activity extends AppCompatActivity {
             return best_move.clone();
         }
     }
-    public int[] queen_generatemove_max_w(int []P_Node,int spot,int depth,int alpha,int beta) {
+    public int[] queen_generatemove_max_w(int []P_Node,int spot,int depth,int alpha,int beta,int[] node1) {
         int[] move;
         int[] node = P_Node.clone();
         int[] best_move = P_Node.clone();
-        int best_val =  Evalstate_w(P_Node);
+        int best_val =  -10000;
         int[] temp_node;
+        int[] node2 = new int[64]; minus_infinity(node2);
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
 
         for (int a = spot + 8; a < 64; a = a + 8) {//하
@@ -1833,15 +1940,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) >= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        alpha = best_val ;
+                    node2 = node1.clone() ;
+                    move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                        continue ;
                     }
-                    if(beta <= alpha ) return best_move.clone();
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(node1) >= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[a] != 0) break;
@@ -1856,15 +1968,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MinMove(node, depth - 1,alpha,beta).clone();
-
+                    node2 = node1.clone() ;
+                    move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                        continue ;
+                    }
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) >= best_val) {
+                    if (Evalstate_w(node1) >= best_val) {
                         best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        alpha = best_val ;
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
                 }
-                 if(beta <= alpha ) return best_move.clone();
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[a] != 0) break;
@@ -1880,15 +1997,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) >= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        alpha = best_val ;
+                    node2 = node1.clone() ;
+                    move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                        continue ;
                     }
-                    if(beta <= alpha ) return best_move.clone();
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(node1) >= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -1904,15 +2026,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) >= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        alpha = best_val ;
+                    node2 = node1.clone() ;
+                    move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                        continue ;
                     }
-                    if(beta <= alpha ) return best_move.clone();
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(node1) >= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -1928,15 +2055,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) >= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        alpha = best_val ;
+                    node2 = node1.clone() ;
+                    move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                        continue ;
                     }
-                    if(beta <= alpha ) return best_move.clone();
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(node1) >= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -1952,15 +2084,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) >= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        alpha = best_val ;
+                    node2 = node1.clone() ;
+                    move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)){
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                        continue ;
                     }
-                    if(beta <= alpha ) return best_move.clone();
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(node1) >= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -1976,15 +2113,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) >= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        alpha = best_val ;
+                    node2 = node1.clone() ;
+                    move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                        continue ;
                     }
-                    if(beta <= alpha ) return best_move.clone();
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(node1) >= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2000,15 +2142,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) >= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        alpha = best_val ;
+                    node2 = node1.clone() ;
+                    move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                        continue ;
                     }
-                    if(beta <= alpha ) return best_move.clone();
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(node1) >= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2016,12 +2163,13 @@ public class Ai_w_Activity extends AppCompatActivity {
         }
         return best_move ;
     }
-    public int[] king_generatemove_max_w(int []P_Node,int spot,int depth,int alpha,int beta) {
+    public int[] king_generatemove_max_w(int []P_Node,int spot,int depth,int alpha,int beta,int[] node1) {
         int []move;
         int []node = P_Node.clone();
         int []best_move=P_Node.clone();
-        int best_val =  Evalstate_w(P_Node);
+        int best_val =  -10000;
         int []temp_node ;
+        int[] node2 = new int[64]; minus_infinity(node2);
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();;
         int k = spot + 1; //우
         if (in_board(k) && 8 - spot % 8 - 1 >= 1) {
@@ -2032,15 +2180,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) >= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    alpha = best_val ;
+                node2 = node1.clone() ;
+                move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)) {
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone();
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) >= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2053,15 +2205,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) >= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    alpha = best_val ;
+                node2 = node1.clone() ;
+                move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)) {
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone();
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) >= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2074,15 +2230,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) >= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    alpha = best_val ;
+                node2 = node1.clone() ;
+                move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)) {
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone();
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) >= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2096,15 +2256,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) >= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    alpha = best_val ;
+                node2 = node1.clone() ;
+                move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)){
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone();
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) >= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2118,15 +2282,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) >= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    alpha = best_val ;
+                node2 = node1.clone() ;
+                move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)) {
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone() ;
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) >= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2139,15 +2307,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) >= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    alpha = best_val ;
+                node2 = node1.clone() ;
+                move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)) {
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone() ;
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) >= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2160,15 +2332,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) >= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    alpha = best_val ;
+                node2 = node1.clone() ;
+                move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node))  {
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone() ;
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) >= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -2181,26 +2357,31 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) >= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    alpha = best_val ;
+                node2 = node1.clone() ;
+                move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)) {
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone() ;
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) >= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
         return best_move.clone() ;
     }
-    public int[] pawn_generatemove_max_w(int []P_Node, int spot, int depth,int alpha,int beta){
+    public int[] pawn_generatemove_max_w(int []P_Node, int spot, int depth,int alpha,int beta,int[] node1){
         int[] move;
         int[] node = P_Node.clone();
         int[] best_move = P_Node.clone();
-        int best_val =  Evalstate_w(P_Node);
+        int best_val =  -10000;
         int[] temp_node;
+        int[] node2 = new int[64]; minus_infinity(node2);
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         else {
             for(int a = spot + 8; a <= spot + 8; a = a + 8) {
@@ -2235,15 +2416,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) >= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            alpha = best_val ;
+                        node2 = node1.clone() ;
+                        move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                        node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)) {
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
                         }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) >= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2284,15 +2470,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) >= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        alpha = best_val ;
+                    node2 = node1.clone() ;
+                    move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     }
-                    if(beta <= alpha ) return best_move.clone() ;
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    else if (Evalstate_w(node1) >= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
             }
@@ -2331,15 +2521,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) >= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        alpha = best_val ;
+                    node2 = node1.clone() ;
+                    move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     }
-                    if(beta <= alpha ) return best_move.clone() ;
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    else if (Evalstate_w(node1) >= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
             }
@@ -2352,15 +2546,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) >= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    alpha = best_val ;
+                node2 = node1.clone() ;
+                move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)) {
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone() ;
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) >= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
             if (8 - spot % 8 - 1 >= 1 && enpassant[spot - 1] == 1 && P_Node[spot + 7] == 0){
@@ -2371,26 +2569,31 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) >= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    alpha = best_val ;
+                node2 = node1.clone() ;
+                move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)) {
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone() ;
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) >= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
         return best_move;
     }
-    public int[] f_pawn_generatemove_max_w(int []P_Node, int spot, int depth,int alpha,int beta){
+    public int[] f_pawn_generatemove_max_w(int []P_Node, int spot, int depth,int alpha,int beta,int[] node1){
         int[] move;
         int[] node = P_Node.clone();
         int[] best_move = P_Node.clone();
-        int best_val = Evalstate_w(best_move);
+        int best_val = -10000;
         int[] temp_node;
+        int[] node2 = new int[64]; minus_infinity(node2);
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_move;
         else {
             for (int a = spot + 8; a <= spot + 16; a = a + 8) {
@@ -2401,15 +2604,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) >= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            alpha = best_val ;
+                        node2 = node1.clone() ;
+                        move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                        node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)) {
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
                         }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        else if (Evalstate_w(node1) >= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2424,15 +2632,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) >= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        alpha = best_val ;
+                    node2 = node1.clone() ;
+                    move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     }
-                    if(beta <= alpha ) return best_move.clone() ;
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    else if (Evalstate_w(node1) >= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
             }
@@ -2445,15 +2657,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) >= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        alpha = best_val ;
+                    node2 = node1.clone() ;
+                    move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     }
-                    if(beta <= alpha ) return best_move.clone() ;
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    else if (Evalstate_w(node1) >= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
             }
@@ -2462,12 +2678,13 @@ public class Ai_w_Activity extends AppCompatActivity {
     }
 
 
-    public int[] rook_generatemove_min_b(int[] P_Node, int spot, int depth,int alpha,int beta) {
+    public int[] rook_generatemove_min_b(int[] P_Node, int spot, int depth,int alpha,int beta,int[] node1) {
         int[] move;
         int[] node = P_Node.clone();
         int[] best_move = P_Node.clone();
-        int best_val = Evalstate_w(P_Node);
+        int best_val = 10000;
         int[] temp_node;
+        int[] node2=new int[64] ; plus_infinity(node2);
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         else {
             for (int a = spot + 8; a < 64; a = a + 8) {//하
@@ -2479,15 +2696,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) <= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            beta = best_val ;
+                        node2 = node1.clone() ;
+                        move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                        node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)){
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
                         }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) <= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2503,15 +2725,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) <= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            beta = best_val ;
+                        node2 = node1.clone() ;
+                        move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                        node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)) {
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
                         }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) <= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2527,15 +2754,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) <= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            beta = best_val ;
+                        node2 = node1.clone() ;
+                        move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                        node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)) {
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
                         }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) <= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2551,15 +2783,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) <= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            beta = best_val ;
+                        node2 = node1.clone() ;
+                        move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                        node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)) {
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
                         }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) <= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -2568,12 +2805,13 @@ public class Ai_w_Activity extends AppCompatActivity {
             return best_move.clone();
         }
     }
-    public int[] knight_generatemove_min_b(int []P_Node,int spot,int depth,int alpha,int beta) {
+    public int[] knight_generatemove_min_b(int []P_Node,int spot,int depth,int alpha,int beta,int[] node1) {
         int []move;
         int []node = P_Node.clone();
         int []best_move=P_Node.clone();
-        int best_val =  Evalstate_w(P_Node);
+        int best_val =  10000;
         int []temp_node ;
+        int[] node2=new int[64] ; plus_infinity(node2);
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         int a;
         a=spot+(8*2)+1 ;//우 대각 아래(2) down-2 right-1
@@ -2585,15 +2823,19 @@ public class Ai_w_Activity extends AppCompatActivity {
             // 한 칸 옮겼을때 상태 저장
             temp_node = node.clone() ;
             // 깊이 0까지 탐색
-            move = MaxMove(node,depth-1,alpha,beta).clone();
-
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (Evalstate_w(move) <= best_val ) {
-                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                best_val = Evalstate_w(move);
-                beta = best_val ;
+            node2 = node1.clone() ;
+            move = MaxMove(node,depth-1,alpha,beta,node1).clone();
+            node = P_Node.clone(); // 원상태로
+            if(Arrays.equals(move,cut_node)) {
+                for(int j=0;j<64;j++) node1[j] = node2[j] ;
             }
-            if(beta <= alpha ) return best_move.clone() ;
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            else if (Evalstate_w(node1) <= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(node1);
+                node2 = node1.clone();
+            }
+            else for(int j=0;j<64;j++) node1[j] = node2[j] ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2606,15 +2848,20 @@ public class Ai_w_Activity extends AppCompatActivity {
             // 한 칸 옮겼을때 상태 저장
             temp_node = node.clone() ;
             // 깊이 0까지 탐색
-            move = MaxMove(node,depth-1,alpha,beta).clone();
-
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (Evalstate_w(move) <= best_val ) {
-                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                best_val = Evalstate_w(move);
-                beta = best_val ;
+            node2 = node1.clone() ;
+            move = MaxMove(node,depth-1,alpha,beta,node1).clone();
+            node = P_Node.clone(); // 원상태로
+            if(Arrays.equals(move,cut_node)) {
+                for(int j=0;j<64;j++) node1[j] = node2[j] ;
             }
-            if(beta <= alpha ) return best_move.clone() ;
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            else if (Evalstate_w(node1) <= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(node1);
+                node1 = move.clone() ;
+                node2 = node1.clone();
+            }
+            else for(int j=0;j<64;j++) node1[j] = node2[j] ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2627,15 +2874,19 @@ public class Ai_w_Activity extends AppCompatActivity {
             // 한 칸 옮겼을때 상태 저장
             temp_node = node.clone() ;
             // 깊이 0까지 탐색
-            move = MaxMove(node,depth-1,alpha,beta).clone();
-
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (Evalstate_w(move) <= best_val ) {
-                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                best_val = Evalstate_w(move);
-                beta = best_val ;
+            node2 = node1.clone() ;
+            move = MaxMove(node,depth-1,alpha,beta,node1).clone();
+            node = P_Node.clone(); // 원상태로
+            if(Arrays.equals(move,cut_node)) {
+                for(int j=0;j<64;j++) node1[j] = node2[j] ;
             }
-            if(beta <= alpha ) return best_move.clone() ;
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            else if (Evalstate_w(node1) <= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(node1);
+                node2 = node1.clone();
+            }
+            else for(int j=0;j<64;j++) node1[j] = node2[j] ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2648,15 +2899,19 @@ public class Ai_w_Activity extends AppCompatActivity {
             // 한 칸 옮겼을때 상태 저장
             temp_node = node.clone() ;
             // 깊이 0까지 탐색
-            move = MaxMove(node,depth-1,alpha,beta).clone();
-
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (Evalstate_w(move) <= best_val ) {
-                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                best_val = Evalstate_w(move);
-                beta = best_val ;
+            node2 = node1.clone() ;
+            move = MaxMove(node,depth-1,alpha,beta,node1).clone();
+            node = P_Node.clone(); // 원상태로
+            if(Arrays.equals(move,cut_node)) {
+                for(int j=0;j<64;j++) node1[j] = node2[j] ;
             }
-            if(beta <= alpha ) return best_move.clone() ;
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            else if (Evalstate_w(node1) <= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(node1);
+                node2 = node1.clone();
+            }
+            else for(int j=0;j<64;j++) node1[j] = node2[j] ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2669,15 +2924,19 @@ public class Ai_w_Activity extends AppCompatActivity {
             // 한 칸 옮겼을때 상태 저장
             temp_node = node.clone() ;
             // 깊이 0까지 탐색
-            move = MinMove(node,depth-1,alpha,beta).clone();
-
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (Evalstate_w(move) <= best_val ) {
-                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                best_val = Evalstate_w(move);
-                beta = best_val ;
+            node2 = node1.clone() ;
+            move = MinMove(node,depth-1,alpha,beta,node1).clone();
+            node = P_Node.clone(); // 원상태로
+            if(Arrays.equals(move,cut_node))  {
+                for(int j=0;j<64;j++) node1[j] = node2[j] ;
             }
-            if(beta <= alpha ) return best_move.clone() ;
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            else if (Evalstate_w(node1) <= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(node1);
+                node2 = node1.clone();
+            }
+            else for(int j=0;j<64;j++) node1[j] = node2[j] ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2690,15 +2949,19 @@ public class Ai_w_Activity extends AppCompatActivity {
             // 한 칸 옮겼을때 상태 저장
             temp_node = node.clone() ;
             // 깊이 0까지 탐색
-            move = MaxMove(node,depth-1,alpha,beta).clone();
-
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (Evalstate_w(move) <= best_val ) {
-                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                best_val = Evalstate_w(move);
-                beta = best_val ;
+            node2 = node1.clone() ;
+            move = MaxMove(node,depth-1,alpha,beta,node1).clone();
+            node = P_Node.clone(); // 원상태로
+            if(Arrays.equals(move,cut_node))  {
+                for(int j=0;j<64;j++) node1[j] = node2[j] ;
             }
-            if(beta <= alpha ) return best_move.clone() ;
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            else if (Evalstate_w(node1) <= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(node1);
+                node2 = node1.clone();
+            }
+            else for(int j=0;j<64;j++) node1[j] = node2[j] ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2711,15 +2974,19 @@ public class Ai_w_Activity extends AppCompatActivity {
             // 한 칸 옮겼을때 상태 저장
             temp_node = node.clone() ;
             // 깊이 0까지 탐색
-            move = MaxMove(node,depth-1,alpha,beta).clone();
-
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (Evalstate_w(move) <= best_val ) {
-                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                best_val = Evalstate_w(move);
-                beta = best_val ;
+            node2 = node1.clone() ;
+            move = MaxMove(node,depth-1,alpha,beta,node1).clone();
+            node = P_Node.clone(); // 원상태로
+            if(Arrays.equals(move,cut_node)) {
+                for(int j=0;j<64;j++) node1[j] = node2[j] ;
             }
-            if(beta <= alpha ) return best_move.clone() ;
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            else if (Evalstate_w(node1) <= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(node1);
+                node2 = node1.clone();
+            }
+            else for(int j=0;j<64;j++) node1[j] = node2[j] ;
             node= P_Node.clone(); // 원상태로
         }
         }
@@ -2732,26 +2999,31 @@ public class Ai_w_Activity extends AppCompatActivity {
             // 한 칸 옮겼을때 상태 저장
             temp_node = node.clone() ;
             // 깊이 0까지 탐색
-            move = MaxMove(node,depth-1,alpha,beta).clone();
-
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (Evalstate_w(move) <= best_val ) {
-                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                best_val = Evalstate_w(move);
-                beta = best_val ;
+            node2 = node1.clone() ;
+            move = MaxMove(node,depth-1,alpha,beta,node1).clone();
+            node = P_Node.clone(); // 원상태로
+            if(Arrays.equals(move,cut_node)){
+                for(int j=0;j<64;j++) node1[j] = node2[j] ;
             }
-            if(beta <= alpha ) return best_move.clone() ;
+            // 깊이 0까지에서의 value >= 현재까지의 best_val
+            else if (Evalstate_w(node1) <= best_val ) {
+                best_move=temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                best_val = Evalstate_w(node1);
+                node2 = node1.clone();
+            }
+            else for(int j=0;j<64;j++) node1[j] = node2[j] ;
             node= P_Node.clone(); // 원상태로
         }
         }
         return best_move ;
     }
-    public int[] bishop_generatemove_min_b(int[] P_Node, int spot, int depth,int alpha,int beta){
+    public int[] bishop_generatemove_min_b(int[] P_Node, int spot, int depth,int alpha,int beta,int[] node1){
         int[] move;
         int[] node = P_Node.clone();
         int[] best_move = P_Node.clone();
-        int best_val =  Evalstate_w(P_Node);
+        int best_val =  10000;
         int[] temp_node;
+        int[] node2=new int[64] ; plus_infinity(node2);
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         else {
             for (int a = 0; a < 8 - ((spot % 8) + 1); a++) {//우 대각 아래
@@ -2764,15 +3036,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) <= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            beta = best_val ;
+                        node2 = node1.clone() ;
+                        move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                        node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)){
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
                         }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) <= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -2788,15 +3065,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) <= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            beta = best_val ;
+                        node2 = node1.clone() ;
+                        move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                        node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)){
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
                         }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) <= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -2812,15 +3094,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) <= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            beta = best_val ;
+                        node2 = node1.clone() ;
+                        move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                        node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)) {
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
                         }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) <= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -2836,15 +3123,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) <= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            beta = best_val ;
+                        node2 = node1.clone() ;
+                        move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                        node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)){
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
                         }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) <= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[t] != 0) break;
@@ -2853,12 +3145,13 @@ public class Ai_w_Activity extends AppCompatActivity {
             return best_move.clone();
         }
     }
-    public int[] queen_generatemove_min_b(int []P_Node,int spot,int depth,int alpha,int beta) {
+    public int[] queen_generatemove_min_b(int []P_Node,int spot,int depth,int alpha,int beta,int[] node1) {
         int[] move;
         int[] node = P_Node.clone();
         int[] best_move = P_Node.clone();
-        int best_val = beta;
+        int best_val = 10000;
         int[] temp_node;
+        int[] node2=new int[64] ; plus_infinity(node2);
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
 
         for (int a = spot + 8; a < 64; a = a + 8) {//하
@@ -2870,15 +3163,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) <= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        beta = best_val ;
+                    node2 = node1.clone() ;
+                    move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                        continue ;
                     }
-                    if(beta <= alpha ) return best_move.clone() ;
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(node1) <= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[a] != 0) break;
@@ -2893,15 +3191,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) <= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        beta = best_val ;
+                    node2 = node1.clone() ;
+                    move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)){
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                        continue ;
                     }
-                    if(beta <= alpha ) return best_move.clone() ;
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(node1) <= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[a] != 0) break;
@@ -2917,15 +3220,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) <= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        beta = best_val ;
+                    node2 = node1.clone() ;
+                    move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                        continue ;
                     }
-                    if(beta <= alpha ) return best_move.clone() ;
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(node1) <= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2941,15 +3249,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) <= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        beta = best_val ;
+                    node2 = node1.clone() ;
+                    move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)){
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                        continue ;
                     }
-                    if(beta <= alpha ) return best_move.clone() ;
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(node1) <= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2965,15 +3278,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) <= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        beta = best_val ;
+                    node2 = node1.clone() ;
+                    move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)){
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                        continue ;
                     }
-                    if(beta <= alpha ) return best_move.clone() ;
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(node1) <= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -2989,15 +3307,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) <= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        beta = best_val ;
+                    node2 = node1.clone() ;
+                    move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                        continue ;
                     }
-                    if(beta <= alpha ) return best_move.clone() ;
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(node1) <= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -3013,15 +3336,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) <= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        beta = best_val ;
+                    node2 = node1.clone() ;
+                    move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)){
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                        continue ;
                     }
-                    if(beta <= alpha ) return best_move.clone() ;
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(node1) <= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -3037,15 +3365,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) <= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        beta = best_val ;
+                    node2 = node1.clone() ;
+                    move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                        continue ;
                     }
-                    if(beta <= alpha ) return best_move.clone() ;
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    if (Evalstate_w(node1) <= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
                 if (P_Node[t] != 0) break;
@@ -3053,12 +3386,13 @@ public class Ai_w_Activity extends AppCompatActivity {
         }
         return best_move.clone() ;
     }
-    public int[] king_generatemove_min_b(int []P_Node,int spot,int depth,int alpha,int beta) {
+    public int[] king_generatemove_min_b(int []P_Node,int spot,int depth,int alpha,int beta,int[] node1) {
         int []move;
         int []node = P_Node.clone();
         int []best_move=P_Node.clone();
-        int best_val = beta ;
+        int best_val = 10000;
         int []temp_node ;
+        int[] node2=new int[64] ; plus_infinity(node2);
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         int k = spot + 1; //우
         if (in_board(k) && 8 - spot % 8 - 1 >= 1) {
@@ -3069,15 +3403,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) <= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    beta = best_val ;
+                node2 = node1.clone() ;
+                move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)) {
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone() ;
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) <= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3090,15 +3428,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) <= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    beta = best_val ;
+                node2 = node1.clone() ;
+                move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)){
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone() ;
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) <= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3111,15 +3453,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) <= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    beta = best_val ;
+                node2 = node1.clone() ;
+                move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node))  {
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone() ;
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) <= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3133,15 +3479,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) <= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    beta = best_val ;
+                node2 = node1.clone() ;
+                move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)){
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone() ;
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) <= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3155,15 +3505,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) <= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    beta = best_val ;
+                node2 = node1.clone() ;
+                move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)) {
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone() ;
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) <= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3176,15 +3530,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) <= best_val ) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    beta = best_val ;
+                node2 = node1.clone() ;
+                move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)){
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone() ;
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) <= best_val ) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3197,15 +3555,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) <= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    beta = best_val ;
+                node2 = node1.clone() ;
+                move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)){
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone() ;
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) <= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
@@ -3218,26 +3580,31 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) <= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    beta = best_val ;
+                node2 = node1.clone() ;
+                move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)){
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone() ;
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) <= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
         }
         return best_move ;
     }
-    public int[] pawn_generatemove_min_b(int []P_Node, int spot, int depth,int alpha,int beta) {
+    public int[] pawn_generatemove_min_b(int []P_Node, int spot, int depth,int alpha,int beta,int[] node1) {
         int[] move;
         int[] node = P_Node.clone();
         int[] best_move = P_Node.clone();
-        int best_val =  Evalstate_w(P_Node);
+        int best_val =  10000;
         int[] temp_node;
+        int[] node2=new int[64] ; plus_infinity(node2);
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         else {
             for (int a = spot - 8; a >= spot - 8; a = a - 8) {
@@ -3272,15 +3639,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) <= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            beta = best_val ;
+                        node2 = node1.clone() ;
+                        move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                        node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)) {
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
                         }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) <= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -3320,15 +3692,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) <= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        beta = best_val ;
+                    node2 = node1.clone() ;
+                    move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     }
-                    if(beta <= alpha ) return best_move.clone() ;
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    else if (Evalstate_w(node1) <= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
             }
@@ -3366,15 +3742,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) <= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        beta = best_val ;
+                    node2 = node1.clone() ;
+                    move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)){
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     }
-                    if(beta <= alpha ) return best_move.clone() ;
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    else if (Evalstate_w(node1) <= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
             }
@@ -3387,15 +3767,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) >= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    beta = best_val ;
+                node2 = node1.clone() ;
+                move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node)){
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone() ;
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) >= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
             if (8 - spot % 8 - 1 >= 1 && enpassant[spot + 1] == 1 && P_Node[spot - 7] == 0){
@@ -3406,26 +3790,31 @@ public class Ai_w_Activity extends AppCompatActivity {
                 // 한 칸 옮겼을때 상태 저장
                 temp_node = node.clone();
                 // 깊이 0까지 탐색
-                move = MinMove(node, depth - 1,alpha,beta).clone();
-
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (Evalstate_w(move) >= best_val) {
-                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                    best_val = Evalstate_w(move);
-                    beta = best_val ;
+                node2 = node1.clone() ;
+                move = MinMove(node, depth - 1,alpha,beta,node1).clone();
+                node = P_Node.clone(); // 원상태로
+                if(Arrays.equals(move,cut_node))  {
+                    for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 }
-                if(beta <= alpha ) return best_move.clone() ;
+                // 깊이 0까지에서의 value >= 현재까지의 best_val
+                else if (Evalstate_w(node1) >= best_val) {
+                    best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                    best_val = Evalstate_w(node1);
+                    node2 = node1.clone();
+                }
+                else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                 node = P_Node.clone(); // 원상태로
             }
 
         }
         return best_move.clone();
     }
-    public int[] f_pawn_generatemove_min_b(int []P_Node, int spot, int depth,int alpha,int beta){
+    public int[] f_pawn_generatemove_min_b(int []P_Node, int spot, int depth,int alpha,int beta,int[] node1){
         int[] move;
         int[] node = P_Node.clone();
         int[] best_move = P_Node.clone();
-        int best_val =  Evalstate_w(P_Node);
+        int best_val =  10000;
+        int[] node2=new int[64] ; plus_infinity(node2);
         int[] temp_node;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_move.clone();
         else {
@@ -3437,15 +3826,20 @@ public class Ai_w_Activity extends AppCompatActivity {
                         // 한 칸 옮겼을때 상태 저장
                         temp_node = node.clone();
                         // 깊이 0까지 탐색
-                        move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (Evalstate_w(move) <= best_val) {
-                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                            best_val = Evalstate_w(move);
-                            beta = best_val ;
+                        node2 = node1.clone() ;
+                        move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                        node = P_Node.clone(); // 원상태로
+                        if(Arrays.equals(move,cut_node)){
+                            for(int j=0;j<64;j++) node1[j] = node2[j] ;
+                            continue ;
                         }
-                        if(beta <= alpha ) return best_move.clone() ;
+                        // 깊이 0까지에서의 value >= 현재까지의 best_val
+                        if (Evalstate_w(node1) <= best_val) {
+                            best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                            best_val = Evalstate_w(node1);
+                            node2 = node1.clone();
+                        }
+                        else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                         node = P_Node.clone(); // 원상태로
                     }
                     if (P_Node[a] != 0) break;
@@ -3460,15 +3854,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) <= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        beta = best_val ;
+                    node2 = node1.clone() ;
+                    move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     }
-                    if(beta <= alpha ) return best_move.clone() ;
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    else if (Evalstate_w(node1) <= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
             }
@@ -3481,15 +3879,19 @@ public class Ai_w_Activity extends AppCompatActivity {
                     // 한 칸 옮겼을때 상태 저장
                     temp_node = node.clone();
                     // 깊이 0까지 탐색
-                    move = MaxMove(node, depth - 1,alpha,beta).clone();
-
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (Evalstate_w(move) <= best_val) {
-                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
-                        best_val = Evalstate_w(move);
-                        beta = best_val ;
+                    node2 = node1.clone() ;
+                    move = MaxMove(node, depth - 1,alpha,beta,node1).clone();
+                    node = P_Node.clone(); // 원상태로
+                    if(Arrays.equals(move,cut_node)) {
+                        for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     }
-                    if(beta <= alpha ) return best_move.clone() ;
+                    // 깊이 0까지에서의 value >= 현재까지의 best_val
+                    else if (Evalstate_w(node1) <= best_val) {
+                        best_move = temp_node.clone(); //  best_move 에는 한칸 옮겼을때의 temp_node 저장
+                        best_val = Evalstate_w(node1);
+                        node2 = node1.clone();
+                    }
+                    else for(int j=0;j<64;j++) node1[j] = node2[j] ;
                     node = P_Node.clone(); // 원상태로
                 }
             }

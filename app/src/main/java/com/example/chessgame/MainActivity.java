@@ -80,14 +80,7 @@ public class MainActivity extends AppCompatActivity {
     boolean[] flag = {false}; // 버튼 2번눌렀을때
     int count=0;
     boolean turn=false; //순서 표시, 처음에는 백 먼저
-    /*int [][]board_state=new int [50][64];//현재 보드 저장
-    int repeat[]={ 0,0,0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,0,0}; //반복횟수
-    boolean r=false;
-    int round=0;*/
+
 //---------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,9 +95,6 @@ public class MainActivity extends AppCompatActivity {
         draw_w=(Button)findViewById(R.id.draw_w);
         give_up_w=(Button)findViewById(R.id.give_up_w);
 
-       /* for(int i=0; i<64;i++)
-            board_state[0][i]=number[i];
-        round++;*/
 
         // 0~23 3번째 줄까지 추가해놓음
         block[0].setOnClickListener(new View.OnClickListener() {
