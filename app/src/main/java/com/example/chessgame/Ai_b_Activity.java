@@ -1357,12 +1357,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_val=result[1];
                     temp=result[0];
                 }
-            } else if (P_Node[i] == 11) {
-                result = rook_generatemove_max_w(Node.clone(), i, n);
-                if(best_val<=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
-                }
             } else if (P_Node[i] == 12) {
                 result = knight_generatemove_max_w(Node.clone(), i, n);
                 if(best_val<=result[1]){
@@ -1371,6 +1365,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 }
             } else if (P_Node[i] == 13) {
                 result = bishop_generatemove_max_w(Node.clone(), i, n);
+                if(best_val<=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
+            } else if (P_Node[i] == 11) {
+                result = rook_generatemove_max_w(Node.clone(), i, n);
                 if(best_val<=result[1]){
                     best_val=result[1];
                     temp=result[0];
@@ -1412,13 +1412,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_val=result[1];
                     temp=result[0];
                 }
-            } else if (P_Node[i] == 1) {
-                result = rook_generatemove_min_b(Node.clone(), i, n);
-                if(best_val>=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
-                }
-            } else if (P_Node[i] == 2) {
+            }  else if (P_Node[i] == 2) {
                 result = knight_generatemove_min_b(Node.clone(), i, n);
                 if(best_val>=result[1]){
                     best_val=result[1];
@@ -1426,6 +1420,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 }
             } else if (P_Node[i] == 3) {
                 result = bishop_generatemove_min_b(Node.clone(), i, n);
+                if(best_val>=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
+            } else if (P_Node[i] == 1) {
+                result = rook_generatemove_min_b(Node.clone(), i, n);
                 if(best_val>=result[1]){
                     best_val=result[1];
                     temp=result[0];
