@@ -1342,10 +1342,17 @@ public class Ai_w_Activity extends AppCompatActivity {
          turn = true;
     }
 
+    // 공통 변수
     final int INF = 10000 ;
     public int[] FinalNode = new int[64] ;
+    int AI_DEPTH = 5;
+    // random 부분
+    ArrayList<int[]> cand=new ArrayList<int[]>();
+    int Count=0;
+    int t=0;
+
     public int[] MinMax(int[] number) {
-        MaxMove(number.clone(), 4); // 깊이를 늘릴 시 Maxmove if문 수정 필요
+        MaxMove(number.clone(), AI_DEPTH); // 깊이를 늘릴 시 Maxmove if문 수정 필요
         return FinalNode.clone() ;
     }
 
@@ -1355,9 +1362,9 @@ public class Ai_w_Activity extends AppCompatActivity {
         int  best_val = -INF +1 ;
         int[] ret_node = node.clone();
         int[] temp_node = new int[64] ;
-        ArrayList<int[]> cand=new ArrayList<int[]>();
-        int count=0;
-        int t=0;
+
+
+
         for(int i=0;i<64;i++) {
             ret_node=node.clone();
             switch(node[i]) {
@@ -1398,18 +1405,18 @@ public class Ai_w_Activity extends AppCompatActivity {
             // node == ret_node ( 움직임이 없을 시 )
             if(Arrays.equals(node,ret_node)) continue ;
             // best_val,temp_node 갱신
-            if(depth==4){
+            if(depth== AI_DEPTH){
                 if(ret_val > best_val ) {
                     best_val = ret_val ;
                     temp_node = ret_node.clone() ;
                     cand.clear();;
                     t=ret_val;
-                    count=0;
+                    Count=0;
                 }
                 if(ret_val == best_val ) {
                     best_val = ret_val ;
                     cand.add(ret_node.clone());
-                    count++;
+                    Count++;
                 }
             }
             else {
@@ -1421,9 +1428,9 @@ public class Ai_w_Activity extends AppCompatActivity {
 
         } // for(i)
         // depth == 최대높이  (현재 : 4 )
-        if(depth==4) {
-            if (best_val == t&&count>0) {
-                temp_node = cand.get((int)((random()*100) % count));
+        if(depth== AI_DEPTH) {
+            if (best_val == t&&Count>0) {
+                temp_node = cand.get((int)((random()*100) % Count));
             }
             for (int i = 0; i < 64; i++)
                 FinalNode[i] = temp_node[i]; //깊이가 n일때 가장 좋은 node를 (전역변수)FinalNode로 저장.
