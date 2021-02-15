@@ -7,6 +7,7 @@ import java.util.Arrays;
 public class NODE {
     int [] board; int score; int output;
 
+
     boolean in_board(int index) {
         if(index>=0&&index<64) return true;
         else return false ;
@@ -17,12 +18,12 @@ public class NODE {
         int best_val=-10000;
         int [] result = {best_val,al,be};
         int alpha=result[1]; int beta=result[2];
-        if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return Evalstate_w(node);
         else {
             for (int i = 0; i < 64; i++) {
                 if (P_Node[i] == 17) {
-                    result = f_pawn_generatemove_max_w(node.clone(), i, depth,alpha,beta,result[0]);
-                    if (result[0] >= best_val) {
+                    result = f_pawn_generatemove_max_w(node.clone(), i, depth,alpha,beta,best_val);
+                    if (best_val<=result[0]) {
                         best_val = result[0];
                     }
 //                    if(result[1]<best_val){
@@ -32,8 +33,8 @@ public class NODE {
 //                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 16) {
-                    result = pawn_generatemove_max_w(node.clone(), i, depth,alpha,beta,result[0]);
-                    if (result[0] >= best_val) {
+                    result = pawn_generatemove_max_w(node.clone(), i, depth,alpha,beta,best_val);
+                    if (best_val<=result[0]) {
                         best_val = result[0];
                     }
 //                    if(result[1]<best_val){
@@ -43,8 +44,8 @@ public class NODE {
 //                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 11) {
-                    result = rook_generatemove_max_w(node.clone(), i, depth,alpha,beta,result[0]);
-                    if (result[0] >= best_val) {
+                    result = rook_generatemove_max_w(node.clone(), i, depth,alpha,beta,best_val);
+                    if (best_val<=result[0]) {
                         best_val = result[0];
                     }
 //                    if(result[1]<best_val){
@@ -54,8 +55,8 @@ public class NODE {
 //                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 12) {
-                    result = knight_generatemove_max_w(node.clone(), i, depth,alpha,beta,result[0]);
-                    if (result[0] >= best_val) {
+                    result = knight_generatemove_max_w(node.clone(), i, depth,alpha,beta,best_val);
+                    if (best_val<=result[0]) {
                         best_val = result[0];
                     }
 //                    if(result[1]<best_val){
@@ -65,8 +66,8 @@ public class NODE {
 //                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 13) {
-                    result = bishop_generatemove_max_w(node.clone(), i, depth,alpha,beta,result[0]);
-                    if (result[0] >= best_val) {
+                    result = bishop_generatemove_max_w(node.clone(), i, depth,alpha,beta,best_val);
+                    if (best_val<=result[0]) {
                         best_val = result[0];
                     }
 //                    if(result[1]<best_val){
@@ -76,8 +77,8 @@ public class NODE {
 //                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 14) {
-                    result = queen_generatemove_max_w(node.clone(), i, depth,alpha,beta,result[0]);
-                    if (result[0] >= best_val) {
+                    result = queen_generatemove_max_w(node.clone(), i, depth,alpha,beta,best_val);
+                    if (best_val<=result[0]) {
                         best_val = result[0];
                     }
 //                    if(result[1]<best_val){
@@ -87,8 +88,8 @@ public class NODE {
 //                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 15) {
-                    result = king_generatemove_max_w(node.clone(), i, depth,alpha,beta,result[0]);
-                    if (result[0] >= best_val) {
+                    result = king_generatemove_max_w(node.clone(), i, depth,alpha,beta,best_val);
+                    if (best_val<=result[0]) {
                         best_val = result[0];
                     }
 //                    if(result[1]<best_val){
@@ -107,12 +108,12 @@ public class NODE {
         int best_val=10000;
         int [] result = {best_val,al,be};
         int alpha=result[1]; int beta=result[2];
-        if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
+        if ((depth == 0)||(game_ended(P_Node)==true)) return Evalstate_w(node);
         else {
             for (int i = 0; i < 64; i++) {
                 if (P_Node[i] == 7) {
-                    result = f_pawn_generatemove_min_b(node.clone(), i, depth,alpha,beta,result[0]);
-                    if (result[0] <= best_val) {
+                    result = f_pawn_generatemove_min_b(node.clone(), i, depth,alpha,beta,best_val);
+                    if (best_val>=result[0]) {
                         best_val = result[0];
                     }
 //                    if(result[2]>best_val){
@@ -122,8 +123,8 @@ public class NODE {
 //                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 6) {
-                    result = pawn_generatemove_min_b(node.clone(), i, depth,alpha,beta,result[0]);
-                    if (result[0] <= best_val) {
+                    result = pawn_generatemove_min_b(node.clone(), i, depth,alpha,beta,best_val);
+                    if (best_val>=result[0]) {
                         best_val = result[0];
                     }
 //                    if(result[2]>best_val){
@@ -133,8 +134,8 @@ public class NODE {
 //                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 1) {
-                    result = rook_generatemove_min_b(node.clone(), i, depth,alpha,beta,result[0]);
-                    if (result[0] <= best_val) {
+                    result = rook_generatemove_min_b(node.clone(), i, depth,alpha,beta,best_val);
+                    if (best_val>=result[0]) {
                         best_val = result[0];
                     }
 //                    if(result[2]>best_val){
@@ -144,8 +145,8 @@ public class NODE {
 //                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 2) {
-                    result = knight_generatemove_min_b(node.clone(), i, depth,alpha,beta,result[0]);
-                    if (result[0] <= best_val) {
+                    result = knight_generatemove_min_b(node.clone(), i, depth,alpha,beta,best_val);
+                    if (best_val>=result[0]) {
                         best_val = result[0];
                     }
 //                    if(result[2]>best_val){
@@ -155,8 +156,8 @@ public class NODE {
 //                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 3) {
-                    result = bishop_generatemove_min_b(node.clone(), i, depth,alpha,beta,result[0]);
-                    if (result[0] <= best_val) {
+                    result = bishop_generatemove_min_b(node.clone(), i, depth,alpha,beta,best_val);
+                    if (best_val>=result[0]) {
                         best_val = result[0];
                     }
 //                    if(result[2]>best_val){
@@ -166,8 +167,8 @@ public class NODE {
 //                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 4) {
-                    result = queen_generatemove_min_b(node.clone(), i, depth,alpha,beta,result[0]);
-                    if (result[0] <= best_val) {
+                    result = queen_generatemove_min_b(node.clone(), i, depth,alpha,beta,best_val);
+                    if (best_val>=result[0]) {
                         best_val = result[0];
                     }
 //                    if(result[2]>best_val){
@@ -177,8 +178,8 @@ public class NODE {
 //                    if(beta<=alpha) return best_val;
                 }
                 else if (P_Node[i] == 5) {
-                    result = king_generatemove_min_b(node.clone(), i, depth,alpha,beta,result[0]);
-                    if (result[0] <= best_val) {
+                    result = king_generatemove_min_b(node.clone(), i, depth,alpha,beta,best_val);
+                    if (best_val>=result[0]) { //리턴 하는게 best val 임.
                         best_val = result[0];
                     }
 //                    if(result[2]>best_val){
@@ -195,27 +196,28 @@ public class NODE {
     public int Evalstate_w(int[] number) {// 현재 상태를 평가하는 평가함수 (일단 ai가 백 이라는 가정으로 작성)
         int value = 0;
         for (int i = 0; i < 64; i++) {
-            if (number[i] == 1) value = value - 5; //룩
-            else if (number[i] == 2) value = value - 3;//나이트
-            else if (number[i] == 3) value = value - 3;//비숍
-            else if (number[i] == 4) value = value - 9;//퀸
-            else if (number[i] == 7 || number[i] == 6 ) value = value - 1;//폰
-            else if (number[i]==5) value=value-1000;
-            else if (number[i] == 11) value = value + 5;
-            else if (number[i] == 12) value = value + 3;
-            else if (number[i] == 13) value = value + 3;
-            else if (number[i] == 14) value = value + 9;
-            else if (number[i] == 17 || number[i] == 16 ) value = value + 1;
-            else if (number[i]==15) value=value+1000;
+            if (number[i] == 1) value = value - 50; //룩
+            else if (number[i] == 2) value = value - 30;//나이트
+            else if (number[i] == 3) value = value - 33;//비숍
+            else if (number[i] == 4) value = value - 90;//퀸
+            else if (number[i] == 7 || number[i] == 6 ) value = value - 10;//폰
+            else if (number[i]==5) value=value-10000;
+            else if (number[i] == 11) value = value + 50;
+            else if (number[i] == 12) value = value + 30;
+            else if (number[i] == 13) value = value + 33;
+            else if (number[i] == 14) value = value + 90;
+            else if (number[i] == 17 || number[i] == 16 ) value = value + 10;
+            else if (number[i]==15) value=value+10000;
         }
         return value;
     }
 
     public int[] rook_generatemove_max_w(int[] P_Node, int spot, int depth, int al, int be, int best ) {
         int[] node = P_Node.clone();
-        int [] best_val= {best, al, be};
+        int [] best_val= {best, al, be}; //리턴 할 것
         int alpha=best_val[1]; int beta=best_val[2];
-        int result=0;
+        int []result=new int [16];
+        int num=0;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
             for (int a = spot + 8; a < 64; a = a + 8) {//하
@@ -225,11 +227,12 @@ public class NODE {
                         node[a] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MinMove(node, depth - 1,alpha,beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -247,11 +250,12 @@ public class NODE {
                         node[a] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MinMove(node, depth - 1,alpha,beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                          //깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -269,11 +273,12 @@ public class NODE {
                         node[a] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MinMove(node, depth - 1,alpha,beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -292,11 +297,12 @@ public class NODE {
                         node[a] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MinMove(node, depth - 1,alpha,beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -307,6 +313,10 @@ public class NODE {
                     if (P_Node[a] != 0) break;
                 }
             }
+            for(int i=0;i<num;i++){
+                if(best_val[0]<=result[i])
+                    best_val[0]=result[i];
+            }
             return best_val;
         }
     }
@@ -314,7 +324,8 @@ public class NODE {
         int[] node = P_Node.clone();
         int []best_val = {best,al,be};
         int alpha =best_val[1]; int beta = best_val[2];
-        int result = 0;
+        int []result=new int [8];
+        int num=0;
         if ((depth == 0) || (game_ended(P_Node) == true)) return best_val;
         else {
             int a;
@@ -326,11 +337,12 @@ public class NODE {
                     node[a] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MinMove(node, depth - 1, alpha, beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -347,11 +359,12 @@ public class NODE {
                     node[a] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MinMove(node, depth - 1, alpha, beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -368,11 +381,12 @@ public class NODE {
                     node[a] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MinMove(node, depth - 1, alpha, beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -389,11 +403,12 @@ public class NODE {
                     node[a] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MinMove(node, depth - 1, alpha, beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -410,11 +425,12 @@ public class NODE {
                     node[a] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MinMove(node, depth - 1, alpha, beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -431,11 +447,12 @@ public class NODE {
                     node[a] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MinMove(node, depth - 1, alpha, beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -452,11 +469,12 @@ public class NODE {
                     node[a] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MinMove(node, depth - 1, alpha, beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -473,11 +491,12 @@ public class NODE {
                     node[a] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MinMove(node, depth - 1, alpha, beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -486,6 +505,10 @@ public class NODE {
                     node=P_Node.clone();
                 }
             }
+            for(int i=0;i<num;i++){
+                if(best_val[0]<=result[i])
+                 best_val[0]=result[i];
+            }
             return best_val;
         }
     }
@@ -493,7 +516,8 @@ public class NODE {
         int[] node = P_Node.clone();
         int []best_val = {best,al,be};
         int alpha=best_val[1]; int beta=best_val[2];
-        int result;
+        int []result=new int[16];
+        int num=0;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
             for (int a = 0; a < 8 - ((spot % 8) + 1); a++) {//우 대각 아래
@@ -504,11 +528,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MinMove(node, depth - 1,alpha,beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -527,11 +552,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MinMove(node, depth - 1,alpha,beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -550,11 +576,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MinMove(node, depth - 1,alpha,beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -573,11 +600,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MinMove(node, depth - 1,alpha,beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -588,6 +616,10 @@ public class NODE {
                     if (P_Node[t] != 0) break;
                 }
             }
+            for(int i=0;i<num;i++){
+                if(best_val[0]<=result[i])
+                    best_val[0]=result[i];
+            }
             return best_val;
         }
     }
@@ -595,7 +627,8 @@ public class NODE {
         int[] node = P_Node.clone();
         int []best_val = {best,al,be};
         int alpha=best_val[1]; int beta=best_val[2];
-        int result = 0;
+        int []result=new int[32];
+        int num=0;
         if ((depth == 0) || (game_ended(P_Node) == true)) return best_val;
         else {
             for (int a = spot + 8; a < 64; a = a + 8) {//하
@@ -605,11 +638,12 @@ public class NODE {
                         node[a] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result = MinMove(node, depth - 1, alpha, beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -627,11 +661,12 @@ public class NODE {
                         node[a] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result = MinMove(node, depth - 1, alpha, beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -650,11 +685,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result = MinMove(node, depth - 1, alpha, beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -673,11 +709,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result = MinMove(node, depth - 1, alpha, beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -696,11 +733,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result = MinMove(node, depth - 1, alpha, beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -719,11 +757,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result = MinMove(node, depth - 1, alpha, beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -742,11 +781,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result = MinMove(node, depth - 1, alpha, beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -765,11 +805,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result = MinMove(node, depth - 1, alpha, beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -780,6 +821,10 @@ public class NODE {
                     if (P_Node[t] != 0) break;
                 }
             }
+            for(int i=0;i<num;i++){
+                if(best_val[0]<=result[i])
+                    best_val[0]=result[i];
+            }
             return best_val;
         }
     }
@@ -787,7 +832,8 @@ public class NODE {
         int[] node = P_Node.clone();
         int []best_val = {best,al,be};
         int alpha=best_val[1]; int beta=best_val[2];
-        int result = 0;
+        int []result =new int[9];
+        int num=0;
         if ((depth == 0) || (game_ended(P_Node) == true)) return best_val;
         else {
             int k = spot + 1; //우
@@ -797,11 +843,12 @@ public class NODE {
                     node[k] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MinMove(node, depth - 1, alpha, beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -817,11 +864,12 @@ public class NODE {
                     node[k] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MinMove(node, depth - 1, alpha, beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -837,11 +885,12 @@ public class NODE {
                     node[k] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MinMove(node, depth - 1, alpha, beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -858,11 +907,12 @@ public class NODE {
                     node[k] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MinMove(node, depth - 1, alpha, beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -879,11 +929,12 @@ public class NODE {
                     node[k] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MinMove(node, depth - 1, alpha, beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -899,11 +950,12 @@ public class NODE {
                     node[k] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MinMove(node, depth - 1, alpha, beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -919,11 +971,12 @@ public class NODE {
                     node[k] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MinMove(node, depth - 1, alpha, beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -939,11 +992,12 @@ public class NODE {
                     node[k] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MinMove(node, depth - 1, alpha, beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -952,6 +1006,10 @@ public class NODE {
                     node=P_Node.clone();
                 }
             }
+            for(int i=0;i<num;i++){
+                if(best_val[0]<=result[i])
+                    best_val[0]=result[i];
+            }
             return best_val;
         }
     }
@@ -959,7 +1017,8 @@ public class NODE {
         int[] node = P_Node.clone();
         int []best_val = {best,al,be};
         int alpha=best_val[1]; int beta=best_val[2];
-        int result=0;
+        int []result=new int[5];
+        int num=0;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
             for (int a = spot - 8; a >= spot - 8; a = a - 8) {
@@ -992,11 +1051,12 @@ public class NODE {
                             node[spot] = 0;
                         }
                         // 깊이 0까지 탐색
-                        result=MinMove(node, depth - 1,alpha,beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -1039,11 +1099,12 @@ public class NODE {
                         node[spot] = 0;
                     }
                     // 깊이 0까지 탐색
-                    result=MinMove(node, depth - 1,alpha,beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -1084,11 +1145,12 @@ public class NODE {
                         node[spot] = 0;
                     }
                     // 깊이 0까지 탐색
-                    result=MinMove(node, depth - 1,alpha,beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -1142,13 +1204,18 @@ public class NODE {
 //            }
 
         }
+        for(int i=0;i<num;i++){
+            if(best_val[0]<=result[i])
+                best_val[0]=result[i];
+        }
         return best_val;
     }
     public int[] f_pawn_generatemove_max_w(int []P_Node, int spot, int depth,int al,int be,int best){
         int[] node = P_Node.clone();
         int []best_val = {best,al,be};
         int alpha=best_val[1]; int beta=best_val[2];
-        int result=0;
+        int []result=new int [4];
+        int num=0;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
             for (int a = spot - 8; a >= spot - 16; a = a - 8) {
@@ -1157,11 +1224,12 @@ public class NODE {
                         node[a] = 16;
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MinMove(node, depth - 1,alpha,beta);
+                        result[num] = MinMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result >= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result >= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -1179,11 +1247,12 @@ public class NODE {
                     node[spot-9] = 16;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result=MinMove(node, depth - 1,alpha,beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -1199,11 +1268,12 @@ public class NODE {
                     node[spot-7] = 16;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result=MinMove(node, depth - 1,alpha,beta);
+                    result[num] = MinMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result >= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result >= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                       if(alpha<best_val[0]){
 //                            alpha=best_val[0];
 //                            best_val[1]=alpha;
@@ -1217,11 +1287,13 @@ public class NODE {
     }
 
 
+
     public int[] rook_generatemove_min_b(int[] P_Node, int spot, int depth,int al,int be,int best) {
         int[] node = P_Node.clone();
         int []best_val = {best,al,be};
         int alpha=best_val[1]; int beta=best_val[2];
-        int result=0;
+        int []result=new int[16];
+        int num=0;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
             for (int a = spot + 8; a < 64; a = a + 8) {//하
@@ -1231,11 +1303,12 @@ public class NODE {
                         node[a] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MaxMove(node, depth - 1,alpha,beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1254,11 +1327,12 @@ public class NODE {
                         node[a] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MaxMove(node, depth - 1,alpha,beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1277,11 +1351,12 @@ public class NODE {
                         node[a] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MaxMove(node, depth - 1,alpha,beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1300,11 +1375,12 @@ public class NODE {
                         node[a] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MaxMove(node, depth - 1,alpha,beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1315,6 +1391,10 @@ public class NODE {
                     if (P_Node[a] != 0) break;
                 }
             }
+            for(int i=0;i<num;i++){
+                if(best_val[0]>=result[i])
+                    best_val[0]=result[i];
+            }
             return best_val;
         }
     }
@@ -1322,7 +1402,8 @@ public class NODE {
         int[] node = P_Node.clone();
         int []best_val = {best,al,be};
         int alpha=best_val[1]; int beta=best_val[2];
-        int result = 0;
+        int [] result=new int[8];
+        int num=0;
         if ((depth == 0) || (game_ended(P_Node) == true)) return best_val;
         else {
             int a;
@@ -1334,11 +1415,12 @@ public class NODE {
                     node[a] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MaxMove(node, depth - 1, alpha, beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1355,11 +1437,12 @@ public class NODE {
                     node[a] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MaxMove(node, depth - 1, alpha, beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1376,11 +1459,12 @@ public class NODE {
                     node[a] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MaxMove(node, depth - 1, alpha, beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1397,11 +1481,12 @@ public class NODE {
                     node[a] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MaxMove(node, depth - 1, alpha, beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1418,11 +1503,12 @@ public class NODE {
                     node[a] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MaxMove(node, depth - 1, alpha, beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1439,11 +1525,12 @@ public class NODE {
                     node[a] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MaxMove(node, depth - 1, alpha, beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1460,11 +1547,12 @@ public class NODE {
                     node[a] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MaxMove(node, depth - 1, alpha, beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1481,17 +1569,23 @@ public class NODE {
                     node[a] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MaxMove(node, depth - 1, alpha, beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
 //                        }
 //                        if(beta<=alpha) return best_val;
                     node=P_Node.clone();
+                }
+            }
+            for(int i=0;i<num;i++){
+                if(best_val[0]>=result[i]){
+                    best_val[0]=result[i];
                 }
             }
             return best_val;
@@ -1501,7 +1595,8 @@ public class NODE {
         int[] node = P_Node.clone();
         int []best_val = {best,al,be};
         int alpha=best_val[1]; int beta=best_val[2];
-        int result=0;
+        int []result=new int[16];
+        int num=0;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
             for (int a = 0; a < 8 - ((spot % 8) + 1); a++) {//우 대각 아래
@@ -1512,11 +1607,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MaxMove(node, depth - 1,alpha,beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1535,11 +1631,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MaxMove(node, depth - 1,alpha,beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1558,11 +1655,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MaxMove(node, depth - 1,alpha,beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1581,11 +1679,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MaxMove(node, depth - 1,alpha,beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1596,6 +1695,10 @@ public class NODE {
                     if (P_Node[t] != 0) break;
                 }
             }
+            for(int i=0;i<num;i++){
+                if(best_val[0]>=result[i])
+                    best_val[0]=result[i];
+            }
             return best_val;
         }
     }
@@ -1603,7 +1706,8 @@ public class NODE {
         int[] node = P_Node.clone();
         int []best_val = {best,al,be};
         int alpha=best_val[1]; int beta=best_val[2];
-        int result = 0;
+        int []result =new int[32];
+        int num=0;
         if ((depth == 0) || (game_ended(P_Node) == true)) return best_val;
         else {
             for (int a = spot + 8; a < 64; a = a + 8) {//하
@@ -1613,11 +1717,12 @@ public class NODE {
                         node[a] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result = MaxMove(node, depth - 1, alpha, beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1635,11 +1740,12 @@ public class NODE {
                         node[a] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result = MaxMove(node, depth - 1, alpha, beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1658,11 +1764,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result = MaxMove(node, depth - 1, alpha, beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1681,11 +1788,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result = MaxMove(node, depth - 1, alpha, beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1704,11 +1812,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result = MaxMove(node, depth - 1, alpha, beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1727,11 +1836,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result = MaxMove(node, depth - 1, alpha, beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1750,11 +1860,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result = MaxMove(node, depth - 1, alpha, beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1773,11 +1884,12 @@ public class NODE {
                         node[t] = node[spot];
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result = MaxMove(node, depth - 1, alpha, beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1788,6 +1900,10 @@ public class NODE {
                     if (P_Node[t] != 0) break;
                 }
             }
+            for(int i=0;i<num;i++){
+                if(best_val[0]>=result[i])
+                    best_val[0]=result[i];
+            }
             return best_val;
         }
     }
@@ -1795,7 +1911,8 @@ public class NODE {
         int[] node = P_Node.clone();
         int []best_val = {best,al,be};
         int alpha=best_val[1]; int beta=best_val[2];
-        int result = 0;
+        int []result=new int [9];
+        int num=0;
         if ((depth == 0) || (game_ended(P_Node) == true)) return best_val;
         else {
             int k = spot + 1; //우
@@ -1805,11 +1922,12 @@ public class NODE {
                     // 위치 바꿔주기
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MaxMove(node, depth - 1, alpha, beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1825,11 +1943,12 @@ public class NODE {
                     node[k] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MaxMove(node, depth - 1, alpha, beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1845,11 +1964,12 @@ public class NODE {
                     node[k] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MaxMove(node, depth - 1, alpha, beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1866,11 +1986,12 @@ public class NODE {
                     node[k] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MaxMove(node, depth - 1, alpha, beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1887,11 +2008,12 @@ public class NODE {
                     node[k] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MaxMove(node, depth - 1, alpha, beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1907,11 +2029,12 @@ public class NODE {
                     node[k] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MaxMove(node, depth - 1, alpha, beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1927,11 +2050,12 @@ public class NODE {
                     node[k] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MaxMove(node, depth - 1, alpha, beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1947,11 +2071,12 @@ public class NODE {
                     node[k] = node[spot];
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result = MaxMove(node, depth - 1, alpha, beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -1960,6 +2085,10 @@ public class NODE {
                     node=P_Node.clone();
                 }
             }
+            for(int i=0;i<num;i++){
+                if(best_val[0]>=result[i])
+                    best_val[0]=result[i];
+            }
             return best_val;
         }
     }
@@ -1967,7 +2096,8 @@ public class NODE {
         int[] node = P_Node.clone();
         int []best_val = {best,al,be};
         int alpha=best_val[1]; int beta=best_val[2];
-        int result=0;
+       int [] result=new int [5];
+       int num=0;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
             for(int a = spot + 8; a <= spot + 8; a = a + 8) {
@@ -2000,11 +2130,12 @@ public class NODE {
                             node[spot] = 0;
                         }
                         // 깊이 0까지 탐색
-                        result=MaxMove(node, depth - 1,alpha,beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -2048,11 +2179,12 @@ public class NODE {
                         node[spot] = 0;
                     }
                     // 깊이 0까지 탐색
-                    result=MaxMove(node, depth - 1,alpha,beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -2094,11 +2226,12 @@ public class NODE {
                         node[spot] = 0;
                     }
                     // 깊이 0까지 탐색
-                    result=MaxMove(node, depth - 1,alpha,beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -2151,13 +2284,18 @@ public class NODE {
 //                node = P_Node.clone(); // 원상태로
 //            }
         }
+        for(int i=0;i<num;i++){
+            if(best_val[0]>=result[i])
+                best_val[0]=result[i];
+        }
         return best_val;
     }
     public int[] f_pawn_generatemove_min_b(int []P_Node, int spot, int depth,int al,int be, int best){
         int[] node = P_Node.clone();
         int []best_val = {best,al,be};
         int alpha=best_val[1]; int beta=best_val[2];
-        int result=0;
+        int [] result=new int [4];
+        int num=0;
         if ((depth == 0)||(game_ended(P_Node)==true)) return best_val;
         else {
             for (int a = spot + 8; a <= spot + 16; a = a + 8) {
@@ -2166,11 +2304,12 @@ public class NODE {
                         node[a] = 6;
                         node[spot] = 0;
                         // 깊이 0까지 탐색
-                        result=MaxMove(node, depth - 1,alpha,beta);
+                        result[num] = MaxMove(node, depth - 1, alpha, beta);
+                        num++;
                         // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (result <= best_val[0]) {
-                            best_val[0] = result;
-                        }
+//                        if (result <= best_val[0]) {
+//                            best_val[0] = result;
+//                        }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -2188,11 +2327,12 @@ public class NODE {
                     node[spot+9] = 6;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result=MaxMove(node, depth - 1,alpha,beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -2208,11 +2348,12 @@ public class NODE {
                     node[spot+7] = 6;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
-                    result=MaxMove(node, depth - 1,alpha,beta);
+                    result[num] = MaxMove(node, depth - 1, alpha, beta);
+                    num++;
                     // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (result <= best_val[0]) {
-                        best_val[0] = result;
-                    }
+//                    if (result <= best_val[0]) {
+//                        best_val[0] = result;
+//                    }
 //                        if(beta>best_val){
 //                            beta=best_val;
 //                            best_val[2]=beta;
@@ -2220,6 +2361,10 @@ public class NODE {
 //                        if(beta<=alpha) return best_val;
                     node=P_Node.clone();
                 }
+            }
+            for(int i=0;i<num;i++){
+                if(best_val[0]>=result[i])
+                    best_val[0]=result[i];
             }
             return best_val;
         }

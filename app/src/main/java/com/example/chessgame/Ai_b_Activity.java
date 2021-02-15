@@ -2,7 +2,6 @@ package com.example.chessgame;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -1330,7 +1329,7 @@ public class Ai_b_Activity extends AppCompatActivity {
 
     int temp_num=0;
     public int[] MinMax(int[] number) {
-        NODE[] n=new NODE[64];
+        NODE[] n=new NODE[500];
         int [] ans=MinMove(number.clone(),n);
         for(int i=0;i<64;i++){
             n[i]=null;
@@ -1400,19 +1399,13 @@ public class Ai_b_Activity extends AppCompatActivity {
         int best_val = 10000;
         int temp=0;
         for (int i = 0; i < 64; i++) {
-            if (P_Node[i] == 7) {
-                result = f_pawn_generatemove_min_b(Node.clone(), i, n);
+            if (P_Node[i] == 1) {
+                result = rook_generatemove_min_b(Node.clone(), i, n);
                 if(best_val>=result[1]){
                     best_val=result[1];
                     temp=result[0];
                 }
-            } else if (P_Node[i] == 6) {
-                result = pawn_generatemove_min_b(Node.clone(), i, n);
-                if(best_val>=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
-                }
-            }  else if (P_Node[i] == 2) {
+            } else if (P_Node[i] == 2) {
                 result = knight_generatemove_min_b(Node.clone(), i, n);
                 if(best_val>=result[1]){
                     best_val=result[1];
@@ -1424,17 +1417,23 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_val=result[1];
                     temp=result[0];
                 }
-            } else if (P_Node[i] == 1) {
-                result = rook_generatemove_min_b(Node.clone(), i, n);
+            } else if (P_Node[i] == 7) {
+                result = f_pawn_generatemove_min_b(Node.clone(), i, n);
+                if(best_val>=result[1]){
+                    best_val=result[1];
+                    temp=result[0];
+                }
+            } else if (P_Node[i] == 6) {
+                result = pawn_generatemove_min_b(Node.clone(), i, n);
                 if(best_val>=result[1]){
                     best_val=result[1];
                     temp=result[0];
                 }
             } else if (P_Node[i] == 4) {
                 result = queen_generatemove_min_b(Node.clone(), i, n);
-                if(best_val>=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
+                if (best_val >= result[1]) {
+                    best_val = result[1];
+                    temp = result[0];
                 }
             } else if (P_Node[i] == 5) {
                 result = king_generatemove_min_b(Node.clone(), i, n);
@@ -1564,7 +1563,7 @@ public class Ai_b_Activity extends AppCompatActivity {
 
     public int[] rook_generatemove_max_w(int[] P_Node, int spot, NODE [] n) {
         int[] node = P_Node.clone();
-        int[] return_val=new int[2];
+        int[] return_val=new int[2]; //{해당되는 객체의 번호, 평가함수값 }
             for (int a = spot + 8; a < 64; a = a + 8) {//하
                 if (in_board(a)) {
                     if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) { //white가 아니면
@@ -2300,37 +2299,37 @@ public class Ai_b_Activity extends AppCompatActivity {
                         node = P_Node.clone();
             }
         }
-        // 양파상
-        if (spot % 8 >= 1 && enpassant[spot - 1] == 1 && P_Node[spot - 9] == 0) {
-            // 위치 바꿔주기
-            node[spot - 9] = node[spot];
-            node[spot] = 0;
-            node[spot - 1] = 0;
-            // 깊이 0까지 탐색
-            n[temp_num] = new NODE(node);
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output >= return_val[1]) {
-                return_val[1] = n[temp_num].output;
-                return_val[0] = temp_num;
-            }
-            temp_num++;
-                        node = P_Node.clone();
-        }
-        if (8 - spot % 8 - 1 >= 1 && enpassant[spot + 1] == 1 && P_Node[spot - 7] == 0) {
-            // 위치 바꿔주기
-            node[spot - 7] = node[spot];
-            node[spot] = 0;
-            node[spot + 1] = 0;
-            // 깊이 0까지 탐색
-            n[temp_num] = new NODE(node);
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output >= return_val[1]) {
-                return_val[1] = n[temp_num].output;
-                return_val[0] = temp_num;
-            }
-            temp_num++;
-                        node = P_Node.clone();
-        }
+//        // 양파상
+//        if (spot % 8 >= 1 && enpassant[spot - 1] == 1 && P_Node[spot - 9] == 0) {
+//            // 위치 바꿔주기
+//            node[spot - 9] = node[spot];
+//            node[spot] = 0;
+//            node[spot - 1] = 0;
+//            // 깊이 0까지 탐색
+//            n[temp_num] = new NODE(node);
+//            // 깊이 0까지에서의 value >= 현재까지의 best_val
+//            if (n[temp_num].output >= return_val[1]) {
+//                return_val[1] = n[temp_num].output;
+//                return_val[0] = temp_num;
+//            }
+//            temp_num++;
+//                        node = P_Node.clone();
+//        }
+//        if (8 - spot % 8 - 1 >= 1 && enpassant[spot + 1] == 1 && P_Node[spot - 7] == 0) {
+//            // 위치 바꿔주기
+//            node[spot - 7] = node[spot];
+//            node[spot] = 0;
+//            node[spot + 1] = 0;
+//            // 깊이 0까지 탐색
+//            n[temp_num] = new NODE(node);
+//            // 깊이 0까지에서의 value >= 현재까지의 best_val
+//            if (n[temp_num].output >= return_val[1]) {
+//                return_val[1] = n[temp_num].output;
+//                return_val[0] = temp_num;
+//            }
+//            temp_num++;
+//                        node = P_Node.clone();
+//        }
         return return_val.clone();
     }
     public int[] f_pawn_generatemove_max_w(int[] P_Node, int spot, NODE [] n){
@@ -2401,7 +2400,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                 if (in_board(a)) {
                     if (!(P_Node[a] >= 1 && P_Node[a] <= 7)) { //black이 아니면
                         // 위치 바꿔주기
-                        node[a] = node[spot];
+                        node[a] = 1;
                         node[spot] = 0;
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
@@ -2421,7 +2420,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                 if (in_board(a)) {
                     if (!(P_Node[a] >= 1 && P_Node[a] <= 7)) {
                         // 위치 바꿔주기
-                        node[a] = node[spot];
+                        node[a] = 1;
                         node[spot] = 0;
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
@@ -2441,7 +2440,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                 if (in_board(a)) {
                     if (!(P_Node[a] >= 1 && P_Node[a] <= 7)) {
                         // 위치 바꿔주기
-                        node[a] = node[spot];
+                        node[a] =1;
                         node[spot] = 0;
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
@@ -2461,7 +2460,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                 if (in_board(a)) {
                     if (!(P_Node[a] >= 1 && P_Node[a] <= 7)) {
                         // 위치 바꿔주기
-                        node[a] = node[spot];
+                        node[a] = 1;
                         node[spot] = 0;
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
@@ -2486,7 +2485,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         if(in_board(a)&&8-spot%8-1>=1)  //끝쪽에 있을때 넘어가기 방지
         {    if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
             // 위치 바꿔주기
-            node[a] = node[spot];
+            node[a] = 2;
             node[spot] = 0;
             // 깊이 0까지 탐색
             n[temp_num]=new NODE(node);
@@ -2503,7 +2502,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         if(in_board(a)&& spot%8>=1) //끝쪽에 있을때 넘어가기 방지
         {   if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
             // 위치 바꿔주기
-            node[a] = node[spot];
+            node[a] = 2;
             node[spot] = 0;
             // 깊이 0까지 탐색
             n[temp_num]=new NODE(node);
@@ -2520,7 +2519,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         if(in_board(a)&&8-spot%8-1>=1)  //끝쪽에 있을때 넘어가기 방지
         {   if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
             // 위치 바꿔주기
-            node[a] = node[spot];
+            node[a] = 2;
             node[spot] = 0;
             // 깊이 0까지 탐색
             n[temp_num]=new NODE(node);
@@ -2537,7 +2536,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         if(in_board(a)&& spot%8>=1) //끝쪽에 있을때 넘어가기 방지
         {  if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
             // 위치 바꿔주기
-            node[a] = node[spot];
+            node[a] =2;
             node[spot] = 0;
             // 깊이 0까지 탐색
             n[temp_num]=new NODE(node);
@@ -2554,7 +2553,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         if(in_board(a)&& 8-spot%8-1>=2) //끝쪽에 있을때 넘어가기 방지
         {   if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
             // 위치 바꿔주기
-            node[a] = node[spot];
+            node[a] =2;
             node[spot] = 0;
             // 깊이 0까지 탐색
             n[temp_num]=new NODE(node);
@@ -2571,7 +2570,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         if(in_board(a)&& spot%8>=2) //끝쪽에 있을때 넘어가기 방지
         {  if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
             // 위치 바꿔주기
-            node[a] = node[spot];
+            node[a] = 2;
             node[spot] = 0;
             // 깊이 0까지 탐색
             n[temp_num]=new NODE(node);
@@ -2588,7 +2587,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         if(in_board(a)&& 8-spot%8-1>=2) //끝쪽에 있을때 넘어가기 방지
         {   if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
             // 위치 바꿔주기
-            node[a] = node[spot];
+            node[a] = 2;
             node[spot] = 0;
             // 깊이 0까지 탐색
             n[temp_num]=new NODE(node);
@@ -2605,7 +2604,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         if(in_board(a)&& spot%8>=2) //끝쪽에 있을때 넘어가기 방지
         {  if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
             // 위치 바꿔주기
-            node[a] = node[spot];
+            node[a] = 2;
             node[spot] = 0;
             // 깊이 0까지 탐색
             n[temp_num]=new NODE(node);
@@ -2628,7 +2627,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                 if (in_board(t)) {
                     if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //black이 아니면
                         // 위치 바꿔주기
-                        node[t] = node[spot];
+                        node[t] = 3;
                         node[spot] = 0;
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
@@ -2648,7 +2647,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                 if (in_board(t)) {
                     if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //black이 아니면
                         // 위치 바꿔주기
-                        node[t] = node[spot];
+                        node[t] = 3;
                         node[spot] = 0;
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
@@ -2668,7 +2667,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                 if (in_board(t)) {
                     if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //black이 아니면
                         // 위치 바꿔주기
-                        node[t] = node[spot];
+                        node[t] =3;
                         node[spot] = 0;
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
@@ -2688,7 +2687,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                 if (in_board(t)) {
                     if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //black이 아니면
                         // 위치 바꿔주기
-                        node[t] = node[spot];
+                        node[t] = 3;
                         node[spot] = 0;
                         // 깊이 0까지 탐색
                         n[temp_num]=new NODE(node);
@@ -2712,7 +2711,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             if (in_board(a)) {
                 if (!(P_Node[a] >= 1 && P_Node[a] <= 7)) { //white가 아니면
                     // 위치 바꿔주기
-                    node[a] = node[spot];
+                    node[a] = 4;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
@@ -2731,7 +2730,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             if (in_board(a)) {
                 if (!(P_Node[a] >= 1 && P_Node[a] <= 7)) { //white가 아니면
                     // 위치 바꿔주기
-                    node[a] = node[spot];
+                    node[a] = 4;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
@@ -2751,7 +2750,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             if (in_board(t)) {
                 if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //white가 아니면
                     // 위치 바꿔주기
-                    node[t] = node[spot];
+                    node[t] = 4;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
@@ -2771,7 +2770,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             if (in_board(t)) {
                 if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //white가 아니면
                     // 위치 바꿔주기
-                    node[t] = node[spot];
+                    node[t] = 4;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
@@ -2791,7 +2790,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             if (in_board(t)) {
                 if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //white가 아니면
                     // 위치 바꿔주기
-                    node[t] = node[spot];
+                    node[t] = 4;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
@@ -2811,7 +2810,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             if (in_board(t)) {
                 if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //white가 아니면
                     // 위치 바꿔주기
-                    node[t] = node[spot];
+                    node[t] = 4;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
@@ -2831,7 +2830,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             if (in_board(t)) {
                 if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //white가 아니면
                     // 위치 바꿔주기
-                    node[t] = node[spot];
+                    node[t] = 4;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
@@ -2851,7 +2850,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             if (in_board(t)) {
                 if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //white가 아니면
                     // 위치 바꿔주기
-                    node[t] = node[spot];
+                    node[t] = 4;
                     node[spot] = 0;
                     // 깊이 0까지 탐색
                     n[temp_num]=new NODE(node);
@@ -2875,7 +2874,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         if (in_board(k) && 8 - spot % 8 - 1 >= 1) {
             if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
                 // 위치 바꿔주기
-                node[k] = node[spot];
+                node[k] = 5;
                 node[spot] = 0;
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
@@ -2892,7 +2891,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         if (in_board(k) && spot % 8 >= 1) {
             if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
                 // 위치 바꿔주기
-                node[k] = node[spot];
+                node[k] = 5;
                 node[spot] = 0;
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
@@ -2909,7 +2908,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         if (in_board(k) && spot % 8 >= 1) {
             if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
                 // 위치 바꿔주기
-                node[k] = node[spot];
+                node[k] = 5;
                 node[spot] = 0;
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
@@ -2927,7 +2926,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         {
             if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
                 // 위치 바꿔주기
-                node[k] = node[spot];
+                node[k] = 5;
                 node[spot] = 0;
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
@@ -2945,7 +2944,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         {
             if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
                 // 위치 바꿔주기
-                node[k] = node[spot];
+                node[k] = 5;
                 node[spot] = 0;
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
@@ -2962,7 +2961,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         if (in_board(k) && 8 - spot % 8 - 1 >= 1) {
             if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
                 // 위치 바꿔주기
-                node[k] = node[spot];
+                node[k] = 5;
                 node[spot] = 0;
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
@@ -2979,7 +2978,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         if (in_board(k)) {
             if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
                 // 위치 바꿔주기
-                node[k] = node[spot];
+                node[k] = 5;
                 node[spot] = 0;
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
@@ -2996,7 +2995,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         if (in_board(k) && spot % 8 >= 1) {
             if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
                 // 위치 바꿔주기
-                node[k] = node[spot];
+                node[k] = 5;
                 node[spot] = 0;
                 // 깊이 0까지 탐색
                 n[temp_num]=new NODE(node);
@@ -3040,7 +3039,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                             }
                         }
                         else {
-                            node[a] = node[spot];
+                            node[a] = 6;
                             node[spot] = 0;
                         }
                         // 깊이 0까지 탐색
@@ -3085,7 +3084,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         }
                     }
                     else {
-                        node[spot+9] = node[spot];
+                        node[spot+9] =6;
                         node[spot] = 0;
                     }
                     // 깊이 0까지 탐색
@@ -3128,7 +3127,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         }
                     }
                     else {
-                        node[spot+7] = node[spot];
+                        node[spot+7] = 6;
                         node[spot] = 0;
                     }
                     // 깊이 0까지 탐색
@@ -3142,37 +3141,37 @@ public class Ai_b_Activity extends AppCompatActivity {
                         node = P_Node.clone();
                 }
             }
-            // 양파상
-            if (spot % 8 >= 1 && enpassant[spot + 1] == 1 && P_Node[spot + 9] == 0){
-                // 위치 바꿔주기
-                node[spot+9] = node[spot];
-                node[spot] = 0;
-                node[spot+1]=0;
-                // 깊이 0까지 탐색
-                n[temp_num]=new NODE(node);
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output <= return_val[1]) {
-                    return_val[1] = n[temp_num].output;
-                    return_val[0]=temp_num;
-                }
-                temp_num++;
-                        node = P_Node.clone();
-            }
-            if (8 - spot % 8 - 1 >= 1 && enpassant[spot - 1] == 1 && P_Node[spot + 7] == 0){
-                // 위치 바꿔주기
-                node[spot+7] = node[spot];
-                node[spot] = 0;
-                node[spot-1]=0;
-                // 깊이 0까지 탐색
-                n[temp_num]=new NODE(node);
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output <= return_val[1]) {
-                    return_val[1] = n[temp_num].output;
-                    return_val[0]=temp_num;
-                }
-                temp_num++;
-                        node = P_Node.clone();
-            }
+//            // 양파상
+//            if (spot % 8 >= 1 && enpassant[spot + 1] == 1 && P_Node[spot + 9] == 0){
+//                // 위치 바꿔주기
+//                node[spot+9] = node[spot];
+//                node[spot] = 0;
+//                node[spot+1]=0;
+//                // 깊이 0까지 탐색
+//                n[temp_num]=new NODE(node);
+//                // 깊이 0까지에서의 value >= 현재까지의 best_val
+//                if (n[temp_num].output <= return_val[1]) {
+//                    return_val[1] = n[temp_num].output;
+//                    return_val[0]=temp_num;
+//                }
+//                temp_num++;
+//                        node = P_Node.clone();
+//            }
+//            if (8 - spot % 8 - 1 >= 1 && enpassant[spot - 1] == 1 && P_Node[spot + 7] == 0){
+//                // 위치 바꿔주기
+//                node[spot+7] = node[spot];
+//                node[spot] = 0;
+//                node[spot-1]=0;
+//                // 깊이 0까지 탐색
+//                n[temp_num]=new NODE(node);
+//                // 깊이 0까지에서의 value >= 현재까지의 best_val
+//                if (n[temp_num].output <= return_val[1]) {
+//                    return_val[1] = n[temp_num].output;
+//                    return_val[0]=temp_num;
+//                }
+//                temp_num++;
+//                        node = P_Node.clone();
+//            }
 
         return return_val.clone();
     }
