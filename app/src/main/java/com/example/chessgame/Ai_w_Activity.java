@@ -1288,7 +1288,7 @@ public class Ai_w_Activity extends AppCompatActivity {
 
 
     public void AI() {
-
+        int a=0; int b=0;
         number = MinMax(number).clone();//ai가 minmax 알고리즘으로 찾은 배열을 number로 지정
         for (int i = 0; i < 64; i++) { //알고리즘으로 나온 결과로 판을 바꾸는 것
             if (number[i] == 1) {
@@ -1310,6 +1310,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             else if (number[i] == 5) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_b));
                 block[i].setVisibility(View.VISIBLE);
+                a++;
             }//킹
             else if (number[i] == 7 || number[i] == 6) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_b));
@@ -1330,6 +1331,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             } else if (number[i] == 15) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_w));
                 block[i].setVisibility(View.VISIBLE);
+                b++;
             } else if (number[i] == 17 || number[i] == 16) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_w));
                 block[i].setVisibility(View.VISIBLE);
@@ -1338,7 +1340,8 @@ public class Ai_w_Activity extends AppCompatActivity {
                 block[i].setVisibility(View.INVISIBLE);
             }
         }
-//        if (game_ended(number) == true) end_game(1);
+        if (a!=1&&b==1) end_game(1);
+        else if (a==1&&b!=1) end_game(2);
          turn = true;
     }
 
