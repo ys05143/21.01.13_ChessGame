@@ -4,7 +4,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.DialogInterface;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
@@ -1282,11 +1285,6 @@ public class Ai_w_Activity extends AppCompatActivity {
     }
     //---------------------ai관련-----------------------------------------------------------
 
-
-
-
-
-
     public void AI() {
         int a=0; int b=0;
         number = MinMax(number).clone();//ai가 minmax 알고리즘으로 찾은 배열을 number로 지정
@@ -1340,6 +1338,15 @@ public class Ai_w_Activity extends AppCompatActivity {
                 block[i].setVisibility(View.INVISIBLE);
             }
         }
+        ValueAnimator ani=ValueAnimator.ofObject(new ArgbEvaluator(),getResources().getColor(R.color.gray),getResources().getColor(R.color.transparent));
+        ani.setDuration(5000);
+        ani.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                block[Point].setBackgroundColor((int)animation.getAnimatedValue());
+            }
+        });
+        ani.start();
         if (a!=1&&b==1) end_game(1);
         else if (a==1&&b!=1) end_game(2);
          turn = true;
@@ -1353,14 +1360,24 @@ public class Ai_w_Activity extends AppCompatActivity {
     ArrayList<int[]> cand=new ArrayList<int[]>();
     int Count=0;
     int t=0;
+    int Point;
 
     public int[] MinMax(int[] number) {
         MaxMove(number.clone(), AI_DEPTH,-INF,INF);
+        Point=Find_AI_Move(number.clone());
         return FinalNode.clone() ;
     }
 
+    public int Find_AI_Move(int [] number){
+        int r=-1;
+        for(int i=0;i<64;i++){
+            if(FinalNode[i]!=number[i]&&FinalNode[i]!=0) {r=i; break;}
+        }
+        return r;
+    }
+
     public int MaxMove(int[] node, int depth,int alpha,int beta) {
-        if(depth==0) return Evalstate_w(node) ;
+        if(depth==0||game_ended(node)==true) return Evalstate_w(node) ;
         int ret_val ;
         int  best_val = -INF +1 ;
         int[] ret_node = node.clone();
@@ -1408,7 +1425,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             // node == ret_node ( 움직임이 없을 시 )
             if(Arrays.equals(node,ret_node)) continue ;
             // beta-cut  (return INF)
-            if(ret_val>=beta) return INF+1 ;
+            if(ret_val>beta) return INF+1 ;
 
             // best_val,temp_node 갱신
             if(depth== AI_DEPTH){
@@ -1445,11 +1462,12 @@ public class Ai_w_Activity extends AppCompatActivity {
             for (int i = 0; i < 64; i++)
                 FinalNode[i] = temp_node[i]; //깊이가 n일때 가장 좋은 node를 (전역변수)FinalNode로 저장.
         }
+
         return best_val ;
     }
 
     public int MinMove(int[] node, int depth,int alpha,int beta) {
-        if(depth==0) return Evalstate_w(node) ;
+        if(depth==0||game_ended(node)==true) return Evalstate_w(node) ;
         int ret_val ;
         int  best_val = INF -1  ;
         int[] ret_node = node.clone();
@@ -1495,7 +1513,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             // node == ret_node ( 움직임이 없을 시 )
             if(Arrays.equals(node,ret_node)) continue ;
             // alpha-cut (return -INF)
-            if(ret_val <= alpha) return -INF-1;
+            if(ret_val < alpha) return -INF-1;
 
             // best_val,temp_node 갱신
             if(ret_val <= best_val ) {

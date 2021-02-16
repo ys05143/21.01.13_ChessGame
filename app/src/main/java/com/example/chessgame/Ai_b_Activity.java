@@ -2,6 +2,9 @@ package com.example.chessgame;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -10,7 +13,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+
+import static java.lang.Math.random;
 
 
 public class Ai_b_Activity extends AppCompatActivity {
@@ -1261,9 +1267,9 @@ public class Ai_b_Activity extends AppCompatActivity {
     }
     //---------------------ai관련-----------------------------------------------------------
 
-     public void AI() {
+    public void AI() {
+        int a=0; int b=0;
         number = MinMax(number).clone();//ai가 minmax 알고리즘으로 찾은 배열을 number로 지정
-         int a=0; int b=0;
         for (int i = 0; i < 64; i++) { //알고리즘으로 나온 결과로 판을 바꾸는 것
             if (number[i] == 1) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_b));
@@ -1286,1963 +1292,1905 @@ public class Ai_b_Activity extends AppCompatActivity {
                 block[i].setVisibility(View.VISIBLE);
                 a++;
             }//킹
-            else if (number[i] == 7 || number[i] == 6 ) {
+            else if (number[i] == 7 || number[i] == 6) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_b));
                 block[i].setVisibility(View.VISIBLE);
             }//폰
             else if (number[i] == 11) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_w));
                 block[i].setVisibility(View.VISIBLE);
-            }
-            else if (number[i] == 12) {
+            } else if (number[i] == 12) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_w));
                 block[i].setVisibility(View.VISIBLE);
-            }
-            else if (number[i] == 13) {
+            } else if (number[i] == 13) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.bishop_w));
                 block[i].setVisibility(View.VISIBLE);
-            }
-            else if (number[i] == 14) {
+            } else if (number[i] == 14) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.queen_w));
                 block[i].setVisibility(View.VISIBLE);
-            }
-            else if (number[i] == 15) {
+            } else if (number[i] == 15) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_w));
                 block[i].setVisibility(View.VISIBLE);
                 b++;
-            }
-            else if (number[i] == 17 || number[i] == 16 ) {
+            } else if (number[i] == 17 || number[i] == 16) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_w));
                 block[i].setVisibility(View.VISIBLE);
-            }
-            else if (number[i] == 0) {
+            } else if (number[i] == 0) {
                 block[i].setImageDrawable(getResources().getDrawable(R.drawable.dot));
                 block[i].setVisibility(View.INVISIBLE);
             }
         }
-
+        ValueAnimator ani=ValueAnimator.ofObject(new ArgbEvaluator(),getResources().getColor(R.color.gray),getResources().getColor(R.color.transparent));
+        ani.setDuration(5000);
+        ani.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                block[Point].setBackgroundColor((int)animation.getAnimatedValue());
+            }
+        });
+        ani.start();
         if (a!=1&&b==1) end_game(1);
         else if (a==1&&b!=1) end_game(2);
-        turn = false;
+         turn = false;
     }
 
+    // 공통 변수
+    final int INF = 10000 ;
+    public int[] FinalNode = new int[64] ;
+    int AI_DEPTH = 4;
+    // random 부분
+    ArrayList<int[]> cand=new ArrayList<int[]>();
+    int Count=0;
+    int t=0;
+    int Point;
 
-    int temp_num=0;
     public int[] MinMax(int[] number) {
-        NODE[] n=new NODE[500];
-        int [] ans=MinMove(number.clone(),n);
+        MinMove(number.clone(), AI_DEPTH,-INF,INF);
+        Point=Find_AI_Move(number.clone());
+        return FinalNode.clone() ;
+    }
+
+    public int Find_AI_Move(int [] number){
+        int r=-1;
         for(int i=0;i<64;i++){
-            n[i]=null;
+            if(FinalNode[i]!=number[i]&&FinalNode[i]!=0) {r=i; break;}
         }
-        temp_num=0;
-        return ans.clone();
+        return r;
     }
 
-    public int[] MaxMove(int[] Node,NODE [] n) {
-        int[] P_Node=Node.clone();
-        int []result = new int[2];
-        int best_val = -10000;
-        int temp=0;
+    public int MaxMove(int[] node, int depth,int alpha,int beta) {
+        if(depth==0||game_ended(node)==true) return Evalstate_w(node) ;
+        int ret_val ;
+        int  best_val = -INF +1 ;
+        int[] ret_node = node.clone();
+        int[] temp_node = new int[64] ;
+
+
+
+        for(int i=0;i<64;i++) {
+            ret_node=node.clone();
+            switch(node[i]) {
+                //rook
+                case 11: {
+                    ret_val = RookMax(node,i,depth,ret_node,alpha,beta) ;
+                    break;
+                }
+                //knight
+                case 12 : {
+                    ret_val = KnightMax(node,i,depth,ret_node,alpha,beta) ;
+                    break;
+                }
+                case 13 : {
+                    ret_val = BishopMax(node,i,depth,ret_node,alpha,beta) ;
+                    break;
+                }
+                case 14 : {
+                    ret_val = QueenMax(node,i,depth,ret_node,alpha,beta) ;
+                    break;
+                }
+                case 15 : {
+                    ret_val = KingMax(node,i,depth,ret_node,alpha,beta) ;
+                    break;
+                }
+                case 16 : {
+                    ret_val = PawnMax(node,i,depth,ret_node,alpha,beta) ;
+                    break;
+                }
+                case 17 : {
+                    ret_val = FPawnMax(node,i,depth,ret_node,alpha,beta) ;
+                    break;
+                }
+                default : {
+                    continue;
+                }
+            } // switch
+            // node == ret_node ( 움직임이 없을 시 )
+            if(Arrays.equals(node,ret_node)) continue ;
+            // beta-cut  (return INF)
+            if(ret_val>beta) return INF+1 ;
+
+            // best_val,temp_node 갱신
+            if (ret_val >= best_val) {
+                alpha  = ret_val ;
+                best_val = ret_val;
+                temp_node = ret_node.clone();
+            }
+
+        } // for(i)
+
+        return best_val ;
+    }
+
+    public int MinMove(int[] node, int depth,int alpha,int beta) {
+        if(depth==0||game_ended(node)==true) return Evalstate_w(node) ;
+        int ret_val ;
+        int  best_val = INF -1  ;
+        int[] ret_node = node.clone();
+        int[] temp_node = new int[64] ;
+
+        for(int i=0;i<64;i++) {
+            ret_node=node.clone();
+            switch(node[i]) {
+                //rook
+                case 1: {
+                    ret_val = RookMin(node,i,depth,ret_node,alpha,beta) ;
+                    break;
+                }
+                //knight
+                case 2 : {
+                    ret_val = KnightMin(node,i,depth,ret_node,alpha,beta) ;
+                    break;
+                }
+                case 3 : {
+                    ret_val = BishopMin(node,i,depth,ret_node,alpha,beta) ;
+                    break;
+                }
+                case 4 : {
+                    ret_val = QueenMin(node,i,depth,ret_node,alpha,beta) ;
+                    break;
+                }
+                case 5 : {
+                    ret_val = KingMin(node,i,depth,ret_node,alpha,beta) ;
+                    break;
+                }
+                case 6 : {
+                    ret_val = PawnMin(node,i,depth,ret_node,alpha,beta) ;
+                    break;
+                }
+                case 7 : {
+                    ret_val = FPawnMin(node,i,depth,ret_node,alpha,beta) ;
+                    break;
+                }
+                default:  {
+                    continue ;
+                }
+            } // switch
+            // node == ret_node ( 움직임이 없을 시 )
+            if(Arrays.equals(node,ret_node)) continue ;
+            // alpha-cut (return -INF)
+            if(ret_val < alpha) return -INF-1;
+
+            // best_val,temp_node 갱신
+            if(depth==AI_DEPTH){
+                if(ret_val<best_val){
+                    best_val = ret_val;
+                    temp_node = ret_node.clone();
+                    beta = ret_val;
+
+                    cand.clear();
+                    t=ret_val;
+                    Count=0;
+
+                }
+                if(ret_val==best_val){
+                    beta = ret_val;
+                    best_val = ret_val;
+                    cand.add(ret_node.clone());
+                    Count++;
+                }
+            }
+            else {
+                if (ret_val <= best_val) {
+                    beta = ret_val;
+                    best_val = ret_val;
+                    temp_node = ret_node.clone();
+                }
+            }
+
+        } // for(i)
+        // depth == 최대높이
+        if(depth== AI_DEPTH) {
+            if (best_val == t&&Count>0) {
+                temp_node = cand.get((int)((random()*100) % Count));
+            }
+            for (int i = 0; i < 64; i++)
+                FinalNode[i] = temp_node[i]; //깊이가 n일때 가장 좋은 node를 (전역변수)FinalNode로 저장.
+        }
+
+        return best_val ;
+    }
+
+    public int Evalstate_w(int[] number) {// 현재 상태를 평가하는 평가함수 (일단 ai가 백 이라는 가정으로 작성)
+        int value = 0;
         for (int i = 0; i < 64; i++) {
-            if (P_Node[i] == 17) {
-                result = f_pawn_generatemove_max_w(Node.clone(), i, n);
-                if(best_val<=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
-                }
-            } else if (P_Node[i] == 16) {
-                result = pawn_generatemove_max_w(Node.clone(), i, n);
-                if(best_val<=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
-                }
-            } else if (P_Node[i] == 12) {
-                result = knight_generatemove_max_w(Node.clone(), i, n);
-                if(best_val<=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
-                }
-            } else if (P_Node[i] == 13) {
-                result = bishop_generatemove_max_w(Node.clone(), i, n);
-                if(best_val<=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
-                }
-            } else if (P_Node[i] == 11) {
-                result = rook_generatemove_max_w(Node.clone(), i, n);
-                if(best_val<=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
-                }
-            } else if (P_Node[i] == 14) {
-                result = queen_generatemove_max_w(Node.clone(), i, n);
-                if(best_val<=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
-                }
-            } else if (P_Node[i] == 15) {
-                result = king_generatemove_max_w(Node.clone(), i, n);
-                if(best_val<=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
-                }
-            }
-
+            if (number[i] == 1) value = value - 5; //룩
+            else if (number[i] == 2) value = value - 3;//나이트
+            else if (number[i] == 3) value = value - 3;//비숍
+            else if (number[i] == 4) value = value - 9;//퀸
+            else if (number[i] == 7 || number[i] == 6) {value = value - 1; /*if((number[i-7]!=16||number[i-7]!=17)||(number[i-9]!=16||number[i-9]!=17)) value=value-1;*/}//폰
+            else if (number[i] == 5) value = value - 1000;
+            else if (number[i] == 11) value = value + 5;
+            else if (number[i] == 12) value = value + 3;
+            else if (number[i] == 13) value = value + 3;
+            else if (number[i] == 14) value = value + 9;
+            else if (number[i] == 17 || number[i] == 16) {value = value + 1; /*if((number[i+7]!=6||number[i+7]!=7)||(number[i+9]!=6||number[i+9]!=7)) value=value+1;*/}
+            else if (number[i] == 15) value = value + 1000;
         }
-        return n[temp].board.clone();
+        return value;
     }
 
 
-    public int[] MinMove(int[] Node,NODE [] n) {
-        int[] P_Node=Node.clone();
-        int []result = new int[2];
-        int best_val = 10000;
-        int temp=0;
-        for (int i = 0; i < 64; i++) {
-            if (P_Node[i] == 1) {
-                result = rook_generatemove_min_b(Node.clone(), i, n);
-                if(best_val>=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
-                }
-            } else if (P_Node[i] == 2) {
-                result = knight_generatemove_min_b(Node.clone(), i, n);
-                if(best_val>=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
-                }
-            } else if (P_Node[i] == 3) {
-                result = bishop_generatemove_min_b(Node.clone(), i, n);
-                if(best_val>=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
-                }
-            } else if (P_Node[i] == 7) {
-                result = f_pawn_generatemove_min_b(Node.clone(), i, n);
-                if(best_val>=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
-                }
-            } else if (P_Node[i] == 6) {
-                result = pawn_generatemove_min_b(Node.clone(), i, n);
-                if(best_val>=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
-                }
-            } else if (P_Node[i] == 4) {
-                result = queen_generatemove_min_b(Node.clone(), i, n);
-                if (best_val >= result[1]) {
-                    best_val = result[1];
-                    temp = result[0];
-                }
-            } else if (P_Node[i] == 5) {
-                result = king_generatemove_min_b(Node.clone(), i, n);
-                if(best_val>=result[1]){
-                    best_val=result[1];
-                    temp=result[0];
-                }
-            }
-
-        }
-        return n[temp].board.clone();
-    }
+    public int RookMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+        int[] Node=node.clone();  //
+        int  best_val = -INF  ;
+        int ret_val = -INF;
 
 
+        int[] temp_node = node.clone();
 
-//    public int[] MaxMove(int[] node, int depth,int al,int be) {
-//        int[] P_Node = node.clone(); //매개변수로 받은 배열 복사
-//        int best_val = Evalstate_w(P_Node);
-//        int[] best_Node = node.clone();
-//        int[] Node = node.clone();
-//        int alpha=al; int beta=be;
-//        if ((depth == 0)||(game_ended(P_Node)==true)) return best_Node.clone();
-//        else {
-//            for (int i = 0; i < 64; i++) {
-//                if (P_Node[i] == 17) {
-//                    Node = f_pawn_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
-//                }
-//                else if (P_Node[i] == 16) {
-//                    Node = pawn_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
-//                }
-//                else if (P_Node[i] == 11) {
-//                    Node = rook_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
-//                }
-//                else if (P_Node[i] == 12) {
-//                    Node = knight_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
-//                }
-//                else if (P_Node[i] == 13) {
-//                    Node = bishop_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
-//                }
-//                else if (P_Node[i] == 14) {
-//                    Node = queen_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
-//                }
-//                else if (P_Node[i] == 15) {
-//                    Node = king_generatemove_max_w(P_Node, i, depth,alpha,beta).clone();
-//                }
-//                int result=Evalstate_w(Node);
-//                if(Arrays.equals(Node,P_Node)) continue;
-//                if (result >= best_val) {
-//                    best_Node = Node.clone();
-//                    best_val = result;
-//
-//                }
-//
-//                if(result>=beta) return best_Node.clone();
-//                else if(result>alpha) beta=result;
-//
-//            }
-//            return best_Node.clone();
-//        }
-//    }
-//
-//    public int[] MinMove(int[] node, int depth,int al,int be) {
-//        int[] P_Node = node.clone(); //매개변수로 받은 배열 복사
-//        int best_val = Evalstate_w(P_Node);
-//        int[] best_Node = node.clone();
-//        int[] Node = node.clone() ;
-//        int alpha=al; int beta=be;
-//        if ((depth == 0)||(game_ended(P_Node)==true)) return best_Node.clone();
-//        else {
-//            for (int i = 0; i < 64; i++) {
-//                if (P_Node[i] == 7) {
-//                    Node = f_pawn_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
-//                }
-//                else if (P_Node[i] == 6) {
-//                    Node = pawn_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
-//                }
-//                else if (P_Node[i] == 1) {
-//                    Node = rook_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
-//                }
-//                else if (P_Node[i] == 2) {
-//                    Node = knight_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
-//                }
-//                else if (P_Node[i] == 3) {
-//                    Node = bishop_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
-//                }
-//                else if (P_Node[i] == 4) {
-//                    Node = queen_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
-//                }
-//                else if (P_Node[i] == 5) {
-//                    Node = king_generatemove_min_b(P_Node, i, depth,alpha,beta).clone();
-//                }
-//                int result=Evalstate_w(Node);
-//                if(Arrays.equals(Node,P_Node)) continue;
-//                if (result <= best_val) {
-//                    best_Node = Node.clone();
-//                    best_val = result;
-//
-//                }
-//
-//                if(result<=alpha) return best_Node.clone();
-//                else if(result<beta) beta=result;
-//
-//
-//            }
-//            return best_Node.clone();
-//        }
-//    }
-//
-//    public int Evalstate_w(int[] number) {// 현재 상태를 평가하는 평가함수 (일단 ai가 백 이라는 가정으로 작성)
-//        int value = 0;
-//        for (int i = 0; i < 64; i++) {
-//            if (number[i] == 1) value = value - 5; //룩
-//            else if (number[i] == 2) value = value - 3;//나이트
-//            else if (number[i] == 3) value = value - 3;//비숍
-//            else if (number[i] == 4) value = value - 9;//퀸
-//            else if (number[i] == 7 || number[i] == 6 ) value = value - 1;//폰
-//            else if (number[i]==5) value=value-1000;
-//            else if (number[i] == 11) value = value + 5;
-//            else if (number[i] == 12) value = value + 3;
-//            else if (number[i] == 13) value = value + 3;
-//            else if (number[i] == 14) value = value + 9;
-//            else if (number[i] == 17 || number[i] == 16 ) value = value + 1;
-//            else if (number[i]==15) value=value+1000;
-//        }
-//        return value;
-//    }
-
-    public int[] rook_generatemove_max_w(int[] P_Node, int spot, NODE [] n) {
-        int[] node = P_Node.clone();
-        int[] return_val=new int[2]; //{해당되는 객체의 번호, 평가함수값 }
-            for (int a = spot + 8; a < 64; a = a + 8) {//하
-                if (in_board(a)) {
-                    if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) { //white가 아니면
-                        // 위치 바꿔주기
-                        node[a] = node[spot];
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[a] != 0) break;
-                }
-            }
-            for (int a = spot - 8; a >= 0; a = a - 8) {//상
-                if (in_board(a)) {
-                    if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) {
-                        // 위치 바꿔주기
-                        node[a] = node[spot];
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[a] != 0) break;
-                }
-            }
-            for (int c = 0; c < spot % 8; c++) {//좌
-                int a = spot - (c + 1);
-                if (in_board(a)) {
-                    if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) {
-                        // 위치 바꿔주기
-                        node[a] = node[spot];
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[a] != 0) break;
-                }
-            }
-            for (int d = 0; d < 8 - ((spot % 8) + 1); d++) {//우
-                int a = spot + (d + 1);
-                if (in_board(a)) {
-                    if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) {
-                        // 위치 바꿔주기
-                        node[a] = node[spot];
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[a] != 0) break;
-                }
-            }
-            return return_val.clone();
-    }
-    public int[] knight_generatemove_max_w(int[] P_Node, int spot, NODE [] n) {
-        int[] node = P_Node.clone();
-        int[] return_val = new int[2];
-        int a;
-            a = spot + (8 * 2) + 1;//우 대각 아래(2) down-2 right-1
-            if (in_board(a) && 8 - spot % 8 - 1 >= 1)  //끝쪽에 있을때 넘어가기 방지
-            {
-                if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) {
-                    // 위치 바꿔주기
-                    node[a] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num] = new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0] = temp_num;
-                    }
-                    temp_num++;
-                    node = P_Node.clone();
-                }
-            }
-            a = spot + (8 * 2) - 1; //좌 대각 아래(2) down-2 left-1
-            if (in_board(a) && spot % 8 >= 1) //끝쪽에 있을때 넘어가기 방지
-            {
-                if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) {
-                    // 위치 바꿔주기
-                    node[a] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                    node = P_Node.clone();
-                }
-            }
-            a = spot - (8 * 2) + 1; //우 대각 위(2) up-2 right-1
-            if (in_board(a) && 8 - spot % 8 - 1 >= 1)  //끝쪽에 있을때 넘어가기 방지
-            {
-                if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) {
-                    // 위치 바꿔주기
-                    node[a] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
-                }
-            }
-            a = spot - (8 * 2) - 1; //좌 대각 위(2) up-2 left-1
-            if (in_board(a) && spot % 8 >= 1) //끝쪽에 있을때 넘어가기 방지
-            {
-                if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) {
-                    // 위치 바꿔주기
-                    node[a] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
-                }
-            }
-            a = spot + (8 * 1) + 2; //우 대각 아래(1) right-2 down-1
-            if (in_board(a) && 8 - spot % 8 - 1 >= 2) //끝쪽에 있을때 넘어가기 방지
-            {
-                if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) {
-                    // 위치 바꿔주기
-                    node[a] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
-                }
-            }
-            a = spot + (8 * 1) - 2;//좌 대각 아래(1) left-2 down-1
-            if (in_board(a) && spot % 8 >= 2) //끝쪽에 있을때 넘어가기 방지
-            {
-                if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) {
-                    // 위치 바꿔주기
-                    node[a] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                     temp_num++;
-                        node = P_Node.clone();
-                }
-            }
-            a = spot - (8 * 1) + 2; //우 대각 위(1) right-2 up -1
-            if (in_board(a) && 8 - spot % 8 - 1 >= 2) //끝쪽에 있을때 넘어가기 방지
-            {
-                if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) {
-                    // 위치 바꿔주기
-                    node[a] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
-                }
-            }
-            a = spot - (8 * 1) - 2; //좌 대각 위(1) left-2 up - 1
-            if (in_board(a) && spot % 8 >= 2) //끝쪽에 있을때 넘어가기 방지
-            {
-                if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) {
-                    // 위치 바꿔주기
-                    node[a] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
-                }
-            }
-            return return_val.clone();
-        }
-    public int[] bishop_generatemove_max_w(int[] P_Node, int spot, NODE [] n) {
-        int[] node = P_Node.clone();
-        int [] return_val=new int[2];
-            for (int a = 0; a < 8 - ((spot % 8) + 1); a++) {//우 대각 아래
-                int t = spot + (9 * (a + 1));
-                if (in_board(t)) {
-                    if (!(P_Node[t] >= 11 && P_Node[t] <= 17)) { //white가 아니면
-                        // 위치 바꿔주기
-                        node[t] = node[spot];
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[t] != 0) break;
-                }
-            }
-            for (int b = 0; b < spot % 8; b++) { //좌 대각 위
-                int t = spot - (9 * (b + 1));
-                if (in_board(t)) {
-                    if (!(P_Node[t] >= 11 && P_Node[t] <= 17)) { //white가 아니면
-                        // 위치 바꿔주기
-                        node[t] = node[spot];
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[t] != 0) break;
-                }
-            }
-            for (int c = 0; c < spot % 8; c++) { //좌 대각 아래
-                int t = spot + (7 * (c + 1));
-                if (in_board(t)) {
-                    if (!(P_Node[t] >= 11 && P_Node[t] <= 17)) { //white가 아니면
-                        // 위치 바꿔주기
-                        node[t] = node[spot];
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[t] != 0) break;
-                }
-            }
-            for (int d = 0; d < 8 - ((spot % 8) + 1); d++) {//우 대각 위
-                int t = spot - (7 * (d + 1));
-                if (in_board(t)) {
-                    if (!(P_Node[t] >= 11 && P_Node[t] <= 17)) { //white가 아니면
-                        // 위치 바꿔주기
-                        node[t] = node[spot];
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[t] != 0) break;
-                }
-            }
-            return return_val.clone();
-        }
-    public int[] queen_generatemove_max_w(int[] P_Node, int spot, NODE [] n) {
-        int[] node = P_Node.clone();
-        int [] return_val=new int[2];
         for (int a = spot + 8; a < 64; a = a + 8) {//하
-            if (in_board(a)) {
-                if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) { //white가 아니면
-                    // 위치 바꿔주기
-                    node[a] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
+            if(in_board(a)) {
+                if (!(node[a] >= 11 && node[a] <= 17)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val >= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
                     }
-                    temp_num++;
-                        node = P_Node.clone();
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
-                if (P_Node[a] != 0) break;
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
         }
         for (int a = spot - 8; a >= 0; a = a - 8) {//상
-            if (in_board(a)) {
-                if (!(P_Node[a] >= 11 && P_Node[a] <= 17)) { //white가 아니면
-                    // 위치 바꿔주기
-                    node[a] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
+            if(in_board(a)) {
+                if (!(node[a] >= 11 && node[a] <= 17)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val >= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
                     }
-                    temp_num++;
-                        node = P_Node.clone();
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
-                if (P_Node[a] != 0) break;
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
         }
-        for (int a = 0; a < spot % 8; a++) {//좌
-            int t= spot -(a+1) ;
-            if (in_board(t)) {
-                if (!(P_Node[t] >= 11 && P_Node[t] <= 17)) { //white가 아니면
-                    // 위치 바꿔주기
-                    node[t] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
+        for (int b = 0; b < spot % 8; b++) {//좌
+            int a = spot - (b+1) ;
+            if(in_board(a)) {
+                if (!(node[a] >= 11 && node[a] <= 17)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val >= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
                     }
-                    temp_num++;
-                        node = P_Node.clone();
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
-                if (P_Node[t] != 0) break;
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
         }
-        for (int a = 0; a < 8 - ((spot % 8) + 1); a++) {//우
-            int t= spot + (a+1) ;
-            if (in_board(t)) {
-                if (!(P_Node[t] >= 11 && P_Node[t] <= 17)) { //white가 아니면
-                    // 위치 바꿔주기
-                    node[t] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
+        for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우
+            int a = spot + (b+1) ;
+            if(in_board(a)) {
+                if (!(node[a] >= 11 && node[a] <= 17)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val >= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
                     }
-                    temp_num++;
-                        node = P_Node.clone();
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
-                if (P_Node[t] != 0) break;
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
         }
-        for (int a = 0; a < 8 - ((spot % 8) + 1); a++) {//우 대각 아래
-            int t = spot + (9 * (a + 1));
-            if (in_board(t)) {
-                if (!(P_Node[t] >= 11 && P_Node[t] <= 17)) { //white가 아니면
-                    // 위치 바꿔주기
-                    node[t] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
+        // return
+        if (best_val!=-INF)
+        for(int i=0 ; i<64 ; i++) best_node[i] = temp_node[i] ;
+
+        return best_val ;
+
+    }
+    public int KnightMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+        int[] Node=node.clone();  //
+        int  best_val = -INF  ;
+        int ret_val = -INF ;
+
+
+        int[] temp_node = node.clone();
+
+        int a = spot + (8 * 2) + 1;//우 대각 아래(2) down-2 right-1
+        if (in_board(a) && 8 - spot % 8 - 1 >= 1)  //끝쪽에 있을때 넘어가기 방지
+        {
+            if (!(node[a]>=11&&node[a]<=17)) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val >= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
                 }
-                if (P_Node[t] != 0) break;
+                // GenerateMove Cancel
+                Node = node.clone() ;
+            }
+        }
+        a = spot + (8 * 2) - 1; //좌 대각 아래(2) down-2 left-1
+        if (in_board(a) && spot % 8 >= 1) //끝쪽에 있을때 넘어가기 방지
+        {
+            if (!(node[a]>=11&&node[a]<=17)) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val >= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                }
+                // GenerateMove Cancel
+                Node = node.clone() ;
+            }
+        }
+        a = spot - (8 * 2) + 1; //우 대각 위(2) up-2 right-1
+        if (in_board(a) && 8 - spot % 8 - 1 >= 1)  //끝쪽에 있을때 넘어가기 방지
+        {
+            if (!(node[a]>=11&&node[a]<=17)) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val >= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                }
+                // GenerateMove Cancel
+                Node = node.clone() ;
+            }
+        }
+        a = spot - (8 * 2) - 1; //좌 대각 위(2) up-2 left-1
+        if (in_board(a) && spot % 8 >= 1) //끝쪽에 있을때 넘어가기 방지
+        {
+            if (!(node[a]>=11&&node[a]<=17)) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val >= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                }
+                // GenerateMove Cancel
+                Node = node.clone() ;
+            }
+        }
+        a = spot + (8 * 1) + 2; //우 대각 아래(1) right-2 down-1
+        if (in_board(a) && 8 - spot % 8 - 1 >= 2) //끝쪽에 있을때 넘어가기 방지
+        {
+            if (!(node[a]>=11&&node[a]<=17)) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val >= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                }
+                // GenerateMove Cancel
+                Node = node.clone() ;
+            }
+        }
+        a = spot + (8 * 1) - 2;//좌 대각 아래(1) left-2 down-1
+        if (in_board(a) && spot % 8 >= 2) //끝쪽에 있을때 넘어가기 방지
+        {
+            if ((node[a]>=11&&node[a]<=17)) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val >= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                }
+                // GenerateMove Cancel
+                Node = node.clone() ;
+            }
+        }
+        a = spot - (8 * 1) + 2; //우 대각 위(1) right-2 up -1
+        if (in_board(a) && 8 - spot % 8 - 1 >= 2) //끝쪽에 있을때 넘어가기 방지
+        {
+            if (!(node[a]>=11&&node[a]<=17)) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val >= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                }
+                // GenerateMove Cancel
+                Node = node.clone() ;
+            }
+        }
+        a = spot - (8 * 1) - 2; //좌 대각 위(1) left-2 up - 1
+        if (in_board(a) && spot % 8 >= 2) //끝쪽에 있을때 넘어가기 방지
+        {
+            if (!(node[a]>=11&&node[a]<=17)) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val >= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                }
+                // GenerateMove Cancel
+                Node = node.clone() ;
+            }
+        }
+        if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+        return best_val ;
+    }
+    public int BishopMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+        int[] Node=node.clone();  //
+        int  best_val = -INF  ;
+        int ret_val= -INF ;
+
+        int[] temp_node =node.clone();
+
+        for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
+            int a = spot + (9 * (b + 1));
+            if(in_board(a)) {
+                if (!(node[a] >= 11 && node[a] <= 17)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val >= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
+                    }
+                    // GenerateMove Cancel
+                    Node = node.clone();
+                }
+                //  말이 있을경우
+                if (node[a] != 0) break;
+            }
+        }
+
+        for (int b = 0; b < spot % 8; b++) { //좌 대각 위
+            int a = spot - (9 * (b + 1));
+            if(in_board(a)) {
+                if (!(node[a] >= 11 && node[a] <= 17)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val >= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
+                    }
+                    // GenerateMove Cancel
+                    Node = node.clone();
+                }
+                //  말이 있을경우
+                if (node[a] != 0) break;
+            }
+        }
+        for (int b = 0; b < spot % 8; b++) { //좌 대각 아래
+            int a = spot + (7 * (b + 1));
+            if(in_board(a)) {
+                if (!(node[a] >= 11 && node[a] <= 17)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val >= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
+                    }
+                    // GenerateMove Cancel
+                    Node = node.clone();
+                }
+                //  말이 있을경우
+                if (node[a] != 0) break;
+            }
+        }
+        for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 위
+            int a = spot - (7 * (b + 1));
+            if(in_board(a)) {
+                if (!(node[a] >= 11 && node[a] <= 17)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val >= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
+                    }
+                    // GenerateMove Cancel
+                    Node = node.clone();
+                }
+                //  말이 있을경우
+                if (node[a] != 0) break;
+            }
+        }
+        if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+        return best_val ;
+    }
+    public int QueenMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+        int[] Node=node.clone();  //
+        int  best_val = -INF  ;
+        int ret_val = -INF;
+
+        int[] temp_node = node.clone();
+
+        for (int a = spot + 8; a < 64; a = a + 8) {//하
+            if(in_board(a)) {
+                if (!(node[a] >= 11 && node[a] <= 17)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val >= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
+                    }
+                    // GenerateMove Cancel
+                    Node = node.clone();
+                }
+                //  말이 있을경우
+                if (node[a] != 0) break;
+            }
+        }
+        for (int a = spot - 8; a >= 0; a = a - 8) {//상
+            if(in_board(a)) {
+                if (!(node[a] >= 11 && node[a] <= 17)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val >= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
+                    }
+                    // GenerateMove Cancel
+                    Node = node.clone();
+                }
+                //  말이 있을경우
+                if (node[a] != 0) break;
+            }
+        }
+        for (int b = 0; b < spot % 8; b++) {//좌
+            int a = spot - (b + 1);
+            if(in_board(a)) {
+                if (!(node[a] >= 11 && node[a] <= 17)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val >= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
+                    }
+                    // GenerateMove Cancel
+                    Node = node.clone();
+                }
+                //  말이 있을경우
+                if (node[a] != 0) break;
+            }
+        }
+        for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우
+            int a = spot + (b + 1);
+            if(in_board(a)) {
+                if (!(node[a] >= 11 && node[a] <= 17)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val >= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
+                    }
+                    // GenerateMove Cancel
+                    Node = node.clone();
+                }
+                //  말이 있을경우
+                if (node[a] != 0) break;
+            }
+        }
+        for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
+            int a = spot + (9 * (b + 1));
+            if(in_board(a)) {
+                if (!(node[a] >= 11 && node[a] <= 17)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val >= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
+                    }
+                    // GenerateMove Cancel
+                    Node = node.clone();
+                }
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
         }
         for (int b = 0; b < spot % 8; b++) { //좌 대각 위
-            int t = spot - (9 * (b + 1));
-            if (in_board(t)) {
-                if (!(P_Node[t] >= 11 && P_Node[t] <= 17)) { //white가 아니면
-                    // 위치 바꿔주기
-                    node[t] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
+            int a = spot - (9 * (b + 1));
+            if(in_board(a)) {
+                if (!(node[a] >= 11 && node[a] <= 17)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val >= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
                     }
-                    temp_num++;
-                        node = P_Node.clone();
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
-                if (P_Node[t] != 0) break;
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
         }
-        for (int c = 0; c < spot % 8; c++) { //좌 대각 아래
-            int t= spot + (7 * (c + 1));
-            if (in_board(t)) {
-                if (!(P_Node[t] >= 11 && P_Node[t] <= 17)) { //white가 아니면
-                    // 위치 바꿔주기
-                    node[t] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
+        for (int b = 0; b < spot % 8; b++) { //좌 대각 아래
+            int a= spot + (7 * (b + 1));
+            if(in_board(a)) {
+                if (!(node[a] >= 11 && node[a] <= 17)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val >= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
                     }
-                    temp_num++;
-                        node = P_Node.clone();
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
-                if (P_Node[t] != 0) break;
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
         }
-        for (int d = 0; d < 8 - ((spot % 8) + 1); d++) {//우 대각 아래
-            int t = spot - (7 * (d + 1));
-            if (in_board(t)) {
-                if (!(P_Node[t] >= 11 && P_Node[t] <= 17)) { //white가 아니면
-                    // 위치 바꿔주기
-                    node[t] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
+        for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
+            int a = spot - (7 * (b + 1));
+            if(in_board(a)) {
+                if (!(node[a] >= 11 && node[a] <= 17)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val >= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
                     }
-                    temp_num++;
-                        node = P_Node.clone();
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
-                if (P_Node[t] != 0) break;
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
         }
-        return return_val.clone();
+        if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+        return best_val ;
     }
-    public int[] king_generatemove_max_w(int[] P_Node, int spot, NODE [] n) {
-        int[] node = P_Node.clone();
-        int [] return_val=new int[2];
-            int k = spot + 1; //우
-            if (in_board(k) && 8 - spot % 8 - 1 >= 1) {
-                if (!(P_Node[k] >= 11 && P_Node[k] <= 17)) {
-                    // 위치 바꿔주기
-                    node[k] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
-                }
+    public int KingMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+        int[] Node=node.clone();  //
+        int  best_val = -INF  ;
+        int ret_val= -INF ;
+
+        int[] temp_node = node.clone();
+
+        int a = spot + 1; //우
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MinMove(Node,depth-1,alpha,beta) ;
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val >= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
             }
-            k = spot - 1;  //좌
-            if (in_board(k) && spot % 8 >= 1) {
-                if (!(P_Node[k] >= 11 && P_Node[k] <= 17)) {
-                    // 위치 바꿔주기
-                    node[k] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
-                }
-            }
-            k = spot + 7; //좌대각 아래
-            if (in_board(k) && spot % 8 >= 1) {
-                if (!(P_Node[k] >= 11 && P_Node[k] <= 17)) {
-                    // 위치 바꿔주기
-                    node[k] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
-                }
-            }
-            k = spot + 8; //아래
-            if (in_board(k))//아래
-            {
-                if (!(P_Node[k] >= 11 && P_Node[k] <= 17)) {
-                    // 위치 바꿔주기
-                    node[k] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
-                }
-            }
-            k = spot + 9;
-            if (in_board(k) && 8 - spot % 8 - 1 >= 1)//우대각 아래
-            {
-                if (!(P_Node[k] >= 11 && P_Node[k] <= 17)) {
-                    // 위치 바꿔주기
-                    node[k] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
-                }
-            }
-            k = spot - 7; //우대각 위
-            if (in_board(k) && 8 - spot % 8 - 1 >= 1) {
-                if (!(P_Node[k] >= 11 && P_Node[k] <= 17)) {
-                    // 위치 바꿔주기
-                    node[k] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
-                }
-            }
-            k = spot - 8; //위
-            if (in_board(k)) {
-                if (!(P_Node[k] >= 11 && P_Node[k] <= 17)) {
-                    // 위치 바꿔주기
-                    node[k] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
-                }
-            }
-            k = spot - 9; //좌대각위
-            if (in_board(k) && spot % 8 >= 1) {
-                if (!(P_Node[k] >= 11 && P_Node[k] <= 17)) {
-                    // 위치 바꿔주기
-                    node[k] = node[spot];
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
-                }
-            }
-            return return_val.clone();
+            // GenerateMove Cancel
+            Node = node.clone() ;
         }
-    public int[] pawn_generatemove_max_w(int[] P_Node, int spot, NODE [] n) {
-        int[] node = P_Node.clone();
-        int[] return_val = new int[2];
-        for (int a = spot - 8; a >= spot - 8; a = a - 8) {
-            if (in_board(a)) {
-                if (P_Node[a] == 0) {
-                    if (a >= 0 && a <= 7) {//change_pawn 상황일때
-                        if (in_board(a + (8 * 2) + 1) && 8 - a % 8 - 1 >= 1 && P_Node[a + (8 * 2) + 1] == 5) { //d-2,r-1에 킹이 있으면 knight로 바로 변경
-                            node[a] = 12;
-                            node[spot] = 0;
-                        } else if (in_board(a + (8 * 2) - 1) && a % 8 >= 1 && P_Node[a + (8 * 2) - 1] == 5) { //d-2,1-1에 킹이 있으면 knight로 바로 변경
-                            node[a] = 12;
-                            node[spot] = 0;
-                        } else if (in_board(a + (8 * 1) + 2) && 8 - a % 8 - 1 >= 2 && P_Node[a + (8 * 1) + 2] == 5) { //d-1,r-2에 킹이 있으면 knight로 바로 변경
-                            node[a] = 12;
-                            node[spot] = 0;
-                        } else if (in_board(a + (8 * 1) - 2) && a % 8 >= 2 && P_Node[a + (8 * 1) - 2] == 5) { //d-1,l-2에 킹이 있으면 knight로 바로 변경
-                            node[a] = 12;
-                            node[spot] = 0;
-                        } else { //knight로 굳이 바꿀 상황이 아니면 그냥 퀸으로 변경
-                            node[a] = 14;
-                            node[spot] = 0;
+        a = spot - 1;  //좌
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MinMove(Node,depth-1,alpha,beta) ;
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val >= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
+            }
+            // GenerateMove Cancel
+            Node = node.clone() ;
+        }
+        a = spot + 7; //좌대각 아래
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MinMove(Node,depth-1,alpha,beta) ;
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val >= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
+            }
+            // GenerateMove Cancel
+            Node = node.clone() ;
+        }
+        a = spot + 8; //아래
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MinMove(Node,depth-1,alpha,beta) ;
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val >= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
+            }
+            // GenerateMove Cancel
+            Node = node.clone() ;
+        }
+        a = spot + 9; // 우대각 아래
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MinMove(Node,depth-1,alpha,beta) ;
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val >= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
+            }
+            // GenerateMove Cancel
+            Node = node.clone() ;
+        }
+        a = spot - 7; //우대각 위
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MinMove(Node,depth-1,alpha,beta) ;
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val >= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
+            }
+            // GenerateMove Cancel
+            Node = node.clone() ;
+        }
+        a = spot - 8; //위
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MinMove(Node,depth-1,alpha,beta) ;
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val >= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
+            }
+            // GenerateMove Cancel
+            Node = node.clone() ;
+        }
+        a = spot - 9; //좌대각위
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MinMove(Node,depth-1,alpha,beta) ;
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val >= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
+            }
+            // GenerateMove Cancel
+            Node = node.clone() ;
+        }
+        if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+        return best_val ;
+    }
+    public int PawnMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+        int[] Node=node.clone();  //
+        int  best_val = -INF  ;
+        int ret_val= -INF ;
+
+        int[] temp_node =node.clone();
+
+        // 1칸 전진
+            for (int a = spot - 8; a >= spot - 8; a = a - 8) {
+                if(in_board(a)) {
+                    if (node[a]==0) {
+                        // GenerateMove
+                        Node[a] = Node[spot];
+                        Node[spot] = 0;
+                        // MinMove
+                        ret_val = MinMove(Node, depth - 1,alpha,beta);
+//                        if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+//                        if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+                        // 비교  ( temp_node,best_val 갱신)
+                        if (ret_val >= best_val) {
+                            best_val = ret_val;
+                            temp_node = Node.clone();
                         }
-                    } else { //change_pawn 상황이 아니면
-                        node[a] = node[spot];
-                        node[spot] = 0;
+                        // GenerateMove Cancel
+                        Node = node.clone();
                     }
-                    // 깊이 0까지 탐색
-                    n[temp_num] = new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0] = temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
+                    //  말이 있을경우
+                    if (node[a] != 0) break;
                 }
-                if (P_Node[a] != 0) break;
             }
-        }
-        if (in_board(spot - 9) && (P_Node[spot - 9] >= 1 && P_Node[spot - 9] <= 7)) //좌 대각 위에 상대방 말이 있을 때
-        {
-            if (spot % 8 >= 1) {
-                int t = spot - 9;
-                // 위치 바꿔주기
-                if (t >= 0 && t <= 7) {
-                    if (in_board(t + (8 * 2) + 1) && 8 - t % 8 - 1 >= 1 && P_Node[t + (8 * 2) + 1] == 5) { //d-2,r-1에 킹이 있으면 knight로 바로 변경
-                        node[t] = 12;
-                        node[spot] = 0;
-                    } else if (in_board(t + (8 * 2) - 1) && t % 8 >= 1 && P_Node[t + (8 * 2) - 1] == 5) { //d-2,1-1에 킹이 있으면 knight로 바로 변경
-                        node[t] = 12;
-                        node[spot] = 0;
-                    } else if (in_board(t + (8 * 1) + 2) && 8 - t % 8 - 1 >= 2 && P_Node[t + (8 * 1) + 2] == 5) { //d-1,r-2에 킹이 있으면 knight로 바로 변경
-                        node[t] = 12;
-                        node[spot] = 0;
-                    } else if (in_board(t + (8 * 1) - 2) && t % 8 >= 2 && P_Node[t + (8 * 1) - 2] == 5) { //d-1,l-2에 킹이 있으면 knight로 바로 변경
-                        node[t] = 12;
-                        node[spot] = 0;
-                    } else {
-                        node[t] = 14;
-                        node[spot] = 0;
-                    }
-                } else {
-                    node[spot - 9] = node[spot];
-                    node[spot] = 0;
+            int a= spot-9 ;//좌 대각 위에 상대방 말이 있을 때
+             if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& 8-(spot%8)>=2) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+//                 if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+//                 if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val >= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
                 }
-                // 깊이 0까지 탐색
-                n[temp_num] = new NODE(node);
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output >= return_val[1]) {
-                    return_val[1] = n[temp_num].output;
-                    return_val[0] = temp_num;
+                // GenerateMove Cancel
+                Node = node.clone() ;
                 }
-                temp_num++;
-                        node = P_Node.clone();
+            a= spot-7;// 우 대각 위에 상대발 말이 있을 때
+            if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& spot%8>=1) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+//                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+//                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val >= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                }
+                // GenerateMove Cancel
+                Node = node.clone() ;
             }
-        }
-        if (in_board(spot - 7) && (P_Node[spot - 7] >= 1 && P_Node[spot - 7] <= 7)) //우 대각 위에 상대방 말이 있을 때
-        {
-            if (8 - spot % 8 - 1 >= 1) {
-                int t = spot - 7;
-                // 위치 바꿔주기
-                if (t >= 0 && t <= 7) {
-                    if (in_board(t + (8 * 2) + 1) && 8 - t % 8 - 1 >= 1 && P_Node[t + (8 * 2) + 1] == 5) { //d-2,r-1에 킹이 있으면 knight로 바로 변경
-                        node[t] = 12;
-                        node[spot] = 0;
-                    } else if (in_board(t + (8 * 2) - 1) && t % 8 >= 1 && P_Node[t + (8 * 2) - 1] == 5) { //d-2,1-1에 킹이 있으면 knight로 바로 변경
-                        node[t] = 12;
-                        node[spot] = 0;
-                    } else if (in_board(t + (8 * 1) + 2) && 8 - t % 8 - 1 >= 2 && P_Node[t + (8 * 1) + 2] == 5) { //d-1,r-2에 킹이 있으면 knight로 바로 변경
-                        node[t] = 12;
-                        node[spot] = 0;
-                    } else if (in_board(t + (8 * 1) - 2) && t % 8 >= 2 && P_Node[t + (8 * 1) - 2] == 5) { //d-1,l-2에 킹이 있으면 knight로 바로 변경
-                        node[t] = 12;
-                        node[spot] = 0;
-                    } else {
-                        node[t] = 14;
-                        node[spot] = 0;
-                    }
-                } else {
-                    node[spot - 7] = node[spot];
-                    node[spot] = 0;
+            // 양파상 좌측
+            a=spot-9 ;
+            if (8-(spot % 8) >= 2 && enpassant[spot + 1] == 1 && node[a] == 0) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                Node[spot+1] =0 ;
+                // MinMove
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+//                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+//                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val >= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
                 }
-                // 깊이 0까지 탐색
-                n[temp_num] = new NODE(node);
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output >= return_val[1]) {
-                    return_val[1] = n[temp_num].output;
-                    return_val[0] = temp_num;
-                }
-                temp_num++;
-                        node = P_Node.clone();
+                // GenerateMove Cancel
+                Node = node.clone() ;
             }
-        }
-//        // 양파상
-//        if (spot % 8 >= 1 && enpassant[spot - 1] == 1 && P_Node[spot - 9] == 0) {
-//            // 위치 바꿔주기
-//            node[spot - 9] = node[spot];
-//            node[spot] = 0;
-//            node[spot - 1] = 0;
-//            // 깊이 0까지 탐색
-//            n[temp_num] = new NODE(node);
-//            // 깊이 0까지에서의 value >= 현재까지의 best_val
-//            if (n[temp_num].output >= return_val[1]) {
-//                return_val[1] = n[temp_num].output;
-//                return_val[0] = temp_num;
-//            }
-//            temp_num++;
-//                        node = P_Node.clone();
-//        }
-//        if (8 - spot % 8 - 1 >= 1 && enpassant[spot + 1] == 1 && P_Node[spot - 7] == 0) {
-//            // 위치 바꿔주기
-//            node[spot - 7] = node[spot];
-//            node[spot] = 0;
-//            node[spot + 1] = 0;
-//            // 깊이 0까지 탐색
-//            n[temp_num] = new NODE(node);
-//            // 깊이 0까지에서의 value >= 현재까지의 best_val
-//            if (n[temp_num].output >= return_val[1]) {
-//                return_val[1] = n[temp_num].output;
-//                return_val[0] = temp_num;
-//            }
-//            temp_num++;
-//                        node = P_Node.clone();
-//        }
-        return return_val.clone();
+            // 양파상 우측
+            a=spot-7;
+            if ( spot%8 >= 1 && enpassant[spot - 1] == 1 && node[a] == 0) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                Node[spot-1] = 0;
+                // MinMove
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+//                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+//                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val >= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                }
+                // GenerateMove Cancel
+                Node = node.clone() ;
+            }
+        if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+        return best_val ;
     }
-    public int[] f_pawn_generatemove_max_w(int[] P_Node, int spot, NODE [] n){
-        int[] node = P_Node.clone();;
-        int [] return_val=new int[2];
+    public int FPawnMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+        int[] Node=node.clone();  //
+        int  best_val = -INF  ;
+        int ret_val= -INF ;
+
+        int[] temp_node = node.clone();
+
+        // 1칸/2칸 전진
             for (int a = spot - 8; a >= spot - 16; a = a - 8) {
-                if (in_board(a)) {
-                    if (P_Node[a]==0) {
-                        // 위치 바꿔주기
-                        node[a] = 16;
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output >= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
+                if(in_board(a)) {
+                    if (node[a]==0) {
+                        // GenerateMove
+                        Node[a] = 16;
+                        Node[spot] = 0;
+                        // MinMove
+                        ret_val = MinMove(Node, depth - 1,alpha,beta);
+//                        if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+//                        if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+                        // 비교  ( temp_node,best_val 갱신)
+                        if (ret_val >= best_val) {
+                            best_val = ret_val;
+                            temp_node = Node.clone();
                         }
-                        temp_num++;
-                        node = P_Node.clone();
+                        // GenerateMove Cancel
+                        Node = node.clone();
                     }
-                    if (P_Node[a] != 0) break;
+                    //  말이 있을경우
+                    if (node[a] != 0) break;
                 }
             }
-            if (in_board(spot - 9) && (P_Node[spot-9] >= 1 && P_Node[spot-9] <= 7)) //좌 대각 위에 상대방 말이 있을 때
-            {
-                if (spot % 8 >= 1){
-                    // 위치 바꿔주기
-                    node[spot-9] = 16;
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
+            int a= spot-9 ;//좌 대각 위에 상대방 말이 있을 때
+            if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& 8-(spot%8)>=2) {
+                // GenerateMove
+                Node[a] = 16 ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+//                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+//                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val >= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
                 }
+                // GenerateMove Cancel
+                Node = node.clone() ;
             }
-            if (in_board(spot - 7) && (P_Node[spot-7] >= 1 && P_Node[spot-7] <= 7)) //우 대각 위에 상대방 말이 있을 때
-            {
-                if (8 - spot % 8 - 1 >= 1){
-                    // 위치 바꿔주기
-                    node[spot-7] = 16;
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output >= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
+            a= spot-7;// 우 대각 위에 상대발 말이 있을 때
+            if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& spot%8>=1) {
+                // GenerateMove
+                Node[a] = 16 ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+//                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+//                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val >= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
                 }
+                // GenerateMove Cancel
+                Node = node.clone() ;
             }
-            return return_val.clone();
-        }
+        if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+        return best_val ;
+    }
+
+    public int RookMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+            int[] Node=node.clone();  //
+            int  best_val = INF  ;
+            int ret_val = INF ;
 
 
+            int[] temp_node =node.clone();
 
-    public int[] rook_generatemove_min_b(int[] P_Node, int spot, NODE [] n) {
-        int[] node = P_Node.clone();
-        int [] return_val=new int[2];
             for (int a = spot + 8; a < 64; a = a + 8) {//하
-                if (in_board(a)) {
-                    if (!(P_Node[a] >= 1 && P_Node[a] <= 7)) { //black이 아니면
-                        // 위치 바꿔주기
-                        node[a] = 1;
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output <= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
+                if(in_board(a)) {
+                    if (!(node[a] >= 1 && node[a] <= 7)) {
+                        // GenerateMove
+                        Node[a] = Node[spot];
+                        Node[spot] = 0;
+                        // MinMove
+                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                        // 비교  ( temp_node,best_val 갱신)
+                        if (ret_val <= best_val) {
+                            best_val = ret_val;
+                            temp_node = Node.clone();
                         }
-                        temp_num++;
-                        node = P_Node.clone();
+                        // GenerateMove Cancel
+                        Node = node.clone();
                     }
-                    if (P_Node[a] != 0) break;
+                    //  말이 있을경우
+                    if (node[a] != 0) break;
                 }
             }
             for (int a = spot - 8; a >= 0; a = a - 8) {//상
+                if(in_board(a)) {
+                    if (!(node[a] >= 1 && node[a] <= 7)) {
+                        // GenerateMove
+                        Node[a] = Node[spot];
+                        Node[spot] = 0;
+                        // MinMove
+                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                        // 비교  ( temp_node,best_val 갱신)
+                        if (ret_val <= best_val) {
+                            best_val = ret_val;
+                            temp_node = Node.clone();
+                        }
+                        // GenerateMove Cancel
+                        Node = node.clone();
+                    }
+                    //  말이 있을경우
+                    if (node[a] != 0) break;
+                }
+            }
+            for (int b = 0; b < spot % 8; b++) {//좌
+                int a = spot - (b+1) ;
+                if(in_board(a)) {
+                    if (!(node[a] >= 1 && node[a] <= 7)) {
+                        // GenerateMove
+                        Node[a] = Node[spot];
+                        Node[spot] = 0;
+                        // MinMove
+                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                        // 비교  ( temp_node,best_val 갱신)
+                        if (ret_val <= best_val) {
+                            best_val = ret_val;
+                            temp_node = Node.clone();
+                        }
+                        // GenerateMove Cancel
+                        Node = node.clone();
+                    }
+                    //  말이 있을경우
+                    if (node[a] != 0) break;
+                }
+            }
+            for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우
+                int a = spot + (b+1) ;
+                if(in_board(a)) {
+                    if (!(node[a] >= 1 && node[a] <= 7)) {
+                        // GenerateMove
+                        Node[a] = Node[spot];
+                        Node[spot] = 0;
+                        // MinMove
+                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                        // 비교  ( temp_node,best_val 갱신)
+                        if (ret_val <= best_val) {
+                            best_val = ret_val;
+                            temp_node = Node.clone();
+                        }
+                        // GenerateMove Cancel
+                        Node = node.clone();
+                    }
+                    //  말이 있을경우
+                    if (node[a] != 0) break;
+                }
+            }
+            // return
+            if (best_val!=INF)
+                for(int i=0 ; i<64 ; i++) best_node[i] = temp_node[i] ;
 
-                if (in_board(a)) {
-                    if (!(P_Node[a] >= 1 && P_Node[a] <= 7)) {
-                        // 위치 바꿔주기
-                        node[a] = 1;
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output <= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[a] != 0) break;
-                }
-            }
-            for (int c = 0; c < spot % 8; c++) {//좌
-                int a = spot - (c + 1);
-                if (in_board(a)) {
-                    if (!(P_Node[a] >= 1 && P_Node[a] <= 7)) {
-                        // 위치 바꿔주기
-                        node[a] =1;
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output <= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[a] != 0) break;
-                }
-            }
-            for (int d = 0; d < 8 - ((spot % 8) + 1); d++) {//우
-                int a = spot + (d + 1);
-                if (in_board(a)) {
-                    if (!(P_Node[a] >= 1 && P_Node[a] <= 7)) {
-                        // 위치 바꿔주기
-                        node[a] = 1;
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output <= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[a] != 0) break;
-                }
-            }
-            return return_val.clone();
-        }
-    public int[] knight_generatemove_min_b(int[] P_Node, int spot, NODE [] n) {
-        int []node = P_Node.clone();
-        int [] return_val=new int[2];
-        int a;
-        a=spot+(8*2)+1 ;//우 대각 아래(2) down-2 right-1
-        if(in_board(a)&&8-spot%8-1>=1)  //끝쪽에 있을때 넘어가기 방지
-        {    if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
-            // 위치 바꿔주기
-            node[a] = 2;
-            node[spot] = 0;
-            // 깊이 0까지 탐색
-            n[temp_num]=new NODE(node);
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output <= return_val[1]) {
-                return_val[1] = n[temp_num].output;
-                return_val[0]=temp_num;
-            }
-            temp_num++;
-                        node = P_Node.clone();
-        }
-        }
-        a=spot+(8*2)-1 ; //좌 대각 아래(2) down-2 left-1
-        if(in_board(a)&& spot%8>=1) //끝쪽에 있을때 넘어가기 방지
-        {   if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
-            // 위치 바꿔주기
-            node[a] = 2;
-            node[spot] = 0;
-            // 깊이 0까지 탐색
-            n[temp_num]=new NODE(node);
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output <= return_val[1]) {
-                return_val[1] = n[temp_num].output;
-                return_val[0]=temp_num;
-            }
-            temp_num++;
-                        node = P_Node.clone();
-        }
-        }
-        a=spot-(8*2)+1 ; //우 대각 위(2) up-2 right-1
-        if(in_board(a)&&8-spot%8-1>=1)  //끝쪽에 있을때 넘어가기 방지
-        {   if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
-            // 위치 바꿔주기
-            node[a] = 2;
-            node[spot] = 0;
-            // 깊이 0까지 탐색
-            n[temp_num]=new NODE(node);
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output <= return_val[1]) {
-                return_val[1] = n[temp_num].output;
-                return_val[0]=temp_num;
-            }
-            temp_num++;
-                        node = P_Node.clone();
-        }
-        }
-        a=spot-(8*2)-1 ; //좌 대각 위(2) up-2 left-1
-        if(in_board(a)&& spot%8>=1) //끝쪽에 있을때 넘어가기 방지
-        {  if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
-            // 위치 바꿔주기
-            node[a] =2;
-            node[spot] = 0;
-            // 깊이 0까지 탐색
-            n[temp_num]=new NODE(node);
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output <= return_val[1]) {
-                return_val[1] = n[temp_num].output;
-                return_val[0]=temp_num;
-            }
-            temp_num++;
-                        node = P_Node.clone();
-        }
-        }
-        a=spot+(8*1)+2 ; //우 대각 아래(1) right-2 down-1
-        if(in_board(a)&& 8-spot%8-1>=2) //끝쪽에 있을때 넘어가기 방지
-        {   if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
-            // 위치 바꿔주기
-            node[a] =2;
-            node[spot] = 0;
-            // 깊이 0까지 탐색
-            n[temp_num]=new NODE(node);
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output <= return_val[1]) {
-                return_val[1] = n[temp_num].output;
-                return_val[0]=temp_num;
-            }
-            temp_num++;
-                        node = P_Node.clone();
-        }
-        }
-        a=spot+(8*1)-2 ;//좌 대각 아래(1) left-2 down-1
-        if(in_board(a)&& spot%8>=2) //끝쪽에 있을때 넘어가기 방지
-        {  if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
-            // 위치 바꿔주기
-            node[a] = 2;
-            node[spot] = 0;
-            // 깊이 0까지 탐색
-            n[temp_num]=new NODE(node);
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output <= return_val[1]) {
-                return_val[1] = n[temp_num].output;
-                return_val[0]=temp_num;
-            }
-            temp_num++;
-                        node = P_Node.clone();
-        }
-        }
-        a=spot-(8*1)+2 ; //우 대각 위(1) right-2 up -1
-        if(in_board(a)&& 8-spot%8-1>=2) //끝쪽에 있을때 넘어가기 방지
-        {   if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
-            // 위치 바꿔주기
-            node[a] = 2;
-            node[spot] = 0;
-            // 깊이 0까지 탐색
-            n[temp_num]=new NODE(node);
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output <= return_val[1]) {
-                return_val[1] = n[temp_num].output;
-                return_val[0]=temp_num;
-            }
-            temp_num++;
-                        node = P_Node.clone();
-        }
-        }
-        a=spot-(8*1)-2 ; //좌 대각 위(1) left-2 up - 1
-        if(in_board(a)&& spot%8>=2) //끝쪽에 있을때 넘어가기 방지
-        {  if (!(P_Node[a]>=1&&P_Node[a]<=7)) {
-            // 위치 바꿔주기
-            node[a] = 2;
-            node[spot] = 0;
-            // 깊이 0까지 탐색
-            n[temp_num]=new NODE(node);
-            // 깊이 0까지에서의 value >= 현재까지의 best_val
-            if (n[temp_num].output <= return_val[1]) {
-                return_val[1] = n[temp_num].output;
-                return_val[0]=temp_num;
-            }
-            temp_num++;
-                        node = P_Node.clone();
-        }
-        }
-        return return_val.clone();
+            return best_val ;
     }
-    public int[] bishop_generatemove_min_b(int[] P_Node, int spot, NODE [] n){
-        int[] node = P_Node.clone();
-        int [] return_val=new int[2];
-            for (int a = 0; a < 8 - ((spot % 8) + 1); a++) {//우 대각 아래
-                int t = spot + (9 * (a + 1));
-                if (in_board(t)) {
-                    if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //black이 아니면
-                        // 위치 바꿔주기
-                        node[t] = 3;
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output <= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[t] != 0) break;
+    public int KnightMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+        int[] Node=node.clone();  //
+        int  best_val = INF  ;
+        int ret_val = INF;
+
+
+        int[] temp_node = node.clone();
+
+        int a = spot + (8 * 2) + 1;//우 대각 아래(2) down-2 right-1
+        if (in_board(a) && 8 - spot % 8 - 1 >= 1)  //끝쪽에 있을때 넘어가기 방지
+        {
+            if (!(node[a]>=1&&node[a]<=7)) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val <= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
                 }
+                // GenerateMove Cancel
+                Node = node.clone() ;
             }
-            for (int b = 0; b < spot % 8; b++) { //좌 대각 위
-                int t = spot - (9 * (b + 1));
-                if (in_board(t)) {
-                    if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //black이 아니면
-                        // 위치 바꿔주기
-                        node[t] = 3;
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output <= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[t] != 0) break;
-                }
-            }
-            for (int c = 0; c < spot % 8; c++) { //좌 대각 아래
-                int t = spot + (7 * (c + 1));
-                if (in_board(t)) {
-                    if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //black이 아니면
-                        // 위치 바꿔주기
-                        node[t] =3;
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output <= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[t] != 0) break;
-                }
-            }
-            for (int d = 0; d < 8 - ((spot % 8) + 1); d++) {//우 대각 위
-                int t = spot - (7 * (d + 1));
-                if (in_board(t)) {
-                    if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //black이 아니면
-                        // 위치 바꿔주기
-                        node[t] = 3;
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output <= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[t] != 0) break;
-                }
-            }
-            return return_val.clone();
         }
-    public int[] queen_generatemove_min_b(int[] P_Node, int spot, NODE [] n) {
-        int[] node = P_Node.clone();
-        int [] return_val=new int[2];
-        for (int a = spot + 8; a < 64; a = a + 8) {//하
-            if (in_board(a)) {
-                if (!(P_Node[a] >= 1 && P_Node[a] <= 7)) { //white가 아니면
-                    // 위치 바꿔주기
-                    node[a] = 4;
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output <= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
+        a = spot + (8 * 2) - 1; //좌 대각 아래(2) down-2 left-1
+        if (in_board(a) && spot % 8 >= 1) //끝쪽에 있을때 넘어가기 방지
+        {
+            if (!(node[a]>=1&&node[a]<=7)) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val <= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
                 }
-                if (P_Node[a] != 0) break;
+                // GenerateMove Cancel
+                Node = node.clone() ;
+            }
+        }
+        a = spot - (8 * 2) + 1; //우 대각 위(2) up-2 right-1
+        if (in_board(a) && 8 - spot % 8 - 1 >= 1)  //끝쪽에 있을때 넘어가기 방지
+        {
+            if (!(node[a]>=1&&node[a]<=7)) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val <= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                }
+                // GenerateMove Cancel
+                Node = node.clone() ;
+            }
+        }
+        a = spot - (8 * 2) - 1; //좌 대각 위(2) up-2 left-1
+        if (in_board(a) && spot % 8 >= 1) //끝쪽에 있을때 넘어가기 방지
+        {
+            if (!(node[a]>=1&&node[a]<=7)) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val <= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                }
+                // GenerateMove Cancel
+                Node = node.clone() ;
+            }
+        }
+        a = spot + (8 * 1) + 2; //우 대각 아래(1) right-2 down-1
+        if (in_board(a) && 8 - spot % 8 - 1 >= 2) //끝쪽에 있을때 넘어가기 방지
+        {
+            if (!(node[a]>=1&&node[a]<=7)) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val <= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                }
+                // GenerateMove Cancel
+                Node = node.clone() ;
+            }
+        }
+        a = spot + (8 * 1) - 2;//좌 대각 아래(1) left-2 down-1
+        if (in_board(a) && spot % 8 >= 2) //끝쪽에 있을때 넘어가기 방지
+        {
+            if ((node[a]>=1&&node[a]<=7)) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val <= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                }
+                // GenerateMove Cancel
+                Node = node.clone() ;
+            }
+        }
+        a = spot - (8 * 1) + 2; //우 대각 위(1) right-2 up -1
+        if (in_board(a) && 8 - spot % 8 - 1 >= 2) //끝쪽에 있을때 넘어가기 방지
+        {
+            if (!(node[a]>=1&&node[a]<=7)) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val <= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                }
+                // GenerateMove Cancel
+                Node = node.clone() ;
+            }
+        }
+        a = spot - (8 * 1) - 2; //좌 대각 위(1) left-2 up - 1
+        if (in_board(a) && spot % 8 >= 2) //끝쪽에 있을때 넘어가기 방지
+        {
+            if (!(node[a]>=1&&node[a]<=7)) {
+                // GenerateMove
+                Node[a] = Node[spot] ;
+                Node[spot] = 0 ;
+                // MinMove
+                ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+                // 비교  ( temp_node,best_val 갱신)
+                if (ret_val <= best_val) {
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                }
+                // GenerateMove Cancel
+                Node = node.clone() ;
+            }
+        }
+        if(best_val!=INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+        return best_val ;
+    }
+    public int BishopMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+
+            int[] Node=node.clone();  //
+            int  best_val = INF  ;
+            int ret_val = INF;
+
+            int[] temp_node = node.clone();
+
+            for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
+                int a = spot + (9 * (b + 1));
+                if(in_board(a)) {
+                    if (!(node[a] >= 1 && node[a] <= 7)) {
+                        // GenerateMove
+                        Node[a] = Node[spot];
+                        Node[spot] = 0;
+                        // MinMove
+                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                        // 비교  ( temp_node,best_val 갱신)
+                        if (ret_val <= best_val) {
+                            best_val = ret_val;
+                            temp_node = Node.clone();
+                        }
+                        // GenerateMove Cancel
+                        Node = node.clone();
+                    }
+                    //  말이 있을경우
+                    if (node[a] != 0) break;
+                }
+            }
+
+            for (int b = 0; b < spot % 8; b++) { //좌 대각 위
+                int a = spot - (9 * (b + 1));
+                if(in_board(a)) {
+                    if (!(node[a] >= 1 && node[a] <= 7)) {
+                        // GenerateMove
+                        Node[a] = Node[spot];
+                        Node[spot] = 0;
+                        // MinMove
+                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                        // 비교  ( temp_node,best_val 갱신)
+                        if (ret_val <= best_val) {
+                            best_val = ret_val;
+                            temp_node = Node.clone();
+                        }
+                        // GenerateMove Cancel
+                        Node = node.clone();
+                    }
+                    //  말이 있을경우
+                    if (node[a] != 0) break;
+                }
+            }
+            for (int b = 0; b < spot % 8; b++) { //좌 대각 아래
+                int a = spot + (7 * (b + 1));
+                if(in_board(a)) {
+                    if (!(node[a] >= 1 && node[a] <= 7)) {
+                        // GenerateMove
+                        Node[a] = Node[spot];
+                        Node[spot] = 0;
+                        // MinMove
+                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                        // 비교  ( temp_node,best_val 갱신)
+                        if (ret_val <= best_val) {
+                            best_val = ret_val;
+                            temp_node = Node.clone();
+                        }
+                        // GenerateMove Cancel
+                        Node = node.clone();
+                    }
+                    //  말이 있을경우
+                    if (node[a] != 0) break;
+                }
+            }
+            for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 위
+                int a = spot - (7 * (b + 1));
+                if(in_board(a)) {
+                    if (!(node[a] >= 1 && node[a] <= 7)) {
+                        // GenerateMove
+                        Node[a] = Node[spot];
+                        Node[spot] = 0;
+                        // MinMove
+                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                        // 비교  ( temp_node,best_val 갱신)
+                        if (ret_val <= best_val) {
+                            best_val = ret_val;
+                            temp_node = Node.clone();
+                        }
+                        // GenerateMove Cancel
+                        Node = node.clone();
+                    }
+                    //  말이 있을경우
+                    if (node[a] != 0) break;
+                }
+            }
+            if(best_val!=INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+            return best_val ;
+
+    }
+    public int QueenMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+        int[] Node=node.clone();  //
+        int  best_val = INF  ;
+        int ret_val = INF;
+
+        int[] temp_node = node.clone();
+
+        for (int a = spot + 8; a < 64; a = a + 8) {//하
+            if(in_board(a)) {
+                if (!(node[a] >= 1 && node[a] <= 7)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
+                    }
+                    // GenerateMove Cancel
+                    Node = node.clone();
+                }
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
         }
         for (int a = spot - 8; a >= 0; a = a - 8) {//상
-            if (in_board(a)) {
-                if (!(P_Node[a] >= 1 && P_Node[a] <= 7)) { //white가 아니면
-                    // 위치 바꿔주기
-                    node[a] = 4;
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output <= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
+            if(in_board(a)) {
+                if (!(node[a] >= 1 && node[a] <= 7)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
                     }
-                    temp_num++;
-                        node = P_Node.clone();
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
-                if (P_Node[a] != 0) break;
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
         }
-        for (int a = 0; a < spot % 8; a++) {//좌
-            int t= spot -(a+1) ;
-            if (in_board(t)) {
-                if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //white가 아니면
-                    // 위치 바꿔주기
-                    node[t] = 4;
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output <= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
+        for (int b = 0; b < spot % 8; b++) {//좌
+            int a = spot - (b + 1);
+            if(in_board(a)) {
+                if (!(node[a] >= 1 && node[a] <= 7)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
                     }
-                    temp_num++;
-                        node = P_Node.clone();
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
-                if (P_Node[t] != 0) break;
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
         }
-        for (int a = 0; a < 8 - ((spot % 8) + 1); a++) {//우
-            int t = spot + (a+1) ;
-            if (in_board(t)) {
-                if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //white가 아니면
-                    // 위치 바꿔주기
-                    node[t] = 4;
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output <= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
+        for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우
+            int a = spot + (b + 1);
+            if(in_board(a)) {
+                if (!(node[a] >= 1 && node[a] <= 7)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
                     }
-                    temp_num++;
-                        node = P_Node.clone();
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
-                if (P_Node[t] != 0) break;
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
         }
-        for (int a = 0; a < 8 - ((spot % 8) + 1); a++) {//우 대각 아래
-            int t = spot + (9 * (a + 1));
-            if (in_board(t)) {
-                if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //white가 아니면
-                    // 위치 바꿔주기
-                    node[t] = 4;
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output <= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
+        for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
+            int a = spot + (9 * (b + 1));
+            if(in_board(a)) {
+                if (!(node[a] >= 1 && node[a] <= 7)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
                     }
-                    temp_num++;
-                        node = P_Node.clone();
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
-                if (P_Node[t] != 0) break;
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
         }
         for (int b = 0; b < spot % 8; b++) { //좌 대각 위
-            int t = spot - (9 * (b + 1));
-            if (in_board(t)) {
-                if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //white가 아니면
-                    // 위치 바꿔주기
-                    node[t] = 4;
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output <= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
+            int a = spot - (9 * (b + 1));
+            if(in_board(a)) {
+                if (!(node[a] >= 1 && node[a] <= 7)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
                     }
-                    temp_num++;
-                        node = P_Node.clone();
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
-                if (P_Node[t] != 0) break;
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
         }
-        for (int c = 0; c < spot % 8; c++) { //좌 대각 아래
-            int t= spot + (7 * (c + 1));
-            if (in_board(t)) {
-                if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //white가 아니면
-                    // 위치 바꿔주기
-                    node[t] = 4;
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output <= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
+        for (int b = 0; b < spot % 8; b++) { //좌 대각 아래
+            int a= spot + (7 * (b + 1));
+            if(in_board(a)) {
+                if (!(node[a] >= 1 && node[a] <= 7)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
                     }
-                    temp_num++;
-                        node = P_Node.clone();
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
-                if (P_Node[t] != 0) break;
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
         }
-        for (int d = 0; d < 8 - ((spot % 8) + 1); d++) {//우 대각 아래
-            int t = spot - (7 * (d + 1));
-            if (in_board(t)) {
-                if (!(P_Node[t] >= 1 && P_Node[t] <= 7)) { //white가 아니면
-                    // 위치 바꿔주기
-                    node[t] = 4;
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output <= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
+        for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
+            int a = spot - (7 * (b + 1));
+            if(in_board(a)) {
+                if (!(node[a] >= 1 && node[a] <= 7)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
                     }
-                    temp_num++;
-                        node = P_Node.clone();
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
-                if (P_Node[t] != 0) break;
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
         }
-        return return_val.clone() ;
+        if(best_val!=INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+        return best_val ;
     }
-    public int[] king_generatemove_min_b(int[] P_Node, int spot, NODE [] n) {
-        int []node = P_Node.clone();
-        int [] return_val=new int[2];
-        int k = spot + 1; //우
-        if (in_board(k) && 8 - spot % 8 - 1 >= 1) {
-            if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
-                // 위치 바꿔주기
-                node[k] = 5;
-                node[spot] = 0;
-                // 깊이 0까지 탐색
-                n[temp_num]=new NODE(node);
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output <= return_val[1]) {
-                    return_val[1] = n[temp_num].output;
-                    return_val[0]=temp_num;
-                }
-                temp_num++;
-                        node = P_Node.clone();
+    public int KingMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+        int[] Node=node.clone();  //
+        int  best_val = INF  ;
+        int ret_val= INF ;
+
+        int[] temp_node = node.clone();
+
+        int a = spot + 1; //우
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val <= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
             }
+            // GenerateMove Cancel
+            Node = node.clone() ;
         }
-        k = spot - 1;  //좌
-        if (in_board(k) && spot % 8 >= 1) {
-            if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
-                // 위치 바꿔주기
-                node[k] = 5;
-                node[spot] = 0;
-                // 깊이 0까지 탐색
-                n[temp_num]=new NODE(node);
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output <= return_val[1]) {
-                    return_val[1] = n[temp_num].output;
-                    return_val[0]=temp_num;
-                }
-                temp_num++;
-                        node = P_Node.clone();
+        a = spot - 1;  //좌
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val <= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
             }
+            // GenerateMove Cancel
+            Node = node.clone() ;
         }
-        k = spot + 7; //좌대각 아래
-        if (in_board(k) && spot % 8 >= 1) {
-            if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
-                // 위치 바꿔주기
-                node[k] = 5;
-                node[spot] = 0;
-                // 깊이 0까지 탐색
-                n[temp_num]=new NODE(node);
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output <= return_val[1]) {
-                    return_val[1] = n[temp_num].output;
-                    return_val[0]=temp_num;
-                }
-                temp_num++;
-                        node = P_Node.clone();
+        a = spot + 7; //좌대각 아래
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val <= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
             }
+            // GenerateMove Cancel
+            Node = node.clone() ;
         }
-        k = spot + 8; //아래
-        if (in_board(k))//아래
-        {
-            if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
-                // 위치 바꿔주기
-                node[k] = 5;
-                node[spot] = 0;
-                // 깊이 0까지 탐색
-                n[temp_num]=new NODE(node);
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output <= return_val[1]) {
-                    return_val[1] = n[temp_num].output;
-                    return_val[0]=temp_num;
-                }
-                temp_num++;
-                        node = P_Node.clone();
+        a = spot + 8; //아래
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val <= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
             }
+            // GenerateMove Cancel
+            Node = node.clone() ;
         }
-        k = spot + 9;
-        if (in_board(k) && 8 - spot % 8 - 1 >= 1)//우대각 아래
-        {
-            if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
-                // 위치 바꿔주기
-                node[k] = 5;
-                node[spot] = 0;
-                // 깊이 0까지 탐색
-                n[temp_num]=new NODE(node);
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output <= return_val[1]) {
-                    return_val[1] = n[temp_num].output;
-                    return_val[0]=temp_num;
-                }
-                temp_num++;
-                        node = P_Node.clone();
+        a = spot + 9; // 우대각 아래
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val >= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
             }
+            // GenerateMove Cancel
+            Node = node.clone() ;
         }
-        k = spot - 7; //우대각 위
-        if (in_board(k) && 8 - spot % 8 - 1 >= 1) {
-            if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
-                // 위치 바꿔주기
-                node[k] = 5;
-                node[spot] = 0;
-                // 깊이 0까지 탐색
-                n[temp_num]=new NODE(node);
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output <= return_val[1]) {
-                    return_val[1] = n[temp_num].output;
-                    return_val[0]=temp_num;
-                }
-                temp_num++;
-                        node = P_Node.clone();
+        a = spot - 7; //우대각 위
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val <= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
             }
+            // GenerateMove Cancel
+            Node = node.clone() ;
         }
-        k = spot - 8; //위
-        if (in_board(k)) {
-            if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
-                // 위치 바꿔주기
-                node[k] = 5;
-                node[spot] = 0;
-                // 깊이 0까지 탐색
-                n[temp_num]=new NODE(node);
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output <= return_val[1]) {
-                    return_val[1] = n[temp_num].output;
-                    return_val[0]=temp_num;
-                }
-                temp_num++;
-                        node = P_Node.clone();
+        a = spot - 8; //위
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val <= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
             }
+            // GenerateMove Cancel
+            Node = node.clone() ;
         }
-        k = spot - 9; //좌대각위
-        if (in_board(k) && spot % 8 >= 1) {
-            if (!(P_Node[k] >= 1 && P_Node[k] <= 7)) {
-                // 위치 바꿔주기
-                node[k] = 5;
-                node[spot] = 0;
-                // 깊이 0까지 탐색
-                n[temp_num]=new NODE(node);
-                // 깊이 0까지에서의 value >= 현재까지의 best_val
-                if (n[temp_num].output <= return_val[1]) {
-                    return_val[1] = n[temp_num].output;
-                    return_val[0]=temp_num;
-                }
-                temp_num++;
-                        node = P_Node.clone();
+        a = spot - 9; //좌대각위
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val <= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
             }
+            // GenerateMove Cancel
+            Node = node.clone() ;
         }
-        return return_val.clone();
+        if(best_val!=INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+        return best_val ;
     }
-    public int[] pawn_generatemove_min_b(int[] P_Node, int spot, NODE [] n){
-        int[] node = P_Node.clone();
-        int [] return_val=new int[2];
-            for(int a = spot + 8; a <= spot + 8; a = a + 8) {
-                if (in_board(a)) {
-                    if (P_Node[a]==0) {
-                        if(a>=56&&a<=63){//change_pawn 상황일때
-                            if(in_board(a-(8*2)+1)&&8-a%8-1>=1&&P_Node[a-(8*2)+1]==15) {//u-2,r-1
-                                node[a] = 2;
-                                node[spot] = 0;
-                            }
-                            else if(in_board(a-(8*2)-1)&&spot%8>=1&&P_Node[a-(8*2)-1]==15) {//u-2,l-1
-                                node[a] = 2;
-                                node[spot] = 0;
-                            }
-                            else if(in_board(a-(8*1)+1)&&8-a%8-1>=1&&P_Node[a-(8*1)+2]==15) {//u-1,r-2
-                                node[a] = 2;
-                                node[spot] = 0;
-                            }
-                            else if(in_board(a-(8*1)-2)&&spot%8>=1&&P_Node[a-(8*1)-2]==15) {//u-1,l-2
-                                node[a] = 2;
-                                node[spot] = 0;
-                            }
-                            else{
-                                node[a] = 4;
-                                node[spot] = 0;
-                            }
-                        }
-                        else {
-                            node[a] = 6;
-                            node[spot] = 0;
-                        }
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output <= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[a] != 0) break;
+    public int PawnMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta){
+        int[] Node=node.clone();  //
+        int  best_val = INF  ;
+        int ret_val= INF ;
 
-                }
-            }
-            if (in_board(spot + 9) && (P_Node[spot+9] >= 11 && P_Node[spot+9] <= 17)) //우 대각 아래에 상대방 말이 있을 때
-            {
-                if (8 - spot % 8 - 1 >= 1){
-                    int t=spot+9;
-                    // 위치 바꿔주기
-                    if(t>=56&&t<=63){
-                        if(in_board(t-(8*2)+1)&&8-t%8-1>=1&&P_Node[t-(8*2)+1]==15) {//u-2,r-1에 킹이 있다면
-                            node[t] = 2;
-                            node[spot] = 0;
-                        }
-                        else if(in_board(t-(8*2)-1)&&spot%8>=1&&P_Node[t-(8*2)-1]==15) {//u-2,l-1
-                            node[t] = 2;
-                            node[spot] = 0;
-                        }
-                        else if(in_board(t-(8*1)+1)&&8-t%8-1>=1&&P_Node[t-(8*1)+2]==15) {//u-1,r-2
-                            node[t] = 2;
-                            node[spot] = 0;
-                        }
-                        else if(in_board(t-(8*1)-2)&&spot%8>=1&&P_Node[t-(8*1)-2]==15) {//u-1,l-2
-                            node[t] = 2;
-                            node[spot] = 0;
-                        }
-                        else{
-                            node[t] = 4;
-                            node[spot] = 0;
-                        }
-                    }
-                    else {
-                        node[spot+9] =6;
-                        node[spot] = 0;
-                    }
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output <= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
-                }
-            }
+        int[] temp_node = node.clone();
 
-            if (in_board(spot + 7) && (P_Node[spot+7] >= 11 && P_Node[spot+7] <= 17)) //좌 대각 아래에 상대방 말이 있을 때
-            {
-                if (spot % 8 >= 1){
-                    int t=spot+7;
-                    // 위치 바꿔주기
-                    if(t>=56&&t<=63){
-                        if(in_board(t-(8*2)+1)&&8-t%8-1>=1&&P_Node[t-(8*2)+1]==15) {//u-2,r-1에 킹이 있다면
-                            node[t] = 2;
-                            node[spot] = 0;
-                        }
-                        else if(in_board(t-(8*2)-1)&&spot%8>=1&&P_Node[t-(8*2)-1]==15) {//u-2,l-1
-                            node[t] = 2;
-                            node[spot] = 0;
-                        }
-                        else if(in_board(t-(8*1)+1)&&8-t%8-1>=1&&P_Node[t-(8*1)+2]==15) {//u-1,r-2
-                            node[t] = 2;
-                            node[spot] = 0;
-                        }
-                        else if(in_board(t-(8*1)-2)&&spot%8>=1&&P_Node[t-(8*1)-2]==15) {//u-1,l-2
-                            node[t] = 2;
-                            node[spot] = 0;
-                        }
-                        else{
-                            node[t] = 4;
-                            node[spot] = 0;
-                        }
+        // 1칸 전진
+        for (int a = spot + 8; a <= spot + 8; a = a + 8) {
+            if(in_board(a)) {
+                if (node[a]==0) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+//                    if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+//                    if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
                     }
-                    else {
-                        node[spot+7] = 6;
-                        node[spot] = 0;
-                    }
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output <= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
-//            // 양파상
-//            if (spot % 8 >= 1 && enpassant[spot + 1] == 1 && P_Node[spot + 9] == 0){
-//                // 위치 바꿔주기
-//                node[spot+9] = node[spot];
-//                node[spot] = 0;
-//                node[spot+1]=0;
-//                // 깊이 0까지 탐색
-//                n[temp_num]=new NODE(node);
-//                // 깊이 0까지에서의 value >= 현재까지의 best_val
-//                if (n[temp_num].output <= return_val[1]) {
-//                    return_val[1] = n[temp_num].output;
-//                    return_val[0]=temp_num;
-//                }
-//                temp_num++;
-//                        node = P_Node.clone();
-//            }
-//            if (8 - spot % 8 - 1 >= 1 && enpassant[spot - 1] == 1 && P_Node[spot + 7] == 0){
-//                // 위치 바꿔주기
-//                node[spot+7] = node[spot];
-//                node[spot] = 0;
-//                node[spot-1]=0;
-//                // 깊이 0까지 탐색
-//                n[temp_num]=new NODE(node);
-//                // 깊이 0까지에서의 value >= 현재까지의 best_val
-//                if (n[temp_num].output <= return_val[1]) {
-//                    return_val[1] = n[temp_num].output;
-//                    return_val[0]=temp_num;
-//                }
-//                temp_num++;
-//                        node = P_Node.clone();
-//            }
-
-        return return_val.clone();
-    }
-    public int[] f_pawn_generatemove_min_b(int[] P_Node, int spot, NODE [] n){
-        int[] node = P_Node.clone();
-        int [] return_val=new int[2];
-            for (int a = spot + 8; a <= spot + 16; a = a + 8) {
-                if (in_board(a)) {
-                    if (P_Node[a]==0) {
-                        node[a] = 6;
-                        node[spot] = 0;
-                        // 깊이 0까지 탐색
-                        n[temp_num]=new NODE(node);
-                        // 깊이 0까지에서의 value >= 현재까지의 best_val
-                        if (n[temp_num].output <= return_val[1]) {
-                            return_val[1] = n[temp_num].output;
-                            return_val[0]=temp_num;
-                        }
-                        temp_num++;
-                        node = P_Node.clone();
-                    }
-                    if (P_Node[a] != 0) break;
-                }
-            }
-            if (in_board(spot + 9) && (P_Node[spot+9] >= 11 && P_Node[spot+9] <= 17)) //우 대각 아래에 상대방 말이 있을 때
-            {
-                if (8 - spot % 8 - 1 >= 1){
-                    // 위치 바꿔주기
-                    node[spot+9] = 6;
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output <= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
-                }
-            }
-            if (in_board(spot + 7) && (P_Node[spot+7] >= 11 && P_Node[spot+7] <= 17)) //좌 대각 아래에 상대방 말이 있을 때
-            {
-                if (spot % 8 >= 1){
-                    // 위치 바꿔주기
-                    node[spot+7] = 6;
-                    node[spot] = 0;
-                    // 깊이 0까지 탐색
-                    n[temp_num]=new NODE(node);
-                    // 깊이 0까지에서의 value >= 현재까지의 best_val
-                    if (n[temp_num].output <= return_val[1]) {
-                        return_val[1] = n[temp_num].output;
-                        return_val[0]=temp_num;
-                    }
-                    temp_num++;
-                        node = P_Node.clone();
-                }
-            }
-            return return_val.clone();
         }
+        int a= spot+7 ;//좌 대각 아래에 상대방 말이 있을 때
+        if (in_board(a)&&(node[a]>=11&&node[a]<=17)&& 8-(spot%8)>=2) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+//            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+//            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val <= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
+            }
+            // GenerateMove Cancel
+            Node = node.clone() ;
+        }
+        a= spot+9;// 우 대각 아래에 상대발 말이 있을 때
+        if (in_board(a)&&(node[a]>=11&&node[a]<=17)&& spot%8>=1) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+//            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+//            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val <= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
+            }
+            // GenerateMove Cancel
+            Node = node.clone() ;
+        }
+        // 양파상 좌측
+        a=spot+7 ;
+        if (8-(spot % 8) >= 2 && enpassant[spot + 1] == 1 && node[a] == 0) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            Node[spot+1] =0 ;
+            // MinMove
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+//            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+//            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val <= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
+            }
+            // GenerateMove Cancel
+            Node = node.clone() ;
+        }
+        // 양파상 우측
+        a=spot+9;
+        if ( spot%8 >= 1 && enpassant[spot - 1] == 1 && node[a] == 0) {
+            // GenerateMove
+            Node[a] = Node[spot] ;
+            Node[spot] = 0 ;
+            Node[spot-1] = 0;
+            // MinMove
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+//            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+//            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val <= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
+            }
+            // GenerateMove Cancel
+            Node = node.clone() ;
+        }
+        if(best_val!=INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+        return best_val ;
+    }
+    public int FPawnMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta){
+        int[] Node=node.clone();  //
+        int  best_val = INF  ;
+        int ret_val = INF;
+
+        int[] temp_node = node.clone();
+
+        // 1칸/2칸 전진
+        for (int a = spot + 8; a <= spot + 16; a = a + 8) {
+            if(in_board(a)) {
+                if (node[a]==0) {
+                    // GenerateMove
+                    Node[a] = 6;
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+//                    if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+//                    if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
+                        temp_node = Node.clone();
+                    }
+                    // GenerateMove Cancel
+                    Node = node.clone();
+                }
+                //  말이 있을경우
+                if (node[a] != 0) break;
+            }
+        }
+        int a= spot+7 ;//좌 대각 아래에 상대방 말이 있을 때
+        if (in_board(a)&&(node[a]>=11&&node[a]<=17)&& 8-(spot%8)>=2) {
+            // GenerateMove
+            Node[a] = 6 ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+//            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+//            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val <= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
+            }
+            // GenerateMove Cancel
+            Node = node.clone() ;
+        }
+        a= spot+9;// 우 대각 아래에 상대발 말이 있을 때
+        if (in_board(a)&&(node[a]>=11&&node[a]<=17)&& spot%8>=1) {
+            // GenerateMove
+            Node[a] = 6 ;
+            Node[spot] = 0 ;
+            // MinMove
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+//            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+//            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+            // 비교  ( temp_node,best_val 갱신)
+            if (ret_val <= best_val) {
+                best_val = ret_val ;
+                temp_node = Node.clone() ;
+            }
+            // GenerateMove Cancel
+            Node = node.clone() ;
+        }
+        if(best_val!=INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+        return best_val ;
+    }
 
 
-
-
-//    public boolean game_ended(int[] P_Node){
-//        int a=0;
-//        for(int i=0;i<64;i++){
-//            if(P_Node[i]==5||P_Node[i]==15) a++;//king이 둘다있으면 a는 2가 된다.
-//        }
-//        if(a<2) return true;
-//        else return false;
-//    }
+    public boolean game_ended(int[] P_Node){
+        int a=0;
+        for(int i=0;i<64;i++) {
+            if(P_Node[i]==5||P_Node[i]==15) a++;
+        }
+        if(a<2) return true;
+        else return false;
+    }
 
 }
