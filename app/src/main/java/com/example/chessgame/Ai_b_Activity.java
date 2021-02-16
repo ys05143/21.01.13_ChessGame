@@ -1363,8 +1363,6 @@ public class Ai_b_Activity extends AppCompatActivity {
         int ret_val ;
         int  best_val = -INF +1 ;
         int[] ret_node = node.clone();
-        int[] temp_node = new int[64] ;
-
 
 
         for(int i=0;i<64;i++) {
@@ -1372,32 +1370,32 @@ public class Ai_b_Activity extends AppCompatActivity {
             switch(node[i]) {
                 //rook
                 case 11: {
-                    ret_val = RookMax(node,i,depth,ret_node,alpha,beta) ;
+                    ret_val = RookMax(node,i,depth,alpha,beta) ;
                     break;
                 }
                 //knight
                 case 12 : {
-                    ret_val = KnightMax(node,i,depth,ret_node,alpha,beta) ;
+                    ret_val = KnightMax(node,i,depth,alpha,beta) ;
                     break;
                 }
                 case 13 : {
-                    ret_val = BishopMax(node,i,depth,ret_node,alpha,beta) ;
+                    ret_val = BishopMax(node,i,depth,alpha,beta) ;
                     break;
                 }
                 case 14 : {
-                    ret_val = QueenMax(node,i,depth,ret_node,alpha,beta) ;
+                    ret_val = QueenMax(node,i,depth,alpha,beta) ;
                     break;
                 }
                 case 15 : {
-                    ret_val = KingMax(node,i,depth,ret_node,alpha,beta) ;
+                    ret_val = KingMax(node,i,depth,alpha,beta) ;
                     break;
                 }
                 case 16 : {
-                    ret_val = PawnMax(node,i,depth,ret_node,alpha,beta) ;
+                    ret_val = PawnMax(node,i,depth,alpha,beta) ;
                     break;
                 }
                 case 17 : {
-                    ret_val = FPawnMax(node,i,depth,ret_node,alpha,beta) ;
+                    ret_val = FPawnMax(node,i,depth,alpha,beta) ;
                     break;
                 }
                 default : {
@@ -1413,7 +1411,6 @@ public class Ai_b_Activity extends AppCompatActivity {
             if (ret_val >= best_val) {
                 alpha  = ret_val ;
                 best_val = ret_val;
-                temp_node = ret_node.clone();
             }
 
         } // for(i)
@@ -1530,13 +1527,11 @@ public class Ai_b_Activity extends AppCompatActivity {
     }
 
 
-    public int RookMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+    public int RookMax(int[] node,int spot,int depth,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = -INF  ;
         int ret_val = -INF;
 
-
-        int[] temp_node = node.clone();
 
         for (int a = spot + 8; a < 64; a = a + 8) {//하
             if(in_board(a)) {
@@ -1549,7 +1544,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1569,7 +1563,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1590,7 +1583,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1611,7 +1603,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1621,19 +1612,13 @@ public class Ai_b_Activity extends AppCompatActivity {
             }
         }
         // return
-        if (best_val!=-INF)
-        for(int i=0 ; i<64 ; i++) best_node[i] = temp_node[i] ;
-
         return best_val ;
-
     }
-    public int KnightMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+    public int KnightMax(int[] node,int spot,int depth,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = -INF  ;
         int ret_val = -INF ;
 
-
-        int[] temp_node = node.clone();
 
         int a = spot + (8 * 2) + 1;//우 대각 아래(2) down-2 right-1
         if (in_board(a) && 8 - spot % 8 - 1 >= 1)  //끝쪽에 있을때 넘어가기 방지
@@ -1647,7 +1632,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -1665,7 +1649,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -1683,7 +1666,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -1701,7 +1683,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -1719,7 +1700,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -1737,7 +1717,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -1755,7 +1734,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -1773,21 +1751,18 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
         }
-        if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
-    public int BishopMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+    public int BishopMax(int[] node,int spot,int depth,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = -INF  ;
         int ret_val= -INF ;
 
-        int[] temp_node =node.clone();
 
         for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
             int a = spot + (9 * (b + 1));
@@ -1801,7 +1776,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1823,7 +1797,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1844,7 +1817,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1865,7 +1837,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1874,15 +1845,13 @@ public class Ai_b_Activity extends AppCompatActivity {
                 if (node[a] != 0) break;
             }
         }
-        if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
-    public int QueenMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+    public int QueenMax(int[] node,int spot,int depth,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = -INF  ;
         int ret_val = -INF;
 
-        int[] temp_node = node.clone();
 
         for (int a = spot + 8; a < 64; a = a + 8) {//하
             if(in_board(a)) {
@@ -1895,7 +1864,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1915,7 +1883,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1936,7 +1903,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1957,7 +1923,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1978,7 +1943,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1999,7 +1963,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2020,7 +1983,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2041,7 +2003,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2050,15 +2011,13 @@ public class Ai_b_Activity extends AppCompatActivity {
                 if (node[a] != 0) break;
             }
         }
-        if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
-    public int KingMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+    public int KingMax(int[] node,int spot,int depth,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = -INF  ;
         int ret_val= -INF ;
 
-        int[] temp_node = node.clone();
 
         int a = spot + 1; //우
         if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
@@ -2070,7 +2029,6 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2085,7 +2043,6 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2100,7 +2057,6 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2115,7 +2071,6 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2130,7 +2085,6 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2145,7 +2099,6 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2160,7 +2113,6 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2175,20 +2127,17 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
         }
-        if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
-    public int PawnMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+    public int PawnMax(int[] node,int spot,int depth,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = -INF  ;
         int ret_val= -INF ;
 
-        int[] temp_node =node.clone();
 
         // 1칸 전진
             for (int a = spot - 8; a >= spot - 8; a = a - 8) {
@@ -2204,7 +2153,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val >= best_val) {
                             best_val = ret_val;
-                            temp_node = Node.clone();
                         }
                         // GenerateMove Cancel
                         Node = node.clone();
@@ -2225,7 +2173,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2242,7 +2189,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2261,7 +2207,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2280,20 +2225,17 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
-        if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
-    public int FPawnMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
+    public int FPawnMax(int[] node,int spot,int depth,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = -INF  ;
         int ret_val= -INF ;
 
-        int[] temp_node = node.clone();
 
         // 1칸/2칸 전진
             for (int a = spot - 8; a >= spot - 16; a = a - 8) {
@@ -2309,7 +2251,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val >= best_val) {
                             best_val = ret_val;
-                            temp_node = Node.clone();
                         }
                         // GenerateMove Cancel
                         Node = node.clone();
@@ -2330,7 +2271,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2347,12 +2287,10 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
-        if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
 
