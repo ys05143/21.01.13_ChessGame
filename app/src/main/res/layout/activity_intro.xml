@@ -57,7 +57,7 @@
             app:srcCompat="@drawable/bishop_b"
             android:layout_weight="1"
             android:gravity="center"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
         <ImageView
             android:id="@+id/queen_anim"
             android:layout_width="wrap_content"

@@ -100,7 +100,6 @@ import static java.lang.Thread.sleep;
         for (int i = 0; i < 64; i++)
             block[i] = (ImageView) findViewById(block_id[i]);
 
-        draw_w = (Button) findViewById(R.id.draw_w);
         give_up_w = (Button) findViewById(R.id.give_up_w);
 
        /* for(int i=0; i<64;i++)
@@ -511,16 +510,10 @@ import static java.lang.Thread.sleep;
         give_up_w.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                give_up(2);
+                give_up(1);
             }
         });
 
-        draw_w.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                draw_suggestion();
-            }
-        });
         AI();
         turn = true;
     }
@@ -1359,7 +1352,7 @@ import static java.lang.Thread.sleep;
     // 공통 변수
     final int INF = 10000 ;
     public int[] FinalNode = new int[64] ;
-    int AI_DEPTH = 4;
+    int AI_DEPTH = 5;
     // random 부분
     ArrayList<int[]> cand=new ArrayList<int[]>();
     int Count=0;
@@ -1429,7 +1422,7 @@ import static java.lang.Thread.sleep;
             // node == ret_node ( 움직임이 없을 시 )
             if(Arrays.equals(node,ret_node)) continue ;
             // beta-cut  (return INF)
-            if(ret_val>beta) return INF+1 ;
+            if(ret_val>=beta) return INF+1 ;
 
             // best_val,temp_node 갱신
             if(depth== AI_DEPTH){
@@ -1513,7 +1506,7 @@ import static java.lang.Thread.sleep;
             // node == ret_node ( 움직임이 없을 시 )
             if(ret_val==INF) continue ;
             // alpha-cut (return -INF)
-            if(ret_val < alpha) return -INF-1;
+            if(ret_val <= alpha) return -INF-1;
 
             // best_val,temp_node 갱신
             if(ret_val <= best_val ) {

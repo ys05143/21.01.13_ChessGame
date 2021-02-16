@@ -88,7 +88,6 @@ public class Ai_b_Activity extends AppCompatActivity {
         for (int i = 0; i < 64; i++)
             block[i] = (ImageView) findViewById(block_id[i]);
 
-        draw_w=(Button)findViewById(R.id.draw_w);
         give_up_w=(Button)findViewById(R.id.give_up_w);
 
        /* for(int i=0; i<64;i++)
@@ -503,12 +502,6 @@ public class Ai_b_Activity extends AppCompatActivity {
             }
         });
 
-        draw_w.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                draw_suggestion();
-            }
-        });
     }
     //-----------------------------MOVE() 부분 -----------------------------------------------
     public void move(int num){
@@ -1337,7 +1330,7 @@ public class Ai_b_Activity extends AppCompatActivity {
     // 공통 변수
     final int INF = 10000 ;
     public int[] FinalNode = new int[64] ;
-    int AI_DEPTH = 4;
+    int AI_DEPTH = 5;
     // random 부분
     ArrayList<int[]> cand=new ArrayList<int[]>();
     int Count=0;
