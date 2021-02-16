@@ -1348,18 +1348,18 @@ public class Ai_w_Activity extends AppCompatActivity {
     // 공통 변수
     final int INF = 10000 ;
     public int[] FinalNode = new int[64] ;
-    int AI_DEPTH = 5;
+    int AI_DEPTH = 4;
     // random 부분
     ArrayList<int[]> cand=new ArrayList<int[]>();
     int Count=0;
     int t=0;
 
     public int[] MinMax(int[] number) {
-        MaxMove(number.clone(), AI_DEPTH); // 깊이를 늘릴 시 Maxmove if문 수정 필요
+        MaxMove(number.clone(), AI_DEPTH,-INF,INF);
         return FinalNode.clone() ;
     }
 
-    public int MaxMove(int[] node, int depth) {
+    public int MaxMove(int[] node, int depth,int alpha,int beta) {
         if(depth==0) return Evalstate_w(node) ;
         int ret_val ;
         int  best_val = -INF +1 ;
@@ -1373,32 +1373,32 @@ public class Ai_w_Activity extends AppCompatActivity {
             switch(node[i]) {
                 //rook
                 case 11: {
-                    ret_val = RookMax(node,i,depth,ret_node) ;
+                    ret_val = RookMax(node,i,depth,ret_node,alpha,beta) ;
                     break;
                 }
                 //knight
                 case 12 : {
-                    ret_val = KnightMax(node,i,depth,ret_node) ;
+                    ret_val = KnightMax(node,i,depth,ret_node,alpha,beta) ;
                     break;
                 }
                 case 13 : {
-                    ret_val = BishopMax(node,i,depth,ret_node) ;
+                    ret_val = BishopMax(node,i,depth,ret_node,alpha,beta) ;
                     break;
                 }
                 case 14 : {
-                    ret_val = QueenMax(node,i,depth,ret_node) ;
+                    ret_val = QueenMax(node,i,depth,ret_node,alpha,beta) ;
                     break;
                 }
                 case 15 : {
-                    ret_val = KingMax(node,i,depth,ret_node) ;
+                    ret_val = KingMax(node,i,depth,ret_node,alpha,beta) ;
                     break;
                 }
                 case 16 : {
-                    ret_val = PawnMax(node,i,depth,ret_node) ;
+                    ret_val = PawnMax(node,i,depth,ret_node,alpha,beta) ;
                     break;
                 }
                 case 17 : {
-                    ret_val = FPawnMax(node,i,depth,ret_node) ;
+                    ret_val = FPawnMax(node,i,depth,ret_node,alpha,beta) ;
                     break;
                 }
                 default : {
@@ -1407,16 +1407,22 @@ public class Ai_w_Activity extends AppCompatActivity {
             } // switch
             // node == ret_node ( 움직임이 없을 시 )
             if(Arrays.equals(node,ret_node)) continue ;
+            // beta-cut  (return INF)
+            if(ret_val>=beta) return INF+1 ;
+
             // best_val,temp_node 갱신
             if(depth== AI_DEPTH){
                 if(ret_val > best_val ) {
                     best_val = ret_val ;
                     temp_node = ret_node.clone() ;
-                    cand.clear();;
+                    alpha = ret_val ;
+
+                    cand.clear();
                     t=ret_val;
                     Count=0;
                 }
                 if(ret_val == best_val ) {
+                    alpha = ret_val ;
                     best_val = ret_val ;
                     cand.add(ret_node.clone());
                     Count++;
@@ -1424,13 +1430,14 @@ public class Ai_w_Activity extends AppCompatActivity {
             }
             else {
                 if (ret_val >= best_val) {
+                    alpha  = ret_val ;
                     best_val = ret_val;
                     temp_node = ret_node.clone();
                 }
             }
 
         } // for(i)
-        // depth == 최대높이  (현재 : 4 )
+        // depth == 최대높이
         if(depth== AI_DEPTH) {
             if (best_val == t&&Count>0) {
                 temp_node = cand.get((int)((random()*100) % Count));
@@ -1441,7 +1448,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         return best_val ;
     }
 
-    public int MinMove(int[] node, int depth) {
+    public int MinMove(int[] node, int depth,int alpha,int beta) {
         if(depth==0) return Evalstate_w(node) ;
         int ret_val ;
         int  best_val = INF -1  ;
@@ -1453,32 +1460,32 @@ public class Ai_w_Activity extends AppCompatActivity {
             switch(node[i]) {
                 //rook
                 case 1: {
-                    ret_val = RookMin(node,i,depth,ret_node) ;
+                    ret_val = RookMin(node,i,depth,ret_node,alpha,beta) ;
                     break;
                 }
                 //knight
                 case 2 : {
-                    ret_val = KnightMin(node,i,depth,ret_node) ;
+                    ret_val = KnightMin(node,i,depth,ret_node,alpha,beta) ;
                     break;
                 }
                 case 3 : {
-                    ret_val = BishopMin(node,i,depth,ret_node) ;
+                    ret_val = BishopMin(node,i,depth,ret_node,alpha,beta) ;
                     break;
                 }
                 case 4 : {
-                    ret_val = QueenMin(node,i,depth,ret_node) ;
+                    ret_val = QueenMin(node,i,depth,ret_node,alpha,beta) ;
                     break;
                 }
                 case 5 : {
-                    ret_val = KingMin(node,i,depth,ret_node) ;
+                    ret_val = KingMin(node,i,depth,ret_node,alpha,beta) ;
                     break;
                 }
                 case 6 : {
-                    ret_val = PawnMin(node,i,depth,ret_node) ;
+                    ret_val = PawnMin(node,i,depth,ret_node,alpha,beta) ;
                     break;
                 }
                 case 7 : {
-                    ret_val = FPawnMin(node,i,depth,ret_node) ;
+                    ret_val = FPawnMin(node,i,depth,ret_node,alpha,beta) ;
                     break;
                 }
                 default:  {
@@ -1487,8 +1494,12 @@ public class Ai_w_Activity extends AppCompatActivity {
             } // switch
             // node == ret_node ( 움직임이 없을 시 )
             if(Arrays.equals(node,ret_node)) continue ;
+            // alpha-cut (return -INF)
+            if(ret_val <= alpha) return -INF-1;
+
             // best_val,temp_node 갱신
             if(ret_val <= best_val ) {
+                beta = ret_val ;
                 best_val = ret_val ;
                 temp_node = ret_node.clone() ;
             }
@@ -1518,7 +1529,7 @@ public class Ai_w_Activity extends AppCompatActivity {
     }
 
 
-    public int RookMax(int[] node,int spot,int depth,int[] best_node) {
+    public int RookMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = -INF  ;
         int ret_val = -INF;
@@ -1533,7 +1544,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MinMove(Node, depth - 1);
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
@@ -1553,7 +1564,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MinMove(Node, depth - 1);
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
@@ -1574,7 +1585,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MinMove(Node, depth - 1);
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
@@ -1595,7 +1606,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MinMove(Node, depth - 1);
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
@@ -1615,7 +1626,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         return best_val ;
 
     }
-    public int KnightMax(int[] node,int spot,int depth,int[] best_node) {
+    public int KnightMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = -INF  ;
         int ret_val = -INF ;
@@ -1631,7 +1642,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MinMove(Node,depth-1) ;
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
@@ -1649,7 +1660,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MinMove(Node,depth-1) ;
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
@@ -1667,7 +1678,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MinMove(Node,depth-1) ;
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
@@ -1685,7 +1696,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MinMove(Node,depth-1) ;
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
@@ -1703,7 +1714,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MinMove(Node,depth-1) ;
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
@@ -1721,7 +1732,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MinMove(Node,depth-1) ;
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
@@ -1739,7 +1750,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MinMove(Node,depth-1) ;
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
@@ -1757,7 +1768,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MinMove(Node,depth-1) ;
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
@@ -1770,7 +1781,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
-    public int BishopMax(int[] node,int spot,int depth,int[] best_node) {
+    public int BishopMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = -INF  ;
         int ret_val= -INF ;
@@ -1785,7 +1796,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MinMove(Node, depth - 1);
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
@@ -1807,7 +1818,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MinMove(Node, depth - 1);
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
@@ -1828,7 +1839,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MinMove(Node, depth - 1);
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
@@ -1849,7 +1860,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MinMove(Node, depth - 1);
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
@@ -1865,7 +1876,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
-    public int QueenMax(int[] node,int spot,int depth,int[] best_node) {
+    public int QueenMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = -INF  ;
         int ret_val = -INF;
@@ -1879,7 +1890,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MinMove(Node, depth - 1);
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
@@ -1899,7 +1910,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MinMove(Node, depth - 1);
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
@@ -1920,7 +1931,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MinMove(Node, depth - 1);
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
@@ -1941,7 +1952,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MinMove(Node, depth - 1);
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
@@ -1962,7 +1973,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MinMove(Node, depth - 1);
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
@@ -1983,7 +1994,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MinMove(Node, depth - 1);
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
@@ -2004,7 +2015,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MinMove(Node, depth - 1);
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
@@ -2025,7 +2036,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MinMove(Node, depth - 1);
+                    ret_val = MinMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
@@ -2041,7 +2052,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
-    public int KingMax(int[] node,int spot,int depth,int[] best_node) {
+    public int KingMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = -INF  ;
         int ret_val= -INF ;
@@ -2054,7 +2065,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MinMove(Node,depth-1) ;
+            ret_val = MinMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
@@ -2069,7 +2080,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MinMove(Node,depth-1) ;
+            ret_val = MinMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
@@ -2084,7 +2095,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MinMove(Node,depth-1) ;
+            ret_val = MinMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
@@ -2099,7 +2110,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MinMove(Node,depth-1) ;
+            ret_val = MinMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
@@ -2114,7 +2125,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MinMove(Node,depth-1) ;
+            ret_val = MinMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
@@ -2129,7 +2140,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MinMove(Node,depth-1) ;
+            ret_val = MinMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
@@ -2144,7 +2155,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MinMove(Node,depth-1) ;
+            ret_val = MinMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
@@ -2159,7 +2170,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MinMove(Node,depth-1) ;
+            ret_val = MinMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
@@ -2171,7 +2182,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
-    public int PawnMax(int[] node,int spot,int depth,int[] best_node) {
+    public int PawnMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = -INF  ;
         int ret_val= -INF ;
@@ -2186,7 +2197,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         Node[a] = Node[spot];
                         Node[spot] = 0;
                         // MinMove
-                        ret_val = MinMove(Node, depth - 1);
+                        ret_val = MinMove(Node, depth - 1,alpha,beta);
 //                        if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
 //                        if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
                         // 비교  ( temp_node,best_val 갱신)
@@ -2207,7 +2218,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MinMove(Node,depth-1) ;
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
 //                 if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
 //                 if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
                 // 비교  ( temp_node,best_val 갱신)
@@ -2224,7 +2235,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MinMove(Node,depth-1) ;
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
 //                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
 //                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
                 // 비교  ( temp_node,best_val 갱신)
@@ -2243,7 +2254,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[spot] = 0 ;
                 Node[spot+1] =0 ;
                 // MinMove
-                ret_val = MinMove(Node,depth-1) ;
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
 //                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
 //                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
                 // 비교  ( temp_node,best_val 갱신)
@@ -2262,7 +2273,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[spot] = 0 ;
                 Node[spot-1] = 0;
                 // MinMove
-                ret_val = MinMove(Node,depth-1) ;
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
 //                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
 //                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
                 // 비교  ( temp_node,best_val 갱신)
@@ -2276,7 +2287,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
-    public int FPawnMax(int[] node,int spot,int depth,int[] best_node) {
+    public int FPawnMax(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = -INF  ;
         int ret_val= -INF ;
@@ -2291,7 +2302,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         Node[a] = 16;
                         Node[spot] = 0;
                         // MinMove
-                        ret_val = MinMove(Node, depth - 1);
+                        ret_val = MinMove(Node, depth - 1,alpha,beta);
 //                        if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
 //                        if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
                         // 비교  ( temp_node,best_val 갱신)
@@ -2312,7 +2323,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = 16 ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MinMove(Node,depth-1) ;
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
 //                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
 //                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
                 // 비교  ( temp_node,best_val 갱신)
@@ -2329,7 +2340,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = 16 ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MinMove(Node,depth-1) ;
+                ret_val = MinMove(Node,depth-1,alpha,beta) ;
 //                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
 //                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
                 // 비교  ( temp_node,best_val 갱신)
@@ -2344,7 +2355,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         return best_val ;
     }
 
-    public int RookMin(int[] node,int spot,int depth,int[] best_node) {
+    public int RookMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
             int[] Node=node.clone();  //
             int  best_val = INF  ;
             int ret_val = INF ;
@@ -2359,7 +2370,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         Node[a] = Node[spot];
                         Node[spot] = 0;
                         // MinMove
-                        ret_val = MaxMove(Node, depth - 1);
+                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val <= best_val) {
                             best_val = ret_val;
@@ -2379,7 +2390,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         Node[a] = Node[spot];
                         Node[spot] = 0;
                         // MinMove
-                        ret_val = MaxMove(Node, depth - 1);
+                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val <= best_val) {
                             best_val = ret_val;
@@ -2400,7 +2411,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         Node[a] = Node[spot];
                         Node[spot] = 0;
                         // MinMove
-                        ret_val = MaxMove(Node, depth - 1);
+                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val <= best_val) {
                             best_val = ret_val;
@@ -2421,7 +2432,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         Node[a] = Node[spot];
                         Node[spot] = 0;
                         // MinMove
-                        ret_val = MaxMove(Node, depth - 1);
+                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val <= best_val) {
                             best_val = ret_val;
@@ -2440,7 +2451,7 @@ public class Ai_w_Activity extends AppCompatActivity {
 
             return best_val ;
     }
-    public int KnightMin(int[] node,int spot,int depth,int[] best_node) {
+    public int KnightMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = INF  ;
         int ret_val = INF;
@@ -2456,7 +2467,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MaxMove(Node,depth-1) ;
+                ret_val = MaxMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
@@ -2474,7 +2485,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MaxMove(Node,depth-1) ;
+                ret_val = MaxMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
@@ -2492,7 +2503,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MaxMove(Node,depth-1) ;
+                ret_val = MaxMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
@@ -2510,7 +2521,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MaxMove(Node,depth-1) ;
+                ret_val = MaxMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
@@ -2528,7 +2539,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MaxMove(Node,depth-1) ;
+                ret_val = MaxMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
@@ -2546,7 +2557,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MaxMove(Node,depth-1) ;
+                ret_val = MaxMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
@@ -2564,7 +2575,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MaxMove(Node,depth-1) ;
+                ret_val = MaxMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
@@ -2582,7 +2593,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
                 // MinMove
-                ret_val = MaxMove(Node,depth-1) ;
+                ret_val = MaxMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
@@ -2595,7 +2606,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         if(best_val!=INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
-    public int BishopMin(int[] node,int spot,int depth,int[] best_node) {
+    public int BishopMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
 
             int[] Node=node.clone();  //
             int  best_val = INF  ;
@@ -2611,7 +2622,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         Node[a] = Node[spot];
                         Node[spot] = 0;
                         // MinMove
-                        ret_val = MaxMove(Node, depth - 1);
+                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val <= best_val) {
                             best_val = ret_val;
@@ -2633,7 +2644,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         Node[a] = Node[spot];
                         Node[spot] = 0;
                         // MinMove
-                        ret_val = MaxMove(Node, depth - 1);
+                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val <= best_val) {
                             best_val = ret_val;
@@ -2654,7 +2665,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         Node[a] = Node[spot];
                         Node[spot] = 0;
                         // MinMove
-                        ret_val = MaxMove(Node, depth - 1);
+                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val <= best_val) {
                             best_val = ret_val;
@@ -2675,7 +2686,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                         Node[a] = Node[spot];
                         Node[spot] = 0;
                         // MinMove
-                        ret_val = MaxMove(Node, depth - 1);
+                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val <= best_val) {
                             best_val = ret_val;
@@ -2692,7 +2703,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             return best_val ;
 
     }
-    public int QueenMin(int[] node,int spot,int depth,int[] best_node) {
+    public int QueenMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = INF  ;
         int ret_val = INF;
@@ -2706,7 +2717,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MaxMove(Node, depth - 1);
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
                         best_val = ret_val;
@@ -2726,7 +2737,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MaxMove(Node, depth - 1);
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
                         best_val = ret_val;
@@ -2747,7 +2758,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MaxMove(Node, depth - 1);
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
                         best_val = ret_val;
@@ -2768,7 +2779,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MaxMove(Node, depth - 1);
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
                         best_val = ret_val;
@@ -2789,7 +2800,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MaxMove(Node, depth - 1);
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
                         best_val = ret_val;
@@ -2810,7 +2821,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MaxMove(Node, depth - 1);
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
                         best_val = ret_val;
@@ -2831,7 +2842,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MaxMove(Node, depth - 1);
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
                         best_val = ret_val;
@@ -2852,7 +2863,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MaxMove(Node, depth - 1);
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
                         best_val = ret_val;
@@ -2868,7 +2879,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         if(best_val!=INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
-    public int KingMin(int[] node,int spot,int depth,int[] best_node) {
+    public int KingMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = INF  ;
         int ret_val= INF ;
@@ -2881,7 +2892,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MaxMove(Node,depth-1) ;
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
                 best_val = ret_val ;
@@ -2896,7 +2907,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MaxMove(Node,depth-1) ;
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
                 best_val = ret_val ;
@@ -2911,7 +2922,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MaxMove(Node,depth-1) ;
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
                 best_val = ret_val ;
@@ -2926,7 +2937,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MaxMove(Node,depth-1) ;
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
                 best_val = ret_val ;
@@ -2941,7 +2952,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MaxMove(Node,depth-1) ;
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
@@ -2956,7 +2967,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MaxMove(Node,depth-1) ;
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
                 best_val = ret_val ;
@@ -2971,7 +2982,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MaxMove(Node,depth-1) ;
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
                 best_val = ret_val ;
@@ -2986,7 +2997,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MaxMove(Node,depth-1) ;
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
                 best_val = ret_val ;
@@ -2998,7 +3009,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         if(best_val!=INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
-    public int PawnMin(int[] node,int spot,int depth,int[] best_node){
+    public int PawnMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta){
         int[] Node=node.clone();  //
         int  best_val = INF  ;
         int ret_val= INF ;
@@ -3013,7 +3024,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = Node[spot];
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MaxMove(Node, depth - 1);
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
 //                    if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
 //                    if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
                     // 비교  ( temp_node,best_val 갱신)
@@ -3034,7 +3045,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MaxMove(Node,depth-1) ;
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
 //            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
 //            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
             // 비교  ( temp_node,best_val 갱신)
@@ -3051,7 +3062,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MaxMove(Node,depth-1) ;
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
 //            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
 //            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
             // 비교  ( temp_node,best_val 갱신)
@@ -3070,7 +3081,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[spot] = 0 ;
             Node[spot+1] =0 ;
             // MinMove
-            ret_val = MaxMove(Node,depth-1) ;
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
 //            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
 //            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
             // 비교  ( temp_node,best_val 갱신)
@@ -3089,7 +3100,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[spot] = 0 ;
             Node[spot-1] = 0;
             // MinMove
-            ret_val = MaxMove(Node,depth-1) ;
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
 //            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
 //            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
             // 비교  ( temp_node,best_val 갱신)
@@ -3103,7 +3114,7 @@ public class Ai_w_Activity extends AppCompatActivity {
         if(best_val!=INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
-    public int FPawnMin(int[] node,int spot,int depth,int[] best_node){
+    public int FPawnMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta){
         int[] Node=node.clone();  //
         int  best_val = INF  ;
         int ret_val = INF;
@@ -3118,7 +3129,7 @@ public class Ai_w_Activity extends AppCompatActivity {
                     Node[a] = 6;
                     Node[spot] = 0;
                     // MinMove
-                    ret_val = MaxMove(Node, depth - 1);
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
 //                    if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
 //                    if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
                     // 비교  ( temp_node,best_val 갱신)
@@ -3139,7 +3150,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = 6 ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MaxMove(Node,depth-1) ;
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
 //            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
 //            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
             // 비교  ( temp_node,best_val 갱신)
@@ -3156,7 +3167,7 @@ public class Ai_w_Activity extends AppCompatActivity {
             Node[a] = 6 ;
             Node[spot] = 0 ;
             // MinMove
-            ret_val = MaxMove(Node,depth-1) ;
+            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
 //            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
 //            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
             // 비교  ( temp_node,best_val 갱신)
