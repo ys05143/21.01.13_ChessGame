@@ -6,25 +6,87 @@
     android:layout_height="match_parent"
     android:background="@color/beige"
     tools:context=".IntroActivity">
-
+<LinearLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
     <TextView
         android:id="@+id/textView"
-        android:layout_width="406dp"
-        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_weight="2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
         android:text="Chess Game!!"
         android:textSize="50sp"
+        android:textAlignment="center"
+        android:fontFamily="@font/kotra"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.091" />
+        app:layout_constraintVertical_bias="0.091"
+        android:gravity="center" />
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+    <ImageView
+        android:id="@+id/rook_anim"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/rook_b"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_gravity="center"/>
+        <ImageView
+            android:id="@+id/knight_anim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/knight_b"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+        <ImageView
+            android:id="@+id/bishp_anim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/bishop_b"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+        <ImageView
+            android:id="@+id/queen_anim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/queen_b"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+        <ImageView
+            android:id="@+id/king_anim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/king_b"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+        <ImageView
+            android:id="@+id/pawn_anim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/pawn_b"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+    </LinearLayout>
 
     <Button
+        android:layout_gravity="center"
+        android:layout_weight="2"
         android:id="@+id/oneP_Game_w"
         android:layout_width="300dp"
         android:layout_height="100dp"
@@ -37,6 +99,8 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <Button
+        android:layout_weight="2"
+        android:layout_gravity="center"
         android:id="@+id/oneP_Game_b"
         android:layout_width="300dp"
         android:layout_height="100dp"
@@ -50,6 +114,8 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <Button
+        android:layout_weight="2"
+        android:layout_gravity="center"
         android:id="@+id/twoP_Game"
         android:layout_width="300dp"
         android:layout_height="100dp"
@@ -60,4 +126,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/oneP_Game_w" />
+</LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
