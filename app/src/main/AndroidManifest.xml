@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ChessGame">
-        <activity android:name=".Ai_w_Activity"></activity>
+        <activity android:name=".Ai_b_Activity2"></activity>
+        <activity android:name=".Ai_w_Activity" />
         <activity android:name=".Ai_b_Activity" />
         <activity android:name=".IntroActivity">
             <intent-filter>

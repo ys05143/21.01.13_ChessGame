@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Ai_b_Activity">
+    tools:context=".Ai_b_Activity2">
 
     <TableLayout
         android:id="@+id/board"
@@ -1028,17 +1028,31 @@
 
     <Button
         android:id="@+id/give_up_w"
-        android:layout_width="130dp"
+        android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_marginTop="45dp"
         android:layout_marginBottom="80dp"
         android:text="GG"
         app:backgroundTint="@color/beige"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/draw_w"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/board"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/board" />
+
+    <Button
+        android:id="@+id/draw_w"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginBottom="80dp"
+        android:text="draw"
+        app:backgroundTint="@color/beige"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/give_up_w"
+        app:layout_constraintTop_toBottomOf="@+id/board" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

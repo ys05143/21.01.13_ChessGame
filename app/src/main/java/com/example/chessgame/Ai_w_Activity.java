@@ -5,7 +5,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.DialogInterface;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -97,7 +100,6 @@ import static java.lang.Thread.sleep;
         for (int i = 0; i < 64; i++)
             block[i] = (ImageView) findViewById(block_id[i]);
 
-        draw_w = (Button) findViewById(R.id.draw_w);
         give_up_w = (Button) findViewById(R.id.give_up_w);
 
        /* for(int i=0; i<64;i++)
@@ -508,16 +510,10 @@ import static java.lang.Thread.sleep;
         give_up_w.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                give_up(2);
+                give_up(1);
             }
         });
 
-        draw_w.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                draw_suggestion();
-            }
-        });
         AI();
         turn = true;
     }
@@ -1287,9 +1283,7 @@ import static java.lang.Thread.sleep;
     //---------------------ai관련-----------------------------------------------------------
 
     public void AI() {
-        int a = 0;
-        int b = 0;
-        int before[] = number.clone();
+        int a=0; int b=0;
         number = MinMax(number).clone();//ai가 minmax 알고리즘으로 찾은 배열을 number로 지정
         for (int i = 0; i < 64; i++) { //알고리즘으로 나온 결과로 판을 바꾸는 것
             if (number[i] == 1) {
@@ -1341,29 +1335,46 @@ import static java.lang.Thread.sleep;
                 block[i].setVisibility(View.INVISIBLE);
             }
         }
-        if (a != 1 && b == 1) end_game(1);
-        else if (a == 1 && b != 1) end_game(2);
-        turn = true;
-    }  //AI
-
-
+        ValueAnimator ani=ValueAnimator.ofObject(new ArgbEvaluator(),getResources().getColor(R.color.gray),getResources().getColor(R.color.transparent));
+        ani.setDuration(5000);
+        ani.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                block[Point].setBackgroundColor((int)animation.getAnimatedValue());
+            }
+        });
+        ani.start();
+        if (a!=1&&b==1) end_game(1);
+        else if (a==1&&b!=1) end_game(2);
+         turn = true;
+    }
 
     // 공통 변수
     final int INF = 10000 ;
     public int[] FinalNode = new int[64] ;
-    int AI_DEPTH = 4;
+    int AI_DEPTH = 5;
     // random 부분
     ArrayList<int[]> cand=new ArrayList<int[]>();
     int Count=0;
     int t=0;
+    int Point;
 
     public int[] MinMax(int[] number) {
         MaxMove(number.clone(), AI_DEPTH,-INF,INF);
+        Point=Find_AI_Move(number.clone());
         return FinalNode.clone() ;
     }
 
+    public int Find_AI_Move(int [] number){
+        int r=-1;
+        for(int i=0;i<64;i++){
+            if(FinalNode[i]!=number[i]&&FinalNode[i]!=0) {r=i; break;}
+        }
+        return r;
+    }
+
     public int MaxMove(int[] node, int depth,int alpha,int beta) {
-        if(depth==0) return Evalstate_w(node) ;
+        if(depth==0||game_ended(node)==true) return Evalstate_w(node) ;
         int ret_val ;
         int  best_val = -INF +1 ;
         int[] ret_node = node.clone();
@@ -1452,7 +1463,7 @@ import static java.lang.Thread.sleep;
     }
 
     public int MinMove(int[] node, int depth,int alpha,int beta) {
-        if(depth==0) return Evalstate_w(node) ;
+        if(depth==0||game_ended(node)==true) return Evalstate_w(node) ;
         int ret_val ;
         int  best_val = INF -1  ;
 
