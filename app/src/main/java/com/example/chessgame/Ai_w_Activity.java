@@ -1737,7 +1737,7 @@ import static java.lang.Thread.sleep;
         a = spot + (8 * 1) - 2;//좌 대각 아래(1) left-2 down-1
         if (in_board(a) && spot % 8 >= 2) //끝쪽에 있을때 넘어가기 방지
         {
-            if ((node[a]>=11&&node[a]<=17)) {
+            if (!(node[a]>=11&&node[a]<=17)) {
                 // GenerateMove
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
@@ -2070,7 +2070,7 @@ import static java.lang.Thread.sleep;
         int[] temp_node = node.clone();
 
         int a = spot + 1; //우
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2085,7 +2085,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot - 1;  //좌
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2100,7 +2100,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot + 7; //좌대각 아래
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2130,7 +2130,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot + 9; // 우대각 아래
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2145,7 +2145,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot - 7; //우대각 위
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2175,7 +2175,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot - 9; //좌대각위
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2544,7 +2544,7 @@ import static java.lang.Thread.sleep;
         a = spot + (8 * 1) - 2;//좌 대각 아래(1) left-2 down-1
         if (in_board(a) && spot % 8 >= 2) //끝쪽에 있을때 넘어가기 방지
         {
-            if ((node[a]>=1&&node[a]<=7)) {
+            if (!(node[a]>=1&&node[a]<=7)) {
                 // GenerateMove
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
@@ -2855,7 +2855,7 @@ import static java.lang.Thread.sleep;
         int ret_val= INF ;
 
         int a = spot + 1; //우
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2869,7 +2869,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot - 1;  //좌
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2883,7 +2883,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot + 7; //좌대각 아래
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2911,7 +2911,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot + 9; // 우대각 아래
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2925,7 +2925,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot - 7; //우대각 위
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2953,7 +2953,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot - 9; //좌대각위
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
