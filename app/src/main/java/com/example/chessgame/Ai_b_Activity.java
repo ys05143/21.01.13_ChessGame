@@ -1330,7 +1330,7 @@ public class Ai_b_Activity extends AppCompatActivity {
     // 공통 변수
     final int INF = 10000 ;
     public int[] FinalNode = new int[64] ;
-    int AI_DEPTH = 5;
+    int AI_DEPTH = 4;
     // random 부분
     ArrayList<int[]> cand=new ArrayList<int[]>();
     int Count=0;

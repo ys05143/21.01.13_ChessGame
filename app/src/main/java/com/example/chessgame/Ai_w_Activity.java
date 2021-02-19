@@ -1352,7 +1352,7 @@ import static java.lang.Thread.sleep;
     // 공통 변수
     final int INF = 10000 ;
     public int[] FinalNode = new int[64] ;
-    int AI_DEPTH = 5;
+    int AI_DEPTH = 4;
     // random 부분
     ArrayList<int[]> cand=new ArrayList<int[]>();
     int Count=0;
@@ -1379,8 +1379,6 @@ import static java.lang.Thread.sleep;
         int  best_val = -INF +1 ;
         int[] ret_node = node.clone();
         int[] temp_node = new int[64] ;
-
-
 
         for(int i=0;i<64;i++) {
             ret_node=node.clone();
@@ -1421,6 +1419,8 @@ import static java.lang.Thread.sleep;
             } // switch
             // node == ret_node ( 움직임이 없을 시 )
             if(Arrays.equals(node,ret_node)) continue ;
+            if(ret_val==-INF||ret_val==INF) continue;
+
             // beta-cut  (return INF)
             if(ret_val>=beta) return INF+1 ;
 
@@ -1436,7 +1436,7 @@ import static java.lang.Thread.sleep;
                     Count=0;
                     cand.add(ret_node.clone());
                 }
-                if(ret_val == best_val ) {
+                else if(ret_val == best_val ) {
                     alpha = ret_val ;
                     best_val = ret_val ;
                     cand.add(ret_node.clone());
@@ -1455,6 +1455,8 @@ import static java.lang.Thread.sleep;
         if(depth== AI_DEPTH) {
             if (best_val == t&&Count>0) {
                 temp_node = cand.get((int)((random()*100) % Count));
+                // initialize
+                cand.clear() ; Count = 0;
             }
             for (int i = 0; i < 64; i++)
                 FinalNode[i] = temp_node[i]; //깊이가 n일때 가장 좋은 node를 (전역변수)FinalNode로 저장.
@@ -1463,7 +1465,7 @@ import static java.lang.Thread.sleep;
     }
 
     public int MinMove(int[] node, int depth,int alpha,int beta) {
-        if(depth==0||game_ended(node)==true) return Evalstate_w(node) ;
+        if(depth==0) return Evalstate_w(node) ;
         int ret_val ;
         int  best_val = INF -1  ;
 
@@ -1504,11 +1506,11 @@ import static java.lang.Thread.sleep;
                 }
             } // switch
             // node == ret_node ( 움직임이 없을 시 )
-            if(ret_val==INF) continue ;
+            if(ret_val==INF||ret_val==-INF) continue ;
             // alpha-cut (return -INF)
             if(ret_val <= alpha) return -INF-1;
 
-            // best_val,temp_node 갱신
+            // best_val  갱신
             if(ret_val <= best_val ) {
                 beta = ret_val ;
                 best_val = ret_val ;
@@ -1522,17 +1524,17 @@ import static java.lang.Thread.sleep;
     public int Evalstate_w(int[] number) {// 현재 상태를 평가하는 평가함수 (일단 ai가 백 이라는 가정으로 작성)
         int value = 0;
         for (int i = 0; i < 64; i++) {
-            if (number[i] == 1) value = value - 5; //룩
-            else if (number[i] == 2) value = value - 3;//나이트
-            else if (number[i] == 3) value = value - 3;//비숍
-            else if (number[i] == 4) value = value - 9;//퀸
-            else if (number[i] == 7 || number[i] == 6) {value = value - 1; /*if((number[i-7]!=16||number[i-7]!=17)||(number[i-9]!=16||number[i-9]!=17)) value=value-1;*/}//폰
+            if (number[i] == 1) value = value - 10; //룩
+            else if (number[i] == 2) value = value - 6;//나이트
+            else if (number[i] == 3) value = value - 6;//비숍
+            else if (number[i] == 4) value = value - 18;//퀸
+            else if (number[i] == 7 || number[i] == 6) {value = value - 2; /*if((number[i-7]!=16||number[i-7]!=17)||(number[i-9]!=16||number[i-9]!=17)) value=value-1;*/}//폰
             else if (number[i] == 5) value = value - 1000;
-            else if (number[i] == 11) value = value + 5;
-            else if (number[i] == 12) value = value + 3;
-            else if (number[i] == 13) value = value + 3;
-            else if (number[i] == 14) value = value + 9;
-            else if (number[i] == 17 || number[i] == 16) {value = value + 1; /*if((number[i+7]!=6||number[i+7]!=7)||(number[i+9]!=6||number[i+9]!=7)) value=value+1;*/}
+            else if (number[i] == 11) value = value + 10;
+            else if (number[i] == 12) value = value + 6;
+            else if (number[i] == 13) value = value + 6;
+            else if (number[i] == 14) value = value + 18;
+            else if (number[i] == 17 || number[i] == 16) {value = value + 2; /*if((number[i+7]!=6||number[i+7]!=7)||(number[i+9]!=6||number[i+9]!=7)) value=value+1;*/}
             else if (number[i] == 15) value = value + 1000;
         }
         return value;

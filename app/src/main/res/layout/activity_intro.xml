@@ -92,28 +92,51 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
     <LinearLayout
+        android:orientation="horizontal"
         android:layout_weight="1"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_width="match_parent">
         <ImageView
-            android:maxHeight="50dp"
-            android:maxWidth="50dp"
+            android:scaleType="fitEnd"
+            android:maxHeight="30dp"
+            android:maxWidth="30dp"
             android:adjustViewBounds="true"
-            android:id="@+id/rook_anim3"
-            android:layout_width="match_parent"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
-            app:srcCompat="@drawable/rook_b"
             android:layout_weight="1"
             android:gravity="center"
             android:layout_gravity="center"/>
         <ImageView
+            android:scaleType="fitEnd"
+            android:maxHeight="50dp"
+            android:maxWidth="50dp"
+            android:adjustViewBounds="true"
+            android:id="@+id/rook_anim3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/pawn_b"
+            android:layout_weight="5"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+        <ImageView
+            android:scaleType="fitStart"
             android:maxHeight="50dp"
             android:maxWidth="50dp"
             android:adjustViewBounds="true"
             android:id="@+id/rook_anim4"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/pawn_w"
+            android:layout_weight="5"
+            android:gravity="center"
+            android:layout_gravity="center"/>
+        <ImageView
+            android:scaleType="fitEnd"
+            android:maxHeight="30dp"
+            android:maxWidth="30dp"
+            android:adjustViewBounds="true"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
-            app:srcCompat="@drawable/rook_w"
             android:layout_weight="1"
             android:gravity="center"
             android:layout_gravity="center"/>
@@ -133,7 +156,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/oneP_Game_w" />
-
+// 공백
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="50dp"/>
 </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

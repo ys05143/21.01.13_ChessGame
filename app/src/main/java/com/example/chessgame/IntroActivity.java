@@ -24,11 +24,6 @@ public class IntroActivity extends AppCompatActivity {
         ImageView Wrotate1 = (ImageView)findViewById(R.id.rook_anim2) ;
         Wrotate1.startAnimation(animation);
 
-        ImageView Protate1 = (ImageView)findViewById(R.id.rook_anim3) ;
-        Protate1.startAnimation(animation);
-
-        ImageView Protate2 = (ImageView)findViewById(R.id.rook_anim4) ;
-        Protate2.startAnimation(animation);
 
         Button b1=(Button)findViewById(R.id.oneP_Game_w);
         Button b2=(Button)findViewById(R.id.oneP_Game_b);
