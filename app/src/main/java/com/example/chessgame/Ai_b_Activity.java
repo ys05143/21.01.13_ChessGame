@@ -1398,7 +1398,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             // node == ret_node ( 움직임이 없을 시 )
             if(Arrays.equals(node,ret_node)) continue ;
             // beta-cut  (return INF)
-            if(ret_val>beta) return INF+1 ;
+            if(ret_val>=beta) return INF+1 ;
 
             // best_val,temp_node 갱신
             if (ret_val >= best_val) {
@@ -1458,7 +1458,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             // node == ret_node ( 움직임이 없을 시 )
             if(Arrays.equals(node,ret_node)) continue ;
             // alpha-cut (return -INF)
-            if(ret_val < alpha) return -INF-1;
+            if(ret_val <= alpha) return -INF-1;
 
             // best_val,temp_node 갱신
             if(depth==AI_DEPTH){
@@ -1701,7 +1701,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         a = spot + (8 * 1) - 2;//좌 대각 아래(1) left-2 down-1
         if (in_board(a) && spot % 8 >= 2) //끝쪽에 있을때 넘어가기 방지
         {
-            if ((node[a]>=11&&node[a]<=17)) {
+            if (!(node[a]>=11&&node[a]<=17)) {
                 // GenerateMove
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
@@ -2013,7 +2013,7 @@ public class Ai_b_Activity extends AppCompatActivity {
 
 
         int a = spot + 1; //우
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2027,7 +2027,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a = spot - 1;  //좌
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2041,7 +2041,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a = spot + 7; //좌대각 아래
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2069,7 +2069,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a = spot + 9; // 우대각 아래
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2083,7 +2083,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a = spot - 7; //우대각 위
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2111,7 +2111,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a = spot - 9; //좌대각위
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2155,7 +2155,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                 }
             }
             int a= spot-9 ;//좌 대각 위에 상대방 말이 있을 때
-             if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& 8-(spot%8)>=2) {
+             if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& spot%8 >= 1) {
                 // GenerateMove
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
@@ -2171,7 +2171,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                 Node = node.clone() ;
                 }
             a= spot-7;// 우 대각 위에 상대발 말이 있을 때
-            if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& spot%8>=1) {
+            if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& 8-(spot%8)>=2) {
                 // GenerateMove
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
@@ -2188,7 +2188,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             }
             // 양파상 좌측
             a=spot-9 ;
-            if (8-(spot % 8) >= 2 && enpassant[spot + 1] == 1 && node[a] == 0) {
+            if (spot%8 >= 1 && enpassant[spot + 1] == 1 && node[a] == 0) {
                 // GenerateMove
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
@@ -2206,7 +2206,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             }
             // 양파상 우측
             a=spot-7;
-            if ( spot%8 >= 1 && enpassant[spot - 1] == 1 && node[a] == 0) {
+            if ( 8-(spot%8)>=2 && enpassant[spot - 1] == 1 && node[a] == 0) {
                 // GenerateMove
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
@@ -2253,7 +2253,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                 }
             }
             int a= spot-9 ;//좌 대각 위에 상대방 말이 있을 때
-            if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& 8-(spot%8)>=2) {
+            if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& spot%8>=1) {
                 // GenerateMove
                 Node[a] = 16 ;
                 Node[spot] = 0 ;
@@ -2269,7 +2269,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                 Node = node.clone() ;
             }
             a= spot-7;// 우 대각 위에 상대발 말이 있을 때
-            if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& spot%8>=1) {
+            if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& 8-(spot%8)>=2) {
                 // GenerateMove
                 Node[a] = 16 ;
                 Node[spot] = 0 ;
@@ -2484,7 +2484,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         a = spot + (8 * 1) - 2;//좌 대각 아래(1) left-2 down-1
         if (in_board(a) && spot % 8 >= 2) //끝쪽에 있을때 넘어가기 방지
         {
-            if ((node[a]>=1&&node[a]<=7)) {
+            if (!(node[a]>=1&&node[a]<=7)) {
                 // GenerateMove
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
@@ -2819,7 +2819,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         int[] temp_node = node.clone();
 
         int a = spot + 1; //우
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2834,7 +2834,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a = spot - 1;  //좌
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2849,7 +2849,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a = spot + 7; //좌대각 아래
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2879,7 +2879,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a = spot + 9; // 우대각 아래
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2894,7 +2894,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a = spot - 7; //우대각 위
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2924,7 +2924,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a = spot - 9; //좌대각위
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2972,7 +2972,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             }
         }
         int a= spot+7 ;//좌 대각 아래에 상대방 말이 있을 때
-        if (in_board(a)&&(node[a]>=11&&node[a]<=17)&& 8-(spot%8)>=2) {
+        if (in_board(a)&&(node[a]>=11&&node[a]<=17)&& spot%8>=1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2989,7 +2989,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a= spot+9;// 우 대각 아래에 상대발 말이 있을 때
-        if (in_board(a)&&(node[a]>=11&&node[a]<=17)&& spot%8>=1) {
+        if (in_board(a)&&(node[a]>=11&&node[a]<=17)&&8-(spot%8)>=2) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -3007,7 +3007,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         }
         // 양파상 좌측
         a=spot+7 ;
-        if (8-(spot % 8) >= 2 && enpassant[spot + 1] == 1 && node[a] == 0) {
+        if (spot%8>=1 && enpassant[spot + 1] == 1 && node[a] == 0) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -3026,7 +3026,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         }
         // 양파상 우측
         a=spot+9;
-        if ( spot%8 >= 1 && enpassant[spot - 1] == 1 && node[a] == 0) {
+        if ( 8-(spot % 8) >= 2 && enpassant[spot - 1] == 1 && node[a] == 0) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -3077,7 +3077,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             }
         }
         int a= spot+7 ;//좌 대각 아래에 상대방 말이 있을 때
-        if (in_board(a)&&(node[a]>=11&&node[a]<=17)&& 8-(spot%8)>=2) {
+        if (in_board(a)&&(node[a]>=11&&node[a]<=17)&& spot%8>=1) {
             // GenerateMove
             Node[a] = 6 ;
             Node[spot] = 0 ;
@@ -3094,7 +3094,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a= spot+9;// 우 대각 아래에 상대발 말이 있을 때
-        if (in_board(a)&&(node[a]>=11&&node[a]<=17)&& spot%8>=1) {
+        if (in_board(a)&&(node[a]>=11&&node[a]<=17)&& 8-(spot%8)>=2) {
             // GenerateMove
             Node[a] = 6 ;
             Node[spot] = 0 ;
