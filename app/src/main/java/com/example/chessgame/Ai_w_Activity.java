@@ -1465,7 +1465,7 @@ import static java.lang.Thread.sleep;
     }
 
     public int MinMove(int[] node, int depth,int alpha,int beta) {
-        if(depth==0) return Evalstate_w(node) ;
+        if(depth==0||game_ended(node)==true) return Evalstate_w(node) ;
         int ret_val ;
         int  best_val = INF -1  ;
 
@@ -1524,17 +1524,17 @@ import static java.lang.Thread.sleep;
     public int Evalstate_w(int[] number) {// 현재 상태를 평가하는 평가함수 (일단 ai가 백 이라는 가정으로 작성)
         int value = 0;
         for (int i = 0; i < 64; i++) {
-            if (number[i] == 1) value = value - 10; //룩
-            else if (number[i] == 2) value = value - 6;//나이트
-            else if (number[i] == 3) value = value - 6;//비숍
-            else if (number[i] == 4) value = value - 18;//퀸
-            else if (number[i] == 7 || number[i] == 6) {value = value - 2; /*if((number[i-7]!=16||number[i-7]!=17)||(number[i-9]!=16||number[i-9]!=17)) value=value-1;*/}//폰
+            if (number[i] == 1) value = value - 5; //룩
+            else if (number[i] == 2) value = value - 3;//나이트
+            else if (number[i] == 3) value = value - 3;//비숍
+            else if (number[i] == 4) value = value - 9;//퀸
+            else if (number[i] == 7 || number[i] == 6) {value = value - 1; /*if((number[i-7]!=16||number[i-7]!=17)||(number[i-9]!=16||number[i-9]!=17)) value=value-1;*/}//폰
             else if (number[i] == 5) value = value - 1000;
-            else if (number[i] == 11) value = value + 10;
-            else if (number[i] == 12) value = value + 6;
-            else if (number[i] == 13) value = value + 6;
-            else if (number[i] == 14) value = value + 18;
-            else if (number[i] == 17 || number[i] == 16) {value = value + 2; /*if((number[i+7]!=6||number[i+7]!=7)||(number[i+9]!=6||number[i+9]!=7)) value=value+1;*/}
+            else if (number[i] == 11) value = value + 5;
+            else if (number[i] == 12) value = value + 3;
+            else if (number[i] == 13) value = value + 3;
+            else if (number[i] == 14) value = value + 9;
+            else if (number[i] == 17 || number[i] == 16) {value = value + 1; /*if((number[i+7]!=6||number[i+7]!=7)||(number[i+9]!=6||number[i+9]!=7)) value=value+1;*/}
             else if (number[i] == 15) value = value + 1000;
         }
         return value;
@@ -1739,7 +1739,7 @@ import static java.lang.Thread.sleep;
         a = spot + (8 * 1) - 2;//좌 대각 아래(1) left-2 down-1
         if (in_board(a) && spot % 8 >= 2) //끝쪽에 있을때 넘어가기 방지
         {
-            if ((node[a]>=11&&node[a]<=17)) {
+            if (!(node[a]>=11&&node[a]<=17)) {
                 // GenerateMove
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
@@ -2072,7 +2072,7 @@ import static java.lang.Thread.sleep;
         int[] temp_node = node.clone();
 
         int a = spot + 1; //우
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2087,7 +2087,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot - 1;  //좌
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2102,7 +2102,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot + 7; //좌대각 아래
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2132,7 +2132,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot + 9; // 우대각 아래
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2147,7 +2147,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot - 7; //우대각 위
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2177,7 +2177,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot - 9; //좌대각위
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2546,7 +2546,7 @@ import static java.lang.Thread.sleep;
         a = spot + (8 * 1) - 2;//좌 대각 아래(1) left-2 down-1
         if (in_board(a) && spot % 8 >= 2) //끝쪽에 있을때 넘어가기 방지
         {
-            if ((node[a]>=1&&node[a]<=7)) {
+            if (!(node[a]>=1&&node[a]<=7)) {
                 // GenerateMove
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
@@ -2857,7 +2857,7 @@ import static java.lang.Thread.sleep;
         int ret_val= INF ;
 
         int a = spot + 1; //우
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2871,7 +2871,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot - 1;  //좌
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2885,7 +2885,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot + 7; //좌대각 아래
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2913,7 +2913,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot + 9; // 우대각 아래
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2927,7 +2927,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot - 7; //우대각 위
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2955,7 +2955,7 @@ import static java.lang.Thread.sleep;
             Node = node.clone() ;
         }
         a = spot - 9; //좌대각위
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
