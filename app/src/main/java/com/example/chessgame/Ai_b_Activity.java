@@ -1328,12 +1328,12 @@ public class Ai_b_Activity extends AppCompatActivity {
     }
 
     // 공통 변수
-    final int INF = 10000 ;
+    final int INF = 100000 ;
     public int[] FinalNode = new int[64] ;
     int AI_DEPTH = 4;
     // random 부분
     ArrayList<int[]> cand=new ArrayList<int[]>();
-    int Count=0;
+//    int Count=0;
     int t=0;
     int Point;
 
@@ -1397,8 +1397,9 @@ public class Ai_b_Activity extends AppCompatActivity {
             } // switch
             // node == ret_node ( 움직임이 없을 시 )
             if(Arrays.equals(node,ret_node)) continue ;
-            // beta-cut  (return INF)
-            if(ret_val>beta) return INF+1 ;
+            if(ret_val==-INF||ret_val==INF) continue;
+//            // beta-cut  (return INF)
+//            if(ret_val>beta) return INF+1 ;
 
             // best_val,temp_node 갱신
             if (ret_val >= best_val) {
@@ -1457,8 +1458,9 @@ public class Ai_b_Activity extends AppCompatActivity {
             } // switch
             // node == ret_node ( 움직임이 없을 시 )
             if(Arrays.equals(node,ret_node)) continue ;
-            // alpha-cut (return -INF)
-            if(ret_val < alpha) return -INF-1;
+            if(ret_val==-INF||ret_val==INF) continue;
+//            // alpha-cut (return -INF)
+//            if(ret_val < alpha) return -INF-1;
 
             // best_val,temp_node 갱신
             if(depth==AI_DEPTH){
@@ -1466,17 +1468,17 @@ public class Ai_b_Activity extends AppCompatActivity {
                     best_val = ret_val;
                     temp_node = ret_node.clone();
                     beta = ret_val;
-
+                    //  random-arraylist reset
                     cand.clear();
                     t=ret_val;
-                    Count=0;
+//                    Count=0;
 
                 }
                 if(ret_val==best_val){
                     beta = ret_val;
                     best_val = ret_val;
                     cand.add(ret_node.clone());
-                    Count++;
+//                    Count++;
                 }
             }
             else {
@@ -1490,8 +1492,10 @@ public class Ai_b_Activity extends AppCompatActivity {
         } // for(i)
         // depth == 최대높이
         if(depth== AI_DEPTH) {
-            if (best_val == t&&Count>0) {
-                temp_node = cand.get((int)((random()*100) % Count));
+            if (best_val == t&&cand.size()>0) {
+                temp_node = cand.get((int)((random()*100) % cand.size())).clone();
+                cand.clear();
+//                Count=0;
             }
             for (int i = 0; i < 64; i++)
                 FinalNode[i] = temp_node[i]; //깊이가 n일때 가장 좋은 node를 (전역변수)FinalNode로 저장.
@@ -1503,18 +1507,19 @@ public class Ai_b_Activity extends AppCompatActivity {
     public int Evalstate_w(int[] number) {// 현재 상태를 평가하는 평가함수 (일단 ai가 백 이라는 가정으로 작성)
         int value = 0;
         for (int i = 0; i < 64; i++) {
-            if (number[i] == 1) value = value - 5; //룩
-            else if (number[i] == 2) value = value - 3;//나이트
-            else if (number[i] == 3) value = value - 3;//비숍
-            else if (number[i] == 4) value = value - 9;//퀸
-            else if (number[i] == 7 || number[i] == 6) {value = value - 1; /*if((number[i-7]!=16||number[i-7]!=17)||(number[i-9]!=16||number[i-9]!=17)) value=value-1;*/}//폰
-            else if (number[i] == 5) value = value - 1000;
-            else if (number[i] == 11) value = value + 5;
-            else if (number[i] == 12) value = value + 3;
-            else if (number[i] == 13) value = value + 3;
-            else if (number[i] == 14) value = value + 9;
-            else if (number[i] == 17 || number[i] == 16) {value = value + 1; /*if((number[i+7]!=6||number[i+7]!=7)||(number[i+9]!=6||number[i+9]!=7)) value=value+1;*/}
-            else if (number[i] == 15) value = value + 1000;
+            if (number[i] == 1) value = value - 50; //룩
+            else if (number[i] == 2) value = value - 30;//나이트
+            else if (number[i] == 3) value = value - 30;//비숍
+            else if (number[i] == 4) value = value - 90;//퀸
+            else if (number[i] == 7 || number[i] == 6) {value = value - 10; /*if((number[i-7]!=16||number[i-7]!=17)||(number[i-9]!=16||number[i-9]!=17)) value=value-1;*/}//폰
+            else if (number[i] == 5) value = value - 10000;
+
+            else if (number[i] == 11) value = value + 50;
+            else if (number[i] == 12) value = value + 30;
+            else if (number[i] == 13) value = value + 30;
+            else if (number[i] == 14) value = value + 90;
+            else if (number[i] == 17 || number[i] == 16) {value = value + 10; /*if((number[i+7]!=6||number[i+7]!=7)||(number[i+9]!=6||number[i+9]!=7)) value=value+1;*/}
+            else if (number[i] == 15) value = value + 10000;
         }
         return value;
     }
@@ -1604,8 +1609,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                 if (node[a] != 0) break;
             }
         }
-        // return
+
         return best_val ;
+
     }
     public int KnightMax(int[] node,int spot,int depth,int alpha,int beta) {
         int[] Node=node.clone();  //
@@ -1701,7 +1707,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         a = spot + (8 * 1) - 2;//좌 대각 아래(1) left-2 down-1
         if (in_board(a) && spot % 8 >= 2) //끝쪽에 있을때 넘어가기 방지
         {
-            if ((node[a]>=11&&node[a]<=17)) {
+            if (!(node[a]>=11&&node[a]<=17)) {
                 // GenerateMove
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
@@ -1749,6 +1755,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                 Node = node.clone() ;
             }
         }
+
         return best_val ;
     }
     public int BishopMax(int[] node,int spot,int depth,int alpha,int beta) {
@@ -1844,7 +1851,6 @@ public class Ai_b_Activity extends AppCompatActivity {
         int[] Node=node.clone();  //
         int  best_val = -INF  ;
         int ret_val = -INF;
-
 
         for (int a = spot + 8; a < 64; a = a + 8) {//하
             if(in_board(a)) {
@@ -2011,9 +2017,8 @@ public class Ai_b_Activity extends AppCompatActivity {
         int  best_val = -INF  ;
         int ret_val= -INF ;
 
-
         int a = spot + 1; //우
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2027,7 +2032,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a = spot - 1;  //좌
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2041,7 +2046,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a = spot + 7; //좌대각 아래
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2069,7 +2074,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a = spot + 9; // 우대각 아래
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2083,7 +2088,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a = spot - 7; //우대각 위
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2111,7 +2116,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node = node.clone() ;
         }
         a = spot - 9; //좌대각위
-        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)) {
+        if (in_board(a)&&!(node[a]>=11&&node[a]<=17)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2137,8 +2142,14 @@ public class Ai_b_Activity extends AppCompatActivity {
                 if(in_board(a)) {
                     if (node[a]==0) {
                         // GenerateMove
-                        Node[a] = Node[spot];
-                        Node[spot] = 0;
+                        if(a>=0&&a<=7){
+                            Node[a]=14;
+                            Node[a]=0;
+                        }
+                        else {
+                            Node[a] = Node[spot];
+                            Node[spot] = 0;
+                        }
                         // MinMove
                         ret_val = MinMove(Node, depth - 1,alpha,beta);
 //                        if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
@@ -2157,8 +2168,14 @@ public class Ai_b_Activity extends AppCompatActivity {
             int a= spot-9 ;//좌 대각 위에 상대방 말이 있을 때
              if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& 8-(spot%8)>=2) {
                 // GenerateMove
-                Node[a] = Node[spot] ;
-                Node[spot] = 0 ;
+                 if(a>=0&&a<=7){
+                     Node[a]=14;
+                     Node[a]=0;
+                 }
+                 else {
+                     Node[a] = Node[spot];
+                     Node[spot] = 0;
+                 }
                 // MinMove
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
 //                 if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
@@ -2173,8 +2190,14 @@ public class Ai_b_Activity extends AppCompatActivity {
             a= spot-7;// 우 대각 위에 상대발 말이 있을 때
             if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& spot%8>=1) {
                 // GenerateMove
-                Node[a] = Node[spot] ;
-                Node[spot] = 0 ;
+                if(a>=0&&a<=7){
+                    Node[a]=14;
+                    Node[a]=0;
+                }
+                else {
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                }
                 // MinMove
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
 //                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
@@ -2186,42 +2209,42 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
-            // 양파상 좌측
-            a=spot-9 ;
-            if (8-(spot % 8) >= 2 && enpassant[spot + 1] == 1 && node[a] == 0) {
-                // GenerateMove
-                Node[a] = Node[spot] ;
-                Node[spot] = 0 ;
-                Node[spot+1] =0 ;
-                // MinMove
-                ret_val = MinMove(Node,depth-1,alpha,beta) ;
-//                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
-//                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
-                // 비교  ( temp_node,best_val 갱신)
-                if (ret_val >= best_val) {
-                    best_val = ret_val ;
-                }
-                // GenerateMove Cancel
-                Node = node.clone() ;
-            }
-            // 양파상 우측
-            a=spot-7;
-            if ( spot%8 >= 1 && enpassant[spot - 1] == 1 && node[a] == 0) {
-                // GenerateMove
-                Node[a] = Node[spot] ;
-                Node[spot] = 0 ;
-                Node[spot-1] = 0;
-                // MinMove
-                ret_val = MinMove(Node,depth-1,alpha,beta) ;
-//                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
-//                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
-                // 비교  ( temp_node,best_val 갱신)
-                if (ret_val >= best_val) {
-                    best_val = ret_val ;
-                }
-                // GenerateMove Cancel
-                Node = node.clone() ;
-            }
+//            // 양파상 좌측
+//            a=spot-9 ;
+//            if (8-(spot % 8) >= 2 && enpassant[spot + 1] == 1 && node[a] == 0) {
+//                // GenerateMove
+//                Node[a] = Node[spot] ;
+//                Node[spot] = 0 ;
+//                Node[spot+1] =0 ;
+//                // MinMove
+//                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+////                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+////                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+//                // 비교  ( temp_node,best_val 갱신)
+//                if (ret_val >= best_val) {
+//                    best_val = ret_val ;
+//                }
+//                // GenerateMove Cancel
+//                Node = node.clone() ;
+//            }
+//            // 양파상 우측
+//            a=spot-7;
+//            if ( spot%8 >= 1 && enpassant[spot - 1] == 1 && node[a] == 0) {
+//                // GenerateMove
+//                Node[a] = Node[spot] ;
+//                Node[spot] = 0 ;
+//                Node[spot-1] = 0;
+//                // MinMove
+//                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+////                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+////                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+//                // 비교  ( temp_node,best_val 갱신)
+//                if (ret_val >= best_val) {
+//                    best_val = ret_val ;
+//                }
+//                // GenerateMove Cancel
+//                Node = node.clone() ;
+//            }
         return best_val ;
     }
     public int FPawnMax(int[] node,int spot,int depth,int alpha,int beta) {
@@ -2288,106 +2311,99 @@ public class Ai_b_Activity extends AppCompatActivity {
     }
 
     public int RookMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
-            int[] Node=node.clone();  //
-            int  best_val = INF  ;
-            int ret_val = INF ;
+        int[] Node=node.clone();  //
+        int  best_val = INF  ;
+        int ret_val = INF ;
 
+        int[] temp_node = node.clone();
 
-            int[] temp_node =node.clone();
-
-            for (int a = spot + 8; a < 64; a = a + 8) {//하
-                if(in_board(a)) {
-                    if (!(node[a] >= 1 && node[a] <= 7)) {
-                        // GenerateMove
-                        Node[a] = Node[spot];
-                        Node[spot] = 0;
-                        // MinMove
-                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
-                        // 비교  ( temp_node,best_val 갱신)
-                        if (ret_val <= best_val) {
-                            best_val = ret_val;
-                            temp_node = Node.clone();
-                        }
-                        // GenerateMove Cancel
-                        Node = node.clone();
+        for (int a = spot + 8; a < 64; a = a + 8) {//하
+            if(in_board(a)) {
+                if (!(node[a] >= 1 && node[a] <= 7)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
                     }
-                    //  말이 있을경우
-                    if (node[a] != 0) break;
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
-            for (int a = spot - 8; a >= 0; a = a - 8) {//상
-                if(in_board(a)) {
-                    if (!(node[a] >= 1 && node[a] <= 7)) {
-                        // GenerateMove
-                        Node[a] = Node[spot];
-                        Node[spot] = 0;
-                        // MinMove
-                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
-                        // 비교  ( temp_node,best_val 갱신)
-                        if (ret_val <= best_val) {
-                            best_val = ret_val;
-                            temp_node = Node.clone();
-                        }
-                        // GenerateMove Cancel
-                        Node = node.clone();
+        }
+        for (int a = spot - 8; a >= 0; a = a - 8) {//상
+            if(in_board(a)) {
+                if (!(node[a] >= 1 && node[a] <= 7)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
                     }
-                    //  말이 있을경우
-                    if (node[a] != 0) break;
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
-            for (int b = 0; b < spot % 8; b++) {//좌
-                int a = spot - (b+1) ;
-                if(in_board(a)) {
-                    if (!(node[a] >= 1 && node[a] <= 7)) {
-                        // GenerateMove
-                        Node[a] = Node[spot];
-                        Node[spot] = 0;
-                        // MinMove
-                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
-                        // 비교  ( temp_node,best_val 갱신)
-                        if (ret_val <= best_val) {
-                            best_val = ret_val;
-                            temp_node = Node.clone();
-                        }
-                        // GenerateMove Cancel
-                        Node = node.clone();
+        }
+        for (int b = 0; b < spot % 8; b++) {//좌
+            int a = spot - (b+1) ;
+            if(in_board(a)) {
+                if (!(node[a] >= 1 && node[a] <= 7)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
                     }
-                    //  말이 있을경우
-                    if (node[a] != 0) break;
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
-            for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우
-                int a = spot + (b+1) ;
-                if(in_board(a)) {
-                    if (!(node[a] >= 1 && node[a] <= 7)) {
-                        // GenerateMove
-                        Node[a] = Node[spot];
-                        Node[spot] = 0;
-                        // MinMove
-                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
-                        // 비교  ( temp_node,best_val 갱신)
-                        if (ret_val <= best_val) {
-                            best_val = ret_val;
-                            temp_node = Node.clone();
-                        }
-                        // GenerateMove Cancel
-                        Node = node.clone();
+        }
+        for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우
+            int a = spot + (b+1) ;
+            if(in_board(a)) {
+                if (!(node[a] >= 1 && node[a] <= 7)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
                     }
-                    //  말이 있을경우
-                    if (node[a] != 0) break;
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
-            // return
-            if (best_val!=INF)
-                for(int i=0 ; i<64 ; i++) best_node[i] = temp_node[i] ;
-
-            return best_val ;
+        }
+        if (best_val!=INF)
+            for(int i=0 ; i<64 ; i++) best_node[i] = temp_node[i] ;
+        // return
+        return best_val ;
     }
     public int KnightMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
         int[] Node=node.clone();  //
         int  best_val = INF  ;
         int ret_val = INF;
-
 
         int[] temp_node = node.clone();
 
@@ -2403,7 +2419,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2421,7 +2436,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2439,7 +2453,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2457,7 +2470,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2475,7 +2487,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2484,7 +2495,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         a = spot + (8 * 1) - 2;//좌 대각 아래(1) left-2 down-1
         if (in_board(a) && spot % 8 >= 2) //끝쪽에 있을때 넘어가기 방지
         {
-            if ((node[a]>=1&&node[a]<=7)) {
+            if (!(node[a]>=1&&node[a]<=7)) {
                 // GenerateMove
                 Node[a] = Node[spot] ;
                 Node[spot] = 0 ;
@@ -2493,7 +2504,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2511,7 +2521,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2529,110 +2538,107 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
-                    temp_node = Node.clone() ;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
         }
-        if(best_val!=INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+        if (best_val!=INF)
+            for(int i=0 ; i<64 ; i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
     public int BishopMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
 
-            int[] Node=node.clone();  //
-            int  best_val = INF  ;
-            int ret_val = INF;
+        int[] Node=node.clone();  //
+        int  best_val = INF  ;
+        int ret_val = INF;
 
-            int[] temp_node = node.clone();
+        int[] temp_node = node.clone();
 
-            for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
-                int a = spot + (9 * (b + 1));
-                if(in_board(a)) {
-                    if (!(node[a] >= 1 && node[a] <= 7)) {
-                        // GenerateMove
-                        Node[a] = Node[spot];
-                        Node[spot] = 0;
-                        // MinMove
-                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
-                        // 비교  ( temp_node,best_val 갱신)
-                        if (ret_val <= best_val) {
-                            best_val = ret_val;
-                            temp_node = Node.clone();
-                        }
-                        // GenerateMove Cancel
-                        Node = node.clone();
+        for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
+            int a = spot + (9 * (b + 1));
+            if(in_board(a)) {
+                if (!(node[a] >= 1 && node[a] <= 7)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
                     }
-                    //  말이 있을경우
-                    if (node[a] != 0) break;
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
+        }
 
-            for (int b = 0; b < spot % 8; b++) { //좌 대각 위
-                int a = spot - (9 * (b + 1));
-                if(in_board(a)) {
-                    if (!(node[a] >= 1 && node[a] <= 7)) {
-                        // GenerateMove
-                        Node[a] = Node[spot];
-                        Node[spot] = 0;
-                        // MinMove
-                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
-                        // 비교  ( temp_node,best_val 갱신)
-                        if (ret_val <= best_val) {
-                            best_val = ret_val;
-                            temp_node = Node.clone();
-                        }
-                        // GenerateMove Cancel
-                        Node = node.clone();
+        for (int b = 0; b < spot % 8; b++) { //좌 대각 위
+            int a = spot - (9 * (b + 1));
+            if(in_board(a)) {
+                if (!(node[a] >= 1 && node[a] <= 7)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
                     }
-                    //  말이 있을경우
-                    if (node[a] != 0) break;
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
-            for (int b = 0; b < spot % 8; b++) { //좌 대각 아래
-                int a = spot + (7 * (b + 1));
-                if(in_board(a)) {
-                    if (!(node[a] >= 1 && node[a] <= 7)) {
-                        // GenerateMove
-                        Node[a] = Node[spot];
-                        Node[spot] = 0;
-                        // MinMove
-                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
-                        // 비교  ( temp_node,best_val 갱신)
-                        if (ret_val <= best_val) {
-                            best_val = ret_val;
-                            temp_node = Node.clone();
-                        }
-                        // GenerateMove Cancel
-                        Node = node.clone();
+        }
+        for (int b = 0; b < spot % 8; b++) { //좌 대각 아래
+            int a = spot + (7 * (b + 1));
+            if(in_board(a)) {
+                if (!(node[a] >= 1 && node[a] <= 7)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
                     }
-                    //  말이 있을경우
-                    if (node[a] != 0) break;
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
-            for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 위
-                int a = spot - (7 * (b + 1));
-                if(in_board(a)) {
-                    if (!(node[a] >= 1 && node[a] <= 7)) {
-                        // GenerateMove
-                        Node[a] = Node[spot];
-                        Node[spot] = 0;
-                        // MinMove
-                        ret_val = MaxMove(Node, depth - 1,alpha,beta);
-                        // 비교  ( temp_node,best_val 갱신)
-                        if (ret_val <= best_val) {
-                            best_val = ret_val;
-                            temp_node = Node.clone();
-                        }
-                        // GenerateMove Cancel
-                        Node = node.clone();
+        }
+        for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 위
+            int a = spot - (7 * (b + 1));
+            if(in_board(a)) {
+                if (!(node[a] >= 1 && node[a] <= 7)) {
+                    // GenerateMove
+                    Node[a] = Node[spot];
+                    Node[spot] = 0;
+                    // MinMove
+                    ret_val = MaxMove(Node, depth - 1,alpha,beta);
+                    // 비교  ( temp_node,best_val 갱신)
+                    if (ret_val <= best_val) {
+                        best_val = ret_val;
                     }
-                    //  말이 있을경우
-                    if (node[a] != 0) break;
+                    // GenerateMove Cancel
+                    Node = node.clone();
                 }
+                //  말이 있을경우
+                if (node[a] != 0) break;
             }
-            if(best_val!=INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
-            return best_val ;
+        }
+        if (best_val!=INF)
+            for(int i=0 ; i<64 ; i++) best_node[i] = temp_node[i] ;
+        return best_val ;
 
     }
     public int QueenMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
@@ -2653,7 +2659,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2673,7 +2678,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2694,7 +2698,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2715,7 +2718,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2736,7 +2738,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2757,7 +2758,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2778,7 +2778,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2799,7 +2798,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
                         best_val = ret_val;
-                        temp_node = Node.clone();
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2808,7 +2806,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 if (node[a] != 0) break;
             }
         }
-        if(best_val!=INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+        if (best_val!=INF)
+            for(int i=0 ; i<64 ; i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
     public int KingMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta) {
@@ -2819,7 +2818,7 @@ public class Ai_b_Activity extends AppCompatActivity {
         int[] temp_node = node.clone();
 
         int a = spot + 1; //우
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2828,13 +2827,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
         }
         a = spot - 1;  //좌
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2843,13 +2841,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
         }
         a = spot + 7; //좌대각 아래
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2858,7 +2855,6 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2873,13 +2869,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
         }
         a = spot + 9; // 우대각 아래
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2888,13 +2883,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
         }
         a = spot - 7; //우대각 위
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&8 - spot % 8 - 1 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2903,7 +2897,6 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2918,13 +2911,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
         }
         a = spot - 9; //좌대각위
-        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)) {
+        if (in_board(a)&&!(node[a]>=1&&node[a]<=7)&&spot % 8 >= 1) {
             // GenerateMove
             Node[a] = Node[spot] ;
             Node[spot] = 0 ;
@@ -2933,12 +2925,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
                 best_val = ret_val ;
-                temp_node = Node.clone() ;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
         }
-        if(best_val!=INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+        if (best_val!=INF)
+            for(int i=0 ; i<64 ; i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
     public int PawnMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta){
@@ -2953,8 +2945,14 @@ public class Ai_b_Activity extends AppCompatActivity {
             if(in_board(a)) {
                 if (node[a]==0) {
                     // GenerateMove
-                    Node[a] = Node[spot];
-                    Node[spot] = 0;
+                    if(a>=56&&a<=63){
+                        Node[a]=4;
+                        Node[a]=0;
+                    }
+                    else {
+                        Node[a] = Node[spot];
+                        Node[spot] = 0;
+                    }
                     // MinMove
                     ret_val = MaxMove(Node, depth - 1,alpha,beta);
 //                    if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
@@ -2974,8 +2972,14 @@ public class Ai_b_Activity extends AppCompatActivity {
         int a= spot+7 ;//좌 대각 아래에 상대방 말이 있을 때
         if (in_board(a)&&(node[a]>=11&&node[a]<=17)&& 8-(spot%8)>=2) {
             // GenerateMove
-            Node[a] = Node[spot] ;
-            Node[spot] = 0 ;
+            if(a>=56&&a<=63){
+                Node[a]=4;
+                Node[a]=0;
+            }
+            else {
+                Node[a] = Node[spot];
+                Node[spot] = 0;
+            }
             // MinMove
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
 //            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
@@ -2991,8 +2995,14 @@ public class Ai_b_Activity extends AppCompatActivity {
         a= spot+9;// 우 대각 아래에 상대발 말이 있을 때
         if (in_board(a)&&(node[a]>=11&&node[a]<=17)&& spot%8>=1) {
             // GenerateMove
-            Node[a] = Node[spot] ;
-            Node[spot] = 0 ;
+            if(a>=56&&a<=63){
+                Node[a]=4;
+                Node[a]=0;
+            }
+            else {
+                Node[a] = Node[spot];
+                Node[spot] = 0;
+            }
             // MinMove
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
 //            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
@@ -3005,45 +3015,46 @@ public class Ai_b_Activity extends AppCompatActivity {
             // GenerateMove Cancel
             Node = node.clone() ;
         }
-        // 양파상 좌측
-        a=spot+7 ;
-        if (8-(spot % 8) >= 2 && enpassant[spot + 1] == 1 && node[a] == 0) {
-            // GenerateMove
-            Node[a] = Node[spot] ;
-            Node[spot] = 0 ;
-            Node[spot+1] =0 ;
-            // MinMove
-            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
-//            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
-//            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
-            // 비교  ( temp_node,best_val 갱신)
-            if (ret_val <= best_val) {
-                best_val = ret_val ;
-                temp_node = Node.clone() ;
-            }
-            // GenerateMove Cancel
-            Node = node.clone() ;
-        }
-        // 양파상 우측
-        a=spot+9;
-        if ( spot%8 >= 1 && enpassant[spot - 1] == 1 && node[a] == 0) {
-            // GenerateMove
-            Node[a] = Node[spot] ;
-            Node[spot] = 0 ;
-            Node[spot-1] = 0;
-            // MinMove
-            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
-//            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
-//            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
-            // 비교  ( temp_node,best_val 갱신)
-            if (ret_val <= best_val) {
-                best_val = ret_val ;
-                temp_node = Node.clone() ;
-            }
-            // GenerateMove Cancel
-            Node = node.clone() ;
-        }
-        if(best_val!=INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+//        // 양파상 좌측
+//        a=spot+7 ;
+//        if (8-(spot % 8) >= 2 && enpassant[spot + 1] == 1 && node[a] == 0) {
+//            // GenerateMove
+//            Node[a] = Node[spot] ;
+//            Node[spot] = 0 ;
+//            Node[spot+1] =0 ;
+//            // MinMove
+//            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+////            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+////            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+//            // 비교  ( temp_node,best_val 갱신)
+//            if (ret_val <= best_val) {
+//                best_val = ret_val ;
+//                temp_node = Node.clone() ;
+//            }
+//            // GenerateMove Cancel
+//            Node = node.clone() ;
+//        }
+//        // 양파상 우측
+//        a=spot+9;
+//        if ( spot%8 >= 1 && enpassant[spot - 1] == 1 && node[a] == 0) {
+//            // GenerateMove
+//            Node[a] = Node[spot] ;
+//            Node[spot] = 0 ;
+//            Node[spot-1] = 0;
+//            // MinMove
+//            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+////            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+////            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+//            // 비교  ( temp_node,best_val 갱신)
+//            if (ret_val <= best_val) {
+//                best_val = ret_val ;
+//                temp_node = Node.clone() ;
+//            }
+//            // GenerateMove Cancel
+//            Node = node.clone() ;
+//        }
+        if (best_val!=INF)
+            for(int i=0 ; i<64 ; i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
     public int FPawnMin(int[] node,int spot,int depth,int[] best_node,int alpha,int beta){
@@ -3110,7 +3121,8 @@ public class Ai_b_Activity extends AppCompatActivity {
             // GenerateMove Cancel
             Node = node.clone() ;
         }
-        if(best_val!=INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
+        if (best_val!=INF)
+            for(int i=0 ; i<64 ; i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
 
