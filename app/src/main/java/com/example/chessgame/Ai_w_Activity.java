@@ -1422,7 +1422,7 @@ import static java.lang.Thread.sleep;
             if(ret_val==-INF||ret_val==INF) continue;
 
             // beta-cut  (return INF)
-            if(ret_val>=beta) return INF+1 ;
+            if(ret_val>=beta) return ret_val ;
 
             // best_val,temp_node 갱신
             if(depth== AI_DEPTH){
@@ -1508,7 +1508,7 @@ import static java.lang.Thread.sleep;
             // node == ret_node ( 움직임이 없을 시 )
             if(ret_val==INF||ret_val==-INF) continue ;
             // alpha-cut (return -INF)
-            if(ret_val <= alpha) return -INF-1;
+            if(ret_val <= alpha) return ret_val;
 
             // best_val  갱신
             if(ret_val <= best_val ) {
@@ -2258,44 +2258,44 @@ import static java.lang.Thread.sleep;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
-            // 양파상 우측
-            a=spot+9 ;
-            if (8-(spot % 8) >= 2 && enpassant[spot + 1] == 1 && node[a] == 0) {
-                // GenerateMove
-                Node[a] = Node[spot] ;
-                Node[spot] = 0 ;
-                Node[spot+1] =0 ;
-                // MinMove
-                ret_val = MinMove(Node,depth-1,alpha,beta) ;
-//                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
-//                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
-                // 비교  ( temp_node,best_val 갱신)
-                if (ret_val >= best_val) {
-                    best_val = ret_val ;
-                    temp_node = Node.clone() ;
-                }
-                // GenerateMove Cancel
-                Node = node.clone() ;
-            }
-            // 양파상 좌측
-            a=spot+7;
-            if ( spot%8 >= 1 && enpassant[spot - 1] == 1 && node[a] == 0) {
-                // GenerateMove
-                Node[a] = Node[spot] ;
-                Node[spot] = 0 ;
-                Node[spot-1] = 0;
-                // MinMove
-                ret_val = MinMove(Node,depth-1,alpha,beta) ;
-//                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
-//                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
-                // 비교  ( temp_node,best_val 갱신)
-                if (ret_val >= best_val) {
-                    best_val = ret_val ;
-                    temp_node = Node.clone() ;
-                }
-                // GenerateMove Cancel
-                Node = node.clone() ;
-            }
+//            // 양파상 우측
+//            a=spot+9 ;
+//            if (8-(spot % 8) >= 2 && enpassant[spot + 1] == 1 && node[a] == 0) {
+//                // GenerateMove
+//                Node[a] = Node[spot] ;
+//                Node[spot] = 0 ;
+//                Node[spot+1] =0 ;
+//                // MinMove
+//                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+////                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+////                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+//                // 비교  ( temp_node,best_val 갱신)
+//                if (ret_val >= best_val) {
+//                    best_val = ret_val ;
+//                    temp_node = Node.clone() ;
+//                }
+//                // GenerateMove Cancel
+//                Node = node.clone() ;
+//            }
+//            // 양파상 좌측
+//            a=spot+7;
+//            if ( spot%8 >= 1 && enpassant[spot - 1] == 1 && node[a] == 0) {
+//                // GenerateMove
+//                Node[a] = Node[spot] ;
+//                Node[spot] = 0 ;
+//                Node[spot-1] = 0;
+//                // MinMove
+//                ret_val = MinMove(Node,depth-1,alpha,beta) ;
+////                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+////                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
+//                // 비교  ( temp_node,best_val 갱신)
+//                if (ret_val >= best_val) {
+//                    best_val = ret_val ;
+//                    temp_node = Node.clone() ;
+//                }
+//                // GenerateMove Cancel
+//                Node = node.clone() ;
+//            }
         if(best_val!=-INF) for(int i=0;i<64;i++) best_node[i] = temp_node[i] ;
         return best_val ;
     }
@@ -3029,42 +3029,42 @@ import static java.lang.Thread.sleep;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
-        // 양파상 우측
-        a=spot-7 ;
-        if (8-(spot % 8) >= 2 && enpassant[spot + 1] == 1 && node[a] == 0) {
-            // GenerateMove
-            Node[a] = Node[spot] ;
-            Node[spot] = 0 ;
-            Node[spot+1] =0 ;
-            // MinMove
-            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
-//            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
-//            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
-            // 비교  ( temp_node,best_val 갱신)
-            if (ret_val <= best_val) {
-                best_val = ret_val ;
-            }
-            // GenerateMove Cancel
-            Node = node.clone() ;
-        }
-        // 양파상 좌측
-        a=spot-9;
-        if ( spot%8 >= 1 && enpassant[spot - 1] == 1 && node[a] == 0) {
-            // GenerateMove
-            Node[a] = Node[spot] ;
-            Node[spot] = 0 ;
-            Node[spot-1] = 0;
-            // MinMove
-            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
-//            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
-//            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
-            // 비교  ( temp_node,best_val 갱신)
-            if (ret_val <= best_val) {
-                best_val = ret_val ;
-            }
-            // GenerateMove Cancel
-            Node = node.clone() ;
-        }
+//        // 양파상 우측
+//        a=spot-7 ;
+//        if (8-(spot % 8) >= 2 && enpassant[spot + 1] == 1 && node[a] == 0) {
+//            // GenerateMove
+//            Node[a] = Node[spot] ;
+//            Node[spot] = 0 ;
+//            Node[spot+1] =0 ;
+//            // MinMove
+//            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+////            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+////            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+//            // 비교  ( temp_node,best_val 갱신)
+//            if (ret_val <= best_val) {
+//                best_val = ret_val ;
+//            }
+//            // GenerateMove Cancel
+//            Node = node.clone() ;
+//        }
+//        // 양파상 좌측
+//        a=spot-9;
+//        if ( spot%8 >= 1 && enpassant[spot - 1] == 1 && node[a] == 0) {
+//            // GenerateMove
+//            Node[a] = Node[spot] ;
+//            Node[spot] = 0 ;
+//            Node[spot-1] = 0;
+//            // MinMove
+//            ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+////            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+////            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
+//            // 비교  ( temp_node,best_val 갱신)
+//            if (ret_val <= best_val) {
+//                best_val = ret_val ;
+//            }
+//            // GenerateMove Cancel
+//            Node = node.clone() ;
+//        }
         return best_val ;
     }
     public int FPawnMin(int[] node,int spot,int depth,int alpha,int beta){
