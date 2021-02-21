@@ -664,7 +664,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             //다른 말 선택
             else if(kill_red[num]==1 )  {
                 enpassant_clear();
-                checkmate(num);
+
                 count=0;
                 if(choose_num[0]==6&&(num>=56&&num<=63)){ //pawn_b이 상대방 진영끝까지 갔을 때
                     number[temp_index[0]] = 0;
@@ -684,6 +684,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                     block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
                     block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
                 }
+                checkmate(num);
 
             }
             else if(kill_red[num]!=1) {
@@ -1314,7 +1315,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             }
         }
         ValueAnimator ani=ValueAnimator.ofObject(new ArgbEvaluator(),getResources().getColor(R.color.gray),getResources().getColor(R.color.transparent));
-        ani.setDuration(5000);
+        ani.setDuration(3000);
         ani.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -1355,11 +1356,9 @@ public class Ai_b_Activity extends AppCompatActivity {
         if(depth==0||game_ended(node)==true) return Evalstate_w(node) ;
         int ret_val ;
         int  best_val = -INF +1 ;
-        int[] ret_node = node.clone();
 
 
         for(int i=0;i<64;i++) {
-            ret_node=node.clone();
             switch(node[i]) {
                 //rook
                 case 11: {
@@ -1396,8 +1395,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 }
             } // switch
             // node == ret_node ( 움직임이 없을 시 )
-            if(Arrays.equals(node,ret_node)) continue ;
             if(ret_val==-INF||ret_val==INF) continue;
+
 //            // beta-cut  (return INF)
 //            if(ret_val>beta) return INF+1 ;
 
@@ -1459,6 +1458,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             // node == ret_node ( 움직임이 없을 시 )
             if(Arrays.equals(node,ret_node)) continue ;
             if(ret_val==-INF||ret_val==INF) continue;
+
 //            // alpha-cut (return -INF)
 //            if(ret_val < alpha) return -INF-1;
 
@@ -1507,13 +1507,14 @@ public class Ai_b_Activity extends AppCompatActivity {
     public int Evalstate_w(int[] number) {// 현재 상태를 평가하는 평가함수 (일단 ai가 백 이라는 가정으로 작성)
         int value = 0;
         for (int i = 0; i < 64; i++) {
+            //black
             if (number[i] == 1) value = value - 50; //룩
             else if (number[i] == 2) value = value - 30;//나이트
             else if (number[i] == 3) value = value - 30;//비숍
             else if (number[i] == 4) value = value - 90;//퀸
             else if (number[i] == 7 || number[i] == 6) {value = value - 10; /*if((number[i-7]!=16||number[i-7]!=17)||(number[i-9]!=16||number[i-9]!=17)) value=value-1;*/}//폰
             else if (number[i] == 5) value = value - 10000;
-
+            //white
             else if (number[i] == 11) value = value + 50;
             else if (number[i] == 12) value = value + 30;
             else if (number[i] == 13) value = value + 30;

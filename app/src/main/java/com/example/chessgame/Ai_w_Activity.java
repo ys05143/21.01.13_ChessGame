@@ -643,7 +643,6 @@ import static java.lang.Thread.sleep;
             //다른 말 선택
             else if (kill_red[num] == 1) {
                 enpassant_clear();
-                checkmate(num);
                 count = 0;
                 if (choose_num[0] == 6 && (num >= 56 && num <= 63)) { //pawn_b이 상대방 진영끝까지 갔을 때
                     number[temp_index[0]] = 0;
@@ -661,6 +660,7 @@ import static java.lang.Thread.sleep;
                     block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
                     block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
                 }
+                checkmate(num);
 
             } else if (kill_red[num] != 1) {
                 if (turn == true) turn = false;
@@ -1336,7 +1336,7 @@ import static java.lang.Thread.sleep;
             }
         }
         ValueAnimator ani=ValueAnimator.ofObject(new ArgbEvaluator(),getResources().getColor(R.color.gray),getResources().getColor(R.color.transparent));
-        ani.setDuration(5000);
+        ani.setDuration(3000);
         ani.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -1352,7 +1352,7 @@ import static java.lang.Thread.sleep;
     // 공통 변수
     final int INF = 100000 ;
     public int[] FinalNode = new int[64] ;
-    int AI_DEPTH = 5;
+    int AI_DEPTH = 4;
     // random 부분
     ArrayList<int[]> cand=new ArrayList<int[]>();
 //    int Count=0;
@@ -1508,6 +1508,7 @@ import static java.lang.Thread.sleep;
             } // switch
             // node == ret_node ( 움직임이 없을 시 )
             if(ret_val==INF||ret_val==-INF) continue ;
+
 //            // alpha-cut (return -INF)
 //            if(ret_val <= alpha) return -INF-1;
 
