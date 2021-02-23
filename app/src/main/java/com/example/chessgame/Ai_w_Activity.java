@@ -1,6 +1,7 @@
  package com.example.chessgame;
 
 import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +13,8 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -26,6 +29,7 @@ import java.util.stream.IntStream;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static java.lang.Math.random;
 import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
@@ -513,13 +517,106 @@ import static java.lang.Thread.sleep;
                 give_up(1);
             }
         });
-
-        AI();
-        turn = true;
+        AiThread t = new AiThread() ;
+        t.start();
     }
+
+    Handler handler = new Handler() ;
+    boolean start_handler = false;
+public class AiThread extends Thread {
+        @Override
+    public void run() {
+                AI();
+                    while(turn==false) {
+                           if(start_handler) {
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        for (int i = 0; i < 64; i++) { //알고리즘으로 나온 결과로 판을 바꾸는 것
+                                            if (number[i] == 1) {
+                                                block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_b));
+                                                block[i].setVisibility(View.VISIBLE);
+                                            }//룩
+                                            else if (number[i] == 2) {
+                                                block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_b));
+                                                block[i].setVisibility(View.VISIBLE);
+                                            }//나이트
+                                            else if (number[i] == 3) {
+                                                block[i].setImageDrawable(getResources().getDrawable(R.drawable.bishop_b));
+                                                block[i].setVisibility(View.VISIBLE);
+                                            }//비숍
+                                            else if (number[i] == 4) {
+                                                block[i].setImageDrawable(getResources().getDrawable(R.drawable.queen_b));
+                                                block[i].setVisibility(View.VISIBLE);
+                                            }//퀸
+                                            else if (number[i] == 5) {
+                                                block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_b));
+                                                block[i].setVisibility(View.VISIBLE);
+
+                                            }//킹
+                                            else if (number[i] == 7 || number[i] == 6) {
+                                                block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_b));
+                                                block[i].setVisibility(View.VISIBLE);
+                                            }//폰
+                                            else if (number[i] == 11) {
+                                                block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_w));
+                                                block[i].setVisibility(View.VISIBLE);
+                                            } else if (number[i] == 12) {
+                                                block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_w));
+                                                block[i].setVisibility(View.VISIBLE);
+                                            } else if (number[i] == 13) {
+                                                block[i].setImageDrawable(getResources().getDrawable(R.drawable.bishop_w));
+                                                block[i].setVisibility(View.VISIBLE);
+                                            } else if (number[i] == 14) {
+                                                block[i].setImageDrawable(getResources().getDrawable(R.drawable.queen_w));
+                                                block[i].setVisibility(View.VISIBLE);
+                                            } else if (number[i] == 15) {
+                                                block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_w));
+                                                block[i].setVisibility(View.VISIBLE);
+
+                                            } else if (number[i] == 17 || number[i] == 16) {
+                                                block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_w));
+                                                block[i].setVisibility(View.VISIBLE);
+                                            } else if (number[i] == 0) {
+                                                block[i].setImageDrawable(getResources().getDrawable(R.drawable.dot));
+                                                block[i].setVisibility(View.INVISIBLE);
+                                            }
+                                        }
+                                        ValueAnimator ani=ValueAnimator.ofObject(new ArgbEvaluator(),getResources().getColor(R.color.gray),getResources().getColor(R.color.transparent));
+                                        ani.setDuration(5000);
+                                        ani.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                            @Override
+                                            public void onAnimationUpdate(ValueAnimator animation) {
+                                                block[Point].setBackgroundColor((int)animation.getAnimatedValue());
+                                            }
+                                        });
+                                        ani.start();
+                                        turn = true;
+                                        start_handler = false;
+                                    }
+                                });
+
+                           }
+                    } // while
+            };
+}
+
+
 
     //-----------------------------MOVE() 부분 -----------------------------------------------
     public void move(int num) {
+    // 차례가 아닐때
+    if(turn==false) {
+        Toast.makeText(this, "user의 차례가 아닙니다.", Toast.LENGTH_SHORT).show();
+        return ;
+    }
+        boolean b_king = false;
+        for(int i=0; i<64;i++) {
+            if(number[i]==5) b_king=true;
+        }
+        if(!b_king) end_game(1);
+
+    int[] f_number = number.clone();
         // 버튼 선택 1
         if (temp[0] == null && number[num] != 0) {
             if (!flag[0]) {// 한번 눌렀을 때
@@ -584,13 +681,13 @@ import static java.lang.Thread.sleep;
                 }
 
             }
+            return;
         }
         //버튼 선택 2  (temp[0]!=null) : 이미지가 하나라도 복사되었을 때
         else {
             // 두번 눌렀을때 = 선택취소
             if (num == temp_index[0]) {
-                if (turn == true) turn = false;
-                else if (turn == false) turn = true;
+
             }
             // dot
             else if (number[num] == 0) {
@@ -599,6 +696,7 @@ import static java.lang.Thread.sleep;
                     number[temp_index[0]] = 0;
                     block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
                     change_pawn(num, true);
+
                 } else if (choose_num[0] == 16 && (num >= 0 && num <= 7)) { //pawn-w가 상대방 진영 끝까지 갔을 때
                     number[temp_index[0]] = 0;
                     block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
@@ -663,8 +761,7 @@ import static java.lang.Thread.sleep;
                 }
 
             } else if (kill_red[num] != 1) {
-                if (turn == true) turn = false;
-                else if (turn == false) turn = true;
+
             }
             // 2칸 전진한 경우
             if ((number[num] == 6 && num == temp_index[0] + 16) || (number[num] == 16 && num == temp_index[0] - 16)) {
@@ -681,9 +778,6 @@ import static java.lang.Thread.sleep;
                 block[i].setBackgroundColor(getResources().getColor(R.color.transparent));
                 if (number[i] == 0) block[i].setVisibility(View.INVISIBLE);
             }
-            if (turn == true) turn = false;
-            else if (turn == false) turn = true;
-
             /*for(int i=0;i<=round;i++){
                 for(int j=0;j<64;j++){
                     if(board_state[i][j]==number[j])//같은 상태가 있으면
@@ -697,9 +791,19 @@ import static java.lang.Thread.sleep;
             }
             r=false;
             check_repeat(repeat);*/
+        } // else
+        boolean w_king = false;
+        for(int i=0; i<64;i++) {
+            if(number[i]==15) w_king=true;
         }
+        if(!w_king) end_game(2);
+
+        if (Arrays.equals(f_number,number)==false) turn =false;
         if (count >= 50) end_game(0); //말 갯수 변화 없이 50수 진행되면 비긴다
-        if (turn == false) AI(); //유저 차례가 끝나고 백의 차례가 되면 ai 실행
+        if(turn==false) {
+            AiThread t = new AiThread() ;
+            t.start();
+        }
     }
 
     //-------------------------------함수 정리-----------------------------------
@@ -1135,6 +1239,7 @@ import static java.lang.Thread.sleep;
     }
     //-------------------------------기타 규칙을 위한 함수들-------------------------------------------------
 
+
     public void change_pawn(int spot, boolean bw) { //pawn은 상대진영 끝까지 가면 원하는 말로 변경가능 하다 (주로 queen) , 이부분은 사용자로 부터 입력을 받아서 설정하도록 수정 필요
         // 새로운 스레드를 생성해서 따로 진행흐름을 가져가야 사용자가 입력하기전에 코드가 진행되지 않는다.
         Ai_w_Activity.this.runOnUiThread(new Runnable() {
@@ -1281,83 +1386,83 @@ import static java.lang.Thread.sleep;
 
     }
     //---------------------ai관련-----------------------------------------------------------
+    // 공통 변수
+    final int INF = 10000 ;
+     public int[] FinalNode = new int[64] ;
+     int AI_DEPTH = 5;
+     // random 부분
+     ArrayList<int[]> cand=new ArrayList<int[]>();
+     int Count=0;
+     int t=0;
+     int Point = 0;
 
     public void AI() {
         int a=0; int b=0;
         number = MinMax(number).clone();//ai가 minmax 알고리즘으로 찾은 배열을 number로 지정
-        for (int i = 0; i < 64; i++) { //알고리즘으로 나온 결과로 판을 바꾸는 것
-            if (number[i] == 1) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_b));
-                block[i].setVisibility(View.VISIBLE);
-            }//룩
-            else if (number[i] == 2) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_b));
-                block[i].setVisibility(View.VISIBLE);
-            }//나이트
-            else if (number[i] == 3) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.bishop_b));
-                block[i].setVisibility(View.VISIBLE);
-            }//비숍
-            else if (number[i] == 4) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.queen_b));
-                block[i].setVisibility(View.VISIBLE);
-            }//퀸
-            else if (number[i] == 5) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_b));
-                block[i].setVisibility(View.VISIBLE);
-                a++;
-            }//킹
-            else if (number[i] == 7 || number[i] == 6) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_b));
-                block[i].setVisibility(View.VISIBLE);
-            }//폰
-            else if (number[i] == 11) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_w));
-                block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 12) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_w));
-                block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 13) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.bishop_w));
-                block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 14) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.queen_w));
-                block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 15) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_w));
-                block[i].setVisibility(View.VISIBLE);
-                b++;
-            } else if (number[i] == 17 || number[i] == 16) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_w));
-                block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 0) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.dot));
-                block[i].setVisibility(View.INVISIBLE);
-            }
-        }
-        ValueAnimator ani=ValueAnimator.ofObject(new ArgbEvaluator(),getResources().getColor(R.color.gray),getResources().getColor(R.color.transparent));
-        ani.setDuration(5000);
-        ani.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                block[Point].setBackgroundColor((int)animation.getAnimatedValue());
-            }
-        });
-        ani.start();
-        if (a!=1&&b==1) end_game(1);
-        else if (a==1&&b!=1) end_game(2);
-         turn = true;
+        start_handler = true;
+//        for (int i = 0; i < 64; i++) { //알고리즘으로 나온 결과로 판을 바꾸는 것
+//            if (number[i] == 1) {
+//                block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_b));
+//                block[i].setVisibility(View.VISIBLE);
+//            }//룩
+//            else if (number[i] == 2) {
+//                block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_b));
+//                block[i].setVisibility(View.VISIBLE);
+//            }//나이트
+//            else if (number[i] == 3) {
+//                block[i].setImageDrawable(getResources().getDrawable(R.drawable.bishop_b));
+//                block[i].setVisibility(View.VISIBLE);
+//            }//비숍
+//            else if (number[i] == 4) {
+//                block[i].setImageDrawable(getResources().getDrawable(R.drawable.queen_b));
+//                block[i].setVisibility(View.VISIBLE);
+//            }//퀸
+//            else if (number[i] == 5) {
+//                block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_b));
+//                block[i].setVisibility(View.VISIBLE);
+//                a++;
+//            }//킹
+//            else if (number[i] == 7 || number[i] == 6) {
+//                block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_b));
+//                block[i].setVisibility(View.VISIBLE);
+//            }//폰
+//            else if (number[i] == 11) {
+//                block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_w));
+//                block[i].setVisibility(View.VISIBLE);
+//            } else if (number[i] == 12) {
+//                block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_w));
+//                block[i].setVisibility(View.VISIBLE);
+//            } else if (number[i] == 13) {
+//                block[i].setImageDrawable(getResources().getDrawable(R.drawable.bishop_w));
+//                block[i].setVisibility(View.VISIBLE);
+//            } else if (number[i] == 14) {
+//                block[i].setImageDrawable(getResources().getDrawable(R.drawable.queen_w));
+//                block[i].setVisibility(View.VISIBLE);
+//            } else if (number[i] == 15) {
+//                block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_w));
+//                block[i].setVisibility(View.VISIBLE);
+//                b++;
+//            } else if (number[i] == 17 || number[i] == 16) {
+//                block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_w));
+//                block[i].setVisibility(View.VISIBLE);
+//            } else if (number[i] == 0) {
+//                block[i].setImageDrawable(getResources().getDrawable(R.drawable.dot));
+//                block[i].setVisibility(View.INVISIBLE);
+//            }
+//        }
+//        ValueAnimator ani=ValueAnimator.ofObject(new ArgbEvaluator(),getResources().getColor(R.color.gray),getResources().getColor(R.color.transparent));
+//        ani.setDuration(5000);
+//        ani.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                block[Point].setBackgroundColor((int)animation.getAnimatedValue());
+//            }
+//        });
+//        ani.start();
+//        if (a!=1&&b==1) end_game(1);
+//        else if (a==1&&b!=1) end_game(2);
+//         turn = true;
     }
-
-    // 공통 변수
-    final int INF = 10000 ;
-    public int[] FinalNode = new int[64] ;
-    int AI_DEPTH = 4;
-    // random 부분
-    ArrayList<int[]> cand=new ArrayList<int[]>();
-    int Count=0;
-    int t=0;
-    int Point;
 
     public int[] MinMax(int[] number) {
         MaxMove(number.clone(), AI_DEPTH,-INF,INF);
@@ -1419,35 +1524,35 @@ import static java.lang.Thread.sleep;
                     continue;
                 }
             } // switch
+            // beta-cut  (return INF)
+            if(ret_val>=beta) return INF+1 ;
+
             // node == ret_node ( 움직임이 없을 시 )
             if(Arrays.equals(node,ret_node)) continue ;
             if(ret_val==-INF||ret_val==INF) continue;
 
-            // beta-cut  (return INF)
-            if(ret_val>=beta) return INF+1 ;
-
             // best_val,temp_node 갱신
             if(depth== AI_DEPTH){
-                if(ret_val > best_val ) {
+                if(ret_val >= best_val ) {
                     best_val = ret_val ;
-                    alpha = ret_val ;
+                    alpha = max(alpha,ret_val) ;
                     temp_node = ret_node.clone() ;
-                    //  random-arraylist reset
-                    cand.clear();
-                    t=ret_val;
-                    Count=0;
-                    cand.add(ret_node.clone());
+//                    //  random-arraylist reset
+//                    cand.clear();
+//                    t=ret_val;
+//                    Count=0;
+//                    cand.add(ret_node.clone());
                 }
-                else if(ret_val == best_val ) {
-                    alpha = ret_val ;
-                    best_val = ret_val ;
-                    cand.add(ret_node.clone());
-                    Count++;
-                }
+//                else if(ret_val == best_val ) {
+//                    alpha = max(alpha,ret_val) ;
+//                    best_val = ret_val ;
+//                    cand.add(ret_node.clone());
+//                    Count++;
+//                }
             }
             else {
                 if (ret_val >= best_val) {
-                    alpha  = ret_val ;
+                    alpha = max(alpha,ret_val) ;
                     best_val = ret_val;
                 }
             }
@@ -1455,11 +1560,11 @@ import static java.lang.Thread.sleep;
         } // for(i)
         // depth == 최대높이
         if(depth== AI_DEPTH) {
-            if (best_val == t&&Count>0) {
-                temp_node = cand.get((int)((random()*100) % Count)).clone();
-                // initialize
-                cand.clear() ; Count = 0; t =-INF ;
-            }
+//            if (best_val == t&&Count>0) {
+//                temp_node = cand.get((int)((random()*100) % Count)).clone();
+//                // initialize
+//                cand.clear() ; Count = 0; t =-INF ;
+//            }
             for (int i = 0; i < 64; i++)
                 FinalNode[i] = temp_node[i]; //깊이가 n일때 가장 좋은 node를 (전역변수)FinalNode로 저장.
         }
@@ -1472,6 +1577,7 @@ import static java.lang.Thread.sleep;
         int  best_val = INF -1  ;
 
         for(int i=0;i<64;i++) {
+
             switch(node[i]) {
                 //rook
                 case 1: {
@@ -1507,14 +1613,15 @@ import static java.lang.Thread.sleep;
                     continue ;
                 }
             } // switch
-            // node == ret_node ( 움직임이 없을 시 )
-            if(ret_val==INF||ret_val==-INF) continue ;
             // alpha-cut (return -INF)
             if(ret_val <= alpha) return -INF-1;
 
+            // node == ret_node ( 움직임이 없을 시 )
+            if(ret_val==INF||ret_val==-INF) continue ;
+
             // best_val  갱신
             if(ret_val <= best_val ) {
-                beta = ret_val ;
+                beta = min(beta,ret_val) ;
                 best_val = ret_val ;
             }
 
@@ -1526,17 +1633,17 @@ import static java.lang.Thread.sleep;
     public int Evalstate_w(int[] number) {// 현재 상태를 평가하는 평가함수 (일단 ai가 백 이라는 가정으로 작성)
         int value = 0;
         for (int i = 0; i < 64; i++) {
-            if (number[i] == 1) value = value - 5; //룩
-            else if (number[i] == 2) value = value - 3;//나이트
-            else if (number[i] == 3) value = value - 3;//비숍
-            else if (number[i] == 4) value = value - 9;//퀸
-            else if (number[i] == 7 || number[i] == 6) {value = value - 1; /*if((number[i-7]!=16||number[i-7]!=17)||(number[i-9]!=16||number[i-9]!=17)) value=value-1;*/}//폰
+            if (number[i] == 1) value = value - 50; //룩
+            else if (number[i] == 2) value = value - 30;//나이트
+            else if (number[i] == 3) value = value - 30;//비숍
+            else if (number[i] == 4) value = value - 90;//퀸
+            else if (number[i] == 7 || number[i] == 6) {value = value - 10; /*if((number[i-7]!=16||number[i-7]!=17)||(number[i-9]!=16||number[i-9]!=17)) value=value-1;*/}//폰
             else if (number[i] == 5) value = value - 1000;
-            else if (number[i] == 11) value = value + 5;
-            else if (number[i] == 12) value = value + 3;
-            else if (number[i] == 13) value = value + 3;
-            else if (number[i] == 14) value = value + 9;
-            else if (number[i] == 17 || number[i] == 16) {value = value + 1; /*if((number[i+7]!=6||number[i+7]!=7)||(number[i+9]!=6||number[i+9]!=7)) value=value+1;*/}
+            else if (number[i] == 11) value = value + 50;
+            else if (number[i] == 12) value = value + 30;
+            else if (number[i] == 13) value = value + 30;
+            else if (number[i] == 14) value = value + 90;
+            else if (number[i] == 17 || number[i] == 16) {value = value + 10; /*if((number[i+7]!=6||number[i+7]!=7)||(number[i+9]!=6||number[i+9]!=7)) value=value+1;*/}
             else if (number[i] == 15) value = value + 1000;
         }
         return value;
@@ -1563,6 +1670,10 @@ import static java.lang.Thread.sleep;
                     if (ret_val >= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1583,6 +1694,10 @@ import static java.lang.Thread.sleep;
                     if (ret_val >= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1604,6 +1719,10 @@ import static java.lang.Thread.sleep;
                     if (ret_val >= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1625,6 +1744,10 @@ import static java.lang.Thread.sleep;
                     if (ret_val >= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1661,7 +1784,11 @@ import static java.lang.Thread.sleep;
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
                     temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
                 }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -1679,7 +1806,11 @@ import static java.lang.Thread.sleep;
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
                     temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
                 }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -1697,7 +1828,11 @@ import static java.lang.Thread.sleep;
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
                     temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
                 }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -1715,7 +1850,11 @@ import static java.lang.Thread.sleep;
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
                     temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
                 }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -1733,7 +1872,11 @@ import static java.lang.Thread.sleep;
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
                     temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
                 }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -1751,7 +1894,11 @@ import static java.lang.Thread.sleep;
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
                     temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
                 }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -1769,7 +1916,11 @@ import static java.lang.Thread.sleep;
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
                     temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
                 }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -1787,7 +1938,11 @@ import static java.lang.Thread.sleep;
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
                     temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
                 }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -1815,6 +1970,10 @@ import static java.lang.Thread.sleep;
                     if (ret_val >= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1837,6 +1996,10 @@ import static java.lang.Thread.sleep;
                     if (ret_val >= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1858,6 +2021,10 @@ import static java.lang.Thread.sleep;
                     if (ret_val >= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1879,6 +2046,10 @@ import static java.lang.Thread.sleep;
                     if (ret_val >= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1909,6 +2080,10 @@ import static java.lang.Thread.sleep;
                     if (ret_val >= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1929,6 +2104,10 @@ import static java.lang.Thread.sleep;
                     if (ret_val >= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1950,6 +2129,10 @@ import static java.lang.Thread.sleep;
                     if (ret_val >= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1971,6 +2154,10 @@ import static java.lang.Thread.sleep;
                     if (ret_val >= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1992,6 +2179,10 @@ import static java.lang.Thread.sleep;
                     if (ret_val >= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2013,6 +2204,10 @@ import static java.lang.Thread.sleep;
                     if (ret_val >= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2034,6 +2229,10 @@ import static java.lang.Thread.sleep;
                     if (ret_val >= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2055,6 +2254,10 @@ import static java.lang.Thread.sleep;
                     if (ret_val >= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2082,9 +2285,13 @@ import static java.lang.Thread.sleep;
             ret_val = MinMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
-                best_val = ret_val ;
-                temp_node = Node.clone() ;
-            }
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
+                }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -2097,9 +2304,13 @@ import static java.lang.Thread.sleep;
             ret_val = MinMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
-                best_val = ret_val ;
-                temp_node = Node.clone() ;
-            }
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
+                }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -2112,9 +2323,13 @@ import static java.lang.Thread.sleep;
             ret_val = MinMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
-                best_val = ret_val ;
-                temp_node = Node.clone() ;
-            }
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
+                }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -2127,9 +2342,13 @@ import static java.lang.Thread.sleep;
             ret_val = MinMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
-                best_val = ret_val ;
-                temp_node = Node.clone() ;
-            }
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
+                }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -2142,9 +2361,13 @@ import static java.lang.Thread.sleep;
             ret_val = MinMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
-                best_val = ret_val ;
-                temp_node = Node.clone() ;
-            }
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
+                }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -2157,9 +2380,13 @@ import static java.lang.Thread.sleep;
             ret_val = MinMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
-                best_val = ret_val ;
-                temp_node = Node.clone() ;
-            }
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
+                }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -2172,9 +2399,13 @@ import static java.lang.Thread.sleep;
             ret_val = MinMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
-                best_val = ret_val ;
-                temp_node = Node.clone() ;
-            }
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
+                }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -2187,9 +2418,13 @@ import static java.lang.Thread.sleep;
             ret_val = MinMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
-                best_val = ret_val ;
-                temp_node = Node.clone() ;
-            }
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
+                }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -2207,8 +2442,9 @@ import static java.lang.Thread.sleep;
             for (int a = spot + 8; a <= spot + 8; a = a + 8) {
                 if(in_board(a)) {
                     if (node[a]==0) {
-                        // GenerateMove
-                        Node[a] = Node[spot];
+                        // GenerateMove   + Pawn이 진영 끝까지 갔을 경우 / else
+                        if(a<=63&&a>=56) Node[a] = 14;
+                        else Node[a] = Node[spot];
                         Node[spot] = 0;
                         // MinMove
                         ret_val = MinMove(Node, depth - 1,alpha,beta);
@@ -2216,9 +2452,13 @@ import static java.lang.Thread.sleep;
 //                        if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val >= best_val) {
-                            best_val = ret_val;
-                            temp_node = Node.clone();
-                        }
+                        best_val = ret_val;
+                        temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
+                    }
                         // GenerateMove Cancel
                         Node = node.clone();
                     }
@@ -2228,8 +2468,9 @@ import static java.lang.Thread.sleep;
             }
             int a= spot+9 ;//우 대각 아래에 상대방 말이 있을 때
              if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& 8-(spot%8)>=2) {
-                // GenerateMove
-                Node[a] = Node[spot] ;
+                 // GenerateMove   + Pawn이 진영 끝까지 갔을 경우 / else
+                 if(a<=63&&a>=56) Node[a] = 14;
+                 else Node[a] = Node[spot];
                 Node[spot] = 0 ;
                 // MinMove
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
@@ -2237,16 +2478,21 @@ import static java.lang.Thread.sleep;
 //                 if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
-                best_val = ret_val ;
-                temp_node = Node.clone() ;
+                    best_val = ret_val ;
+                    temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
                 }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
                 // GenerateMove Cancel
                 Node = node.clone() ;
                 }
             a= spot+7;// 좌 대각 아래에 상대발 말이 있을 때
             if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& spot%8>=1) {
-                // GenerateMove
-                Node[a] = Node[spot] ;
+                // GenerateMove   + Pawn이 진영 끝까지 갔을 경우 / else
+                if(a<=63&&a>=56) Node[a] =14;
+                else Node[a] = Node[spot];
                 Node[spot] = 0 ;
                 // MinMove
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
@@ -2256,7 +2502,11 @@ import static java.lang.Thread.sleep;
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
                     temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
                 }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2321,9 +2571,13 @@ import static java.lang.Thread.sleep;
 //                        if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val >= best_val) {
-                            best_val = ret_val;
-                            temp_node = Node.clone();
-                        }
+                        best_val = ret_val;
+                        temp_node = Node.clone();
+                        alpha = max(alpha,ret_val) ;
+                    }
+                     if(ret_val >= beta) {
+                        return best_val;
+                    }
                         // GenerateMove Cancel
                         Node = node.clone();
                     }
@@ -2334,7 +2588,7 @@ import static java.lang.Thread.sleep;
             int a= spot+9 ;//우 대각 아래에 상대방 말이 있을 때
             if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& 8-(spot%8)>=2) {
                 // GenerateMove
-                Node[a] = 16 ;
+                Node[a] = 16;
                 Node[spot] = 0 ;
                 // MinMove
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
@@ -2344,14 +2598,18 @@ import static java.lang.Thread.sleep;
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
                     temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
                 }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
             a= spot+7;// 좌 대각 아래에 상대발 말이 있을 때
             if (in_board(a)&&(node[a]>=1&&node[a]<=7)&& spot%8>=1) {
                 // GenerateMove
-                Node[a] = 16 ;
+                Node[a] = 16;
                 Node[spot] = 0 ;
                 // MinMove
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
@@ -2361,7 +2619,11 @@ import static java.lang.Thread.sleep;
                 if (ret_val >= best_val) {
                     best_val = ret_val ;
                     temp_node = Node.clone() ;
+                    alpha = max(alpha,ret_val) ;
                 }
+                 if(ret_val >= beta) {
+                        return best_val;
+                    }
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2385,7 +2647,9 @@ import static java.lang.Thread.sleep;
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val <= best_val) {
                             best_val = ret_val;
+                            beta=min(beta,ret_val) ;
                         }
+                        if(ret_val <= alpha) return best_val;
                         // GenerateMove Cancel
                         Node = node.clone();
                     }
@@ -2404,7 +2668,9 @@ import static java.lang.Thread.sleep;
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val <= best_val) {
                             best_val = ret_val;
+                            beta=min(beta,ret_val) ;
                         }
+                        if(ret_val <= alpha) return best_val;
                         // GenerateMove Cancel
                         Node = node.clone();
                     }
@@ -2424,7 +2690,9 @@ import static java.lang.Thread.sleep;
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val <= best_val) {
                             best_val = ret_val;
+                            beta=min(beta,ret_val) ;
                         }
+                        if(ret_val <= alpha) return best_val;
                         // GenerateMove Cancel
                         Node = node.clone();
                     }
@@ -2444,7 +2712,9 @@ import static java.lang.Thread.sleep;
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val <= best_val) {
                             best_val = ret_val;
+                            beta=min(beta,ret_val) ;
                         }
+                        if(ret_val <= alpha) return best_val;
                         // GenerateMove Cancel
                         Node = node.clone();
                     }
@@ -2472,7 +2742,9 @@ import static java.lang.Thread.sleep;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
                 }
+                if(ret_val <= alpha) return best_val;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2489,7 +2761,9 @@ import static java.lang.Thread.sleep;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
                 }
+                if(ret_val <= alpha) return best_val;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2506,7 +2780,9 @@ import static java.lang.Thread.sleep;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
                 }
+                if(ret_val <= alpha) return best_val;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2523,7 +2799,9 @@ import static java.lang.Thread.sleep;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
                 }
+                if(ret_val <= alpha) return best_val;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2540,7 +2818,9 @@ import static java.lang.Thread.sleep;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
                 }
+                if(ret_val <= alpha) return best_val;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2557,7 +2837,9 @@ import static java.lang.Thread.sleep;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
                 }
+                if(ret_val <= alpha) return best_val;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2574,7 +2856,9 @@ import static java.lang.Thread.sleep;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
                 }
+                if(ret_val <= alpha) return best_val;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2591,7 +2875,9 @@ import static java.lang.Thread.sleep;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
                 }
+                if(ret_val <= alpha) return best_val;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2616,7 +2902,9 @@ import static java.lang.Thread.sleep;
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val <= best_val) {
                             best_val = ret_val;
+                            beta=min(beta,ret_val) ;
                         }
+                        if(ret_val <= alpha) return best_val;
                         // GenerateMove Cancel
                         Node = node.clone();
                     }
@@ -2637,7 +2925,9 @@ import static java.lang.Thread.sleep;
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val <= best_val) {
                             best_val = ret_val;
+                            beta=min(beta,ret_val) ;
                         }
+                        if(ret_val <= alpha) return best_val;
                         // GenerateMove Cancel
                         Node = node.clone();
                     }
@@ -2657,7 +2947,9 @@ import static java.lang.Thread.sleep;
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val <= best_val) {
                             best_val = ret_val;
+                            beta=min(beta,ret_val) ;
                         }
+                        if(ret_val <= alpha) return best_val;
                         // GenerateMove Cancel
                         Node = node.clone();
                     }
@@ -2677,7 +2969,9 @@ import static java.lang.Thread.sleep;
                         // 비교  ( temp_node,best_val 갱신)
                         if (ret_val <= best_val) {
                             best_val = ret_val;
+                            beta=min(beta,ret_val) ;
                         }
+                        if(ret_val <= alpha) return best_val;
                         // GenerateMove Cancel
                         Node = node.clone();
                     }
@@ -2703,8 +2997,10 @@ import static java.lang.Thread.sleep;
                     ret_val = MaxMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
-                        best_val = ret_val;
-                    }
+                            best_val = ret_val;
+                            beta=min(beta,ret_val) ;
+                        }
+                        if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -2722,8 +3018,10 @@ import static java.lang.Thread.sleep;
                     ret_val = MaxMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
-                        best_val = ret_val;
-                    }
+                            best_val = ret_val;
+                            beta=min(beta,ret_val) ;
+                        }
+                        if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -2742,8 +3040,10 @@ import static java.lang.Thread.sleep;
                     ret_val = MaxMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
-                        best_val = ret_val;
-                    }
+                            best_val = ret_val;
+                            beta=min(beta,ret_val) ;
+                        }
+                        if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -2762,8 +3062,10 @@ import static java.lang.Thread.sleep;
                     ret_val = MaxMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
-                        best_val = ret_val;
-                    }
+                            best_val = ret_val;
+                            beta=min(beta,ret_val) ;
+                        }
+                        if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -2782,8 +3084,10 @@ import static java.lang.Thread.sleep;
                     ret_val = MaxMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
-                        best_val = ret_val;
-                    }
+                            best_val = ret_val;
+                            beta=min(beta,ret_val) ;
+                        }
+                        if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -2802,8 +3106,10 @@ import static java.lang.Thread.sleep;
                     ret_val = MaxMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
-                        best_val = ret_val;
-                    }
+                            best_val = ret_val;
+                            beta=min(beta,ret_val) ;
+                        }
+                        if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -2822,8 +3128,10 @@ import static java.lang.Thread.sleep;
                     ret_val = MaxMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
-                        best_val = ret_val;
-                    }
+                            best_val = ret_val;
+                            beta=min(beta,ret_val) ;
+                        }
+                        if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -2842,8 +3150,10 @@ import static java.lang.Thread.sleep;
                     ret_val = MaxMove(Node, depth - 1,alpha,beta);
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
-                        best_val = ret_val;
-                    }
+                            best_val = ret_val;
+                            beta=min(beta,ret_val) ;
+                        }
+                        if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -2867,8 +3177,10 @@ import static java.lang.Thread.sleep;
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
-            }
+                    best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
+                }
+                if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -2881,8 +3193,10 @@ import static java.lang.Thread.sleep;
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
-            }
+                    best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
+                }
+                if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -2895,8 +3209,10 @@ import static java.lang.Thread.sleep;
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
-            }
+                    best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
+                }
+                if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -2909,8 +3225,10 @@ import static java.lang.Thread.sleep;
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
-            }
+                    best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
+                }
+                if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -2937,8 +3255,10 @@ import static java.lang.Thread.sleep;
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
-            }
+                    best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
+                }
+                if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -2951,8 +3271,10 @@ import static java.lang.Thread.sleep;
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
-            }
+                    best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
+                }
+                if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -2965,8 +3287,10 @@ import static java.lang.Thread.sleep;
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
-            }
+                    best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
+                }
+                if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -2981,8 +3305,9 @@ import static java.lang.Thread.sleep;
         for (int a = spot - 8; a >= spot - 8; a = a - 8) {
             if(in_board(a)) {
                 if (node[a]==0) {
-                    // GenerateMove
-                    Node[a] = Node[spot];
+                    // GenerateMove   + Pawn이 진영 끝까지 갔을 경우 / else
+                    if(a<=63&&a>=56) Node[a] = 4;
+                    else Node[a] = Node[spot] ;
                     Node[spot] = 0;
                     // MinMove
                     ret_val = MaxMove(Node, depth - 1,alpha,beta);
@@ -2990,8 +3315,10 @@ import static java.lang.Thread.sleep;
 //                    if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
-                        best_val = ret_val;
-                    }
+                            best_val = ret_val;
+                            beta=min(beta,ret_val) ;
+                        }
+                        if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -3001,8 +3328,9 @@ import static java.lang.Thread.sleep;
         }
         int a= spot-7 ;//우 대각 위에 상대방 말이 있을 때
         if (in_board(a)&&(node[a]>=11&&node[a]<=17)&& 8-(spot%8)>=2) {
-            // GenerateMove
-            Node[a] = Node[spot] ;
+            // GenerateMove   + Pawn이 진영 끝까지 갔을 경우 / else
+            if(a<=63&&a>=56) Node[a] = 4;
+            else Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
@@ -3010,15 +3338,18 @@ import static java.lang.Thread.sleep;
 //            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
-            }
+                    best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
+                }
+                if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
         a= spot-9;// 좌 대각 위에 상대발 말이 있을 때
         if (in_board(a)&&(node[a]>=11&&node[a]<=17)&& spot%8>=1) {
-            // GenerateMove
-            Node[a] = Node[spot] ;
+            // GenerateMove   + Pawn이 진영 끝까지 갔을 경우 / else
+            if(a<=63&&a>=56) Node[a] = 4;
+            else Node[a] = Node[spot] ;
             Node[spot] = 0 ;
             // MinMove
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
@@ -3026,8 +3357,10 @@ import static java.lang.Thread.sleep;
 //            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
-            }
+                    best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
+                }
+                if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -3087,8 +3420,10 @@ import static java.lang.Thread.sleep;
 //                    if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val <= best_val) {
-                        best_val = ret_val;
-                    }
+                            best_val = ret_val;
+                            beta=min(beta,ret_val) ;
+                        }
+                        if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -3107,8 +3442,10 @@ import static java.lang.Thread.sleep;
 //            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
-            }
+                    best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
+                }
+                if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -3123,8 +3460,10 @@ import static java.lang.Thread.sleep;
 //            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
-            }
+                    best_val = ret_val ;
+                    beta = min(beta,ret_val) ;
+                }
+                if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
