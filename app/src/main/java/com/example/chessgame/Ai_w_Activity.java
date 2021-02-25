@@ -75,9 +75,16 @@ import static java.lang.Thread.sleep;
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0};
+     int is_first_move[] = {1, 1, 1, 1, 1, 1, 1, 1, // 한번도 안움직인 말 표시
+             1, 1, 1, 1, 1, 1, 1, 1,
+             0, 0, 0, 0, 0, 0, 0, 0,
+             0, 0, 0, 0, 0, 0, 0, 0,
+             0, 0, 0, 0, 0, 0, 0, 0,
+             0, 0, 0, 0, 0, 0, 0, 0,
+             1, 1, 1, 1, 1, 1, 1, 1,
+             1, 1, 1, 1, 1, 1, 1, 1};
 
     Button give_up_w;
-    Button draw_w;
 
     Drawable[] temp = new Drawable[1];// 버튼 클릭 시 이미지 임시 저장
     int[] temp_index = new int[1]; // 첫번째 버튼의 번호 저장(첫번째 누른 block의 인덱스)
@@ -707,6 +714,8 @@ public class AiThread extends Thread { //work thread
                     number[num] = choose_num[0]; // number[0] fix
                     block[temp_index[0]].setImageDrawable(block[num].getDrawable()); // 첫번째 선택한 버튼 자리에 두번째 선택한 버튼 이미지 삽입
                     block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
+                    is_first_move[temp_index[0]]=0;
+                    is_first_move[num]=0;
                 }
 
                 count++;
@@ -759,6 +768,8 @@ public class AiThread extends Thread { //work thread
                     number[num] = choose_num[0];
                     block[temp_index[0]].setImageDrawable(getResources().getDrawable(R.drawable.dot)); // 첫번째 선택한 버튼 자리에 투명 버튼 삽입
                     block[num].setImageDrawable(temp[0]); // 두번째 선택한 버튼 자리에 첫번째 선택에서 저장해둔 이미지 삽입
+                    is_first_move[temp_index[0]]=0;
+                    is_first_move[num]=0;
                 }
 
             } else if (kill_red[num] != 1) {
@@ -1386,6 +1397,92 @@ public class AiThread extends Thread { //work thread
         end.show();
 
     }
+
+    public boolean check_castling_b(int []node, int side){
+        if(side==15) { //kingside castling
+            if (is_first_move[3]!=1||is_first_move[7]!=1) return false;
+        }
+        else if(side==14){ //queenside castling
+            if (is_first_move[3]!=1||is_first_move[0]!=1) return false;
+        }
+
+        int [] Node=node.clone();
+
+        //두 기물 사이에 기물이 있는가
+        if(side==15) { //kingside castling
+            if (Node[5] != 0 || Node[6] != 0) return false;
+        }
+        else if(side==14){ //queenside castling
+            if (Node[1] != 0 || Node[2] != 0) return false;
+        }
+
+        //현재 킹이 공격 받고 있는가(처음위치 4에서 공격받고 있는가)
+        if(is_attack(Node,3)) return false;
+
+        //캐슬링을 했을 때 두 기물중 하나라도 공격 받고 있는가
+        if(side==15){
+           Node[6]=Node[3];
+           Node[5]=Node[7];
+           Node[4]=0;
+           Node[7]=0;
+          if(is_attack(Node,6)||is_attack(Node,5)) return false;
+        }
+        else if(side==14){
+            Node[1]=Node[3];
+            Node[2]=Node[0];
+            Node[4]=0;
+            Node[0]=0;
+            if(is_attack(Node,1)||is_attack(Node,2)) return false;
+        }
+
+        //위 조건 모두 통과 했으면 캐슬링 가능
+        return true;
+    }
+
+
+     public boolean is_attack(int []node,int n){
+        int ret_val=-1;
+         for(int i=0;i<64;i++) {
+             switch (node[i]) {
+                 //rook
+                 case 11: {
+                     ret_val = RookMin_c(node, i, n);
+                     break;
+                 }
+                 //knight
+                 case 12: {
+                     ret_val = KnightMin_c(node, i, n);
+                     break;
+                 }
+                 case 13: {
+                     ret_val = BishopMin_c(node, i, n);
+                     break;
+                 }
+                 case 14: {
+                     ret_val = QueenMin_c(node, i, n);
+                     break;
+                 }
+                 case 15: {
+                     ret_val = KingMin_c(node, i, n);
+                     break;
+                 }
+                 case 16: {
+                     ret_val = PawnMin_c(node, i, n);
+                     break;
+                 }
+                 case 17: {
+                     ret_val = FPawnMin_c(node, i, n);
+                     break;
+                 }
+                 default: {
+                     continue;
+                 }
+             } // switch
+         }
+         if(ret_val==-1) return false;
+         else return true;
+     }
+
     //---------------------ai관련-----------------------------------------------------------
     // 공통 변수
     final int INF = 10000 ;
@@ -1474,7 +1571,13 @@ public class AiThread extends Thread { //work thread
     public int Find_AI_Move(int [] number){
         int r=-1;
         for(int i=0;i<64;i++){
-            if(FinalNode[i]!=number[i]&&FinalNode[i]!=0) {r=i; break;}
+//            if(FinalNode[i]!=number[i]&&FinalNode[i]!=0) {r=i; break;}
+            if(FinalNode[i]!=number[i]){
+                is_first_move[i]=0;
+                if(FinalNode[i]!=0){
+                    r=i; break;
+                }
+            }
         }
         return r;
     }
@@ -3480,4 +3583,301 @@ public class AiThread extends Thread { //work thread
         if(a<2) return true;
         else return false;
     }
+//    //-----------------------------------------------------------
+     public int RookMin_c(int[] node,int spot,int n) {
+        for (int a = spot + 8; a < 64; a = a + 8) {//하
+            if (in_board(a)) {
+                //말이 해당자리 n을 공격할 수 있을 때
+                if (a == n) return n;
+                //  말이 있을경우
+                if (node[a] != 0) break;
+            }
+        }
+        for (int a = spot - 8; a >= 0; a = a - 8) {//상
+            if (in_board(a)) {
+                //말이 해당자리 n을 공격할 수 있을 때
+                if (a == n) return n;
+                //  말이 있을경우
+                if (node[a] != 0) break;
+            }
+        }
+        for (int b = 0; b < spot % 8; b++) {//좌
+            int a = spot - (b+1) ;
+            if (in_board(a)) {
+                //말이 해당자리 n을 공격할 수 있을 때
+                if (a == n) return n;
+                //  말이 있을경우
+                if (node[a] != 0) break;
+            }
+        }
+        for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우
+            int a = spot + (b+1) ;
+            if (in_board(a)) {
+                //말이 해당자리 n을 공격할 수 있을 때
+                if (a == n) return n;
+                //  말이 있을경우
+                if (node[a] != 0) break;
+            }
+        }
+
+        return -1; // -1이 리턴 되면 n자리 위협 안한다는 뜻
+    }
+     public int KnightMin_c(int[] node,int spot,int n) {
+         int a = spot + (8 * 2) + 1;//우 대각 아래(2) down-2 right-1
+         if (in_board(a) && 8 - spot % 8 - 1 >= 1)  //끝쪽에 있을때 넘어가기 방지
+         {
+             //말이 해당자리 n을 공격할 수 있을 때
+             if (a == n) return n;
+         }
+         a = spot + (8 * 2) - 1; //좌 대각 아래(2) down-2 left-1
+         if (in_board(a) && spot % 8 >= 1) //끝쪽에 있을때 넘어가기 방지
+         {
+             //말이 해당자리 n을 공격할 수 있을 때
+             if (a == n) return n;
+         }
+         a = spot - (8 * 2) + 1; //우 대각 위(2) up-2 right-1
+         if (in_board(a) && 8 - spot % 8 - 1 >= 1)  //끝쪽에 있을때 넘어가기 방지
+         {
+             //말이 해당자리 n을 공격할 수 있을 때
+             if (a == n) return n;
+         }
+         a = spot - (8 * 2) - 1; //좌 대각 위(2) up-2 left-1
+         if (in_board(a) && spot % 8 >= 1) //끝쪽에 있을때 넘어가기 방지
+         {
+             //말이 해당자리 n을 공격할 수 있을 때
+             if (a == n) return n;
+         }
+         a = spot + (8 * 1) + 2; //우 대각 아래(1) right-2 down-1
+         if (in_board(a) && 8 - spot % 8 - 1 >= 2) //끝쪽에 있을때 넘어가기 방지
+         {
+             //말이 해당자리 n을 공격할 수 있을 때
+             if (a == n) return n;
+         }
+         a = spot + (8 * 1) - 2;//좌 대각 아래(1) left-2 down-1
+         if (in_board(a) && spot % 8 >= 2) //끝쪽에 있을때 넘어가기 방지
+         {
+             //말이 해당자리 n을 공격할 수 있을 때
+             if (a == n) return n;
+         }
+         a = spot - (8 * 1) + 2; //우 대각 위(1) right-2 up -1
+         if (in_board(a) && 8 - spot % 8 - 1 >= 2) //끝쪽에 있을때 넘어가기 방지
+         {
+             //말이 해당자리 n을 공격할 수 있을 때
+             if (a == n) return n;
+         }
+         a = spot - (8 * 1) - 2; //좌 대각 위(1) left-2 up - 1
+         if (in_board(a) && spot % 8 >= 2) //끝쪽에 있을때 넘어가기 방지
+         {
+             //말이 해당자리 n을 공격할 수 있을 때
+             if (a == n) return n;
+         }
+
+         return -1;
+     }
+     public int BishopMin_c(int[] node,int spot,int n) {
+
+         for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
+             int a = spot + (9 * (b + 1));
+             if (in_board(a)) {
+                 //말이 해당자리 n을 공격할 수 있을 때
+                 if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
+             }
+         }
+
+         for (int b = 0; b < spot % 8; b++) { //좌 대각 위
+             int a = spot - (9 * (b + 1));
+             if (in_board(a)) {
+                 //말이 해당자리 n을 공격할 수 있을 때
+                 if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
+             }
+         }
+         for (int b = 0; b < spot % 8; b++) { //좌 대각 아래
+             int a = spot + (7 * (b + 1));
+             if (in_board(a)) {
+                 //말이 해당자리 n을 공격할 수 있을 때
+                 if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
+             }
+         }
+         for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 위
+             int a = spot - (7 * (b + 1));
+             if (in_board(a)) {
+                 //말이 해당자리 n을 공격할 수 있을 때
+                 if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
+             }
+         }
+         return -1 ;
+     }
+     public int QueenMin_c(int[] node,int spot,int n) {
+
+         for (int a = spot + 8; a < 64; a = a + 8) {//하
+             if (in_board(a)) {
+                 //말이 해당자리 n을 공격할 수 있을 때
+                 if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
+             }
+         }
+         for (int a = spot - 8; a >= 0; a = a - 8) {//상
+             if (in_board(a)) {
+                 //말이 해당자리 n을 공격할 수 있을 때
+                 if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
+             }
+         }
+         for (int b = 0; b < spot % 8; b++) {//좌
+             int a = spot - (b + 1);
+             if (in_board(a)) {
+                 //말이 해당자리 n을 공격할 수 있을 때
+                 if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
+             }
+         }
+         for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우
+             int a = spot + (b + 1);
+             if (in_board(a)) {
+                 //말이 해당자리 n을 공격할 수 있을 때
+                 if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
+             }
+         }
+         for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
+             int a = spot + (9 * (b + 1));
+             if (in_board(a)) {
+                 //말이 해당자리 n을 공격할 수 있을 때
+                 if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
+             }
+         }
+         for (int b = 0; b < spot % 8; b++) { //좌 대각 위
+             int a = spot - (9 * (b + 1));
+             if (in_board(a)) {
+                 //말이 해당자리 n을 공격할 수 있을 때
+                 if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
+             }
+         }
+         for (int b = 0; b < spot % 8; b++) { //좌 대각 아래
+             int a= spot + (7 * (b + 1));
+             if (in_board(a)) {
+                 //말이 해당자리 n을 공격할 수 있을 때
+                 if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
+             }
+         }
+         for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
+             int a = spot - (7 * (b + 1));
+             if (in_board(a)) {
+                 //말이 해당자리 n을 공격할 수 있을 때
+                 if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
+             }
+         }
+         return -1;
+     }
+     public int KingMin_c(int[] node,int spot,int n) {
+
+         int a = spot + 1; //우
+         if (in_board(a)&&8 - spot % 8 - 1 >= 1) {
+             //말이 해당자리 n을 공격할 수 있을 때
+             if (a == n) return n;
+         }
+         a = spot - 1;  //좌
+         if (in_board(a)&&spot % 8 >= 1) {
+             //말이 해당자리 n을 공격할 수 있을 때
+             if (a == n) return n;
+         }
+         a = spot + 7; //좌대각 아래
+         if (in_board(a)&&spot % 8 >= 1) {
+             //말이 해당자리 n을 공격할 수 있을 때
+             if (a == n) return n;
+         }
+         a = spot + 8; //아래
+         if (in_board(a)) {
+             //말이 해당자리 n을 공격할 수 있을 때
+             if (a == n) return n;
+         }
+         a = spot + 9; // 우대각 아래
+         if (in_board(a)&&8 - spot % 8 - 1 >= 1) {
+             //말이 해당자리 n을 공격할 수 있을 때
+             if (a == n) return n;
+         }
+         a = spot - 7; //우대각 위
+         if (in_board(a)&&8 - spot % 8 - 1 >= 1) {
+             //말이 해당자리 n을 공격할 수 있을 때
+             if (a == n) return n;
+         }
+         a = spot - 8; //위
+         if (in_board(a)) {
+             //말이 해당자리 n을 공격할 수 있을 때
+             if (a == n) return n;
+         }
+         a = spot - 9; //좌대각위
+         if (in_board(a)&&spot % 8 >= 1) {
+             //말이 해당자리 n을 공격할 수 있을 때
+             if (a == n) return n;
+         }
+         return -1;
+     }
+     public int PawnMin_c(int[] node,int spot,int n){
+        // 1칸 전진
+        for (int a = spot - 8; a >= spot - 8; a = a - 8) {
+            if (in_board(a)) {
+                //말이 해당자리 n을 공격할 수 있을 때
+                if (a == n) return n;
+                //  말이 있을경우
+                if (node[a] != 0) break;
+            }
+        }
+        int a= spot-7 ;//우 대각 위에 상대방 말이 있을 때
+        if (in_board(a)&& 8-(spot%8)>=2) {
+            //말이 해당자리 n을 공격할 수 있을 때
+            if (a == n) return n;
+        }
+        a= spot-9;// 좌 대각 위에 상대발 말이 있을 때
+        if (in_board(a)&& spot%8>=1) {
+            //말이 해당자리 n을 공격할 수 있을 때
+            if (a == n) return n;
+        }
+        return -1;
+    }
+    public int FPawnMin_c(int[] node,int spot,int n){
+
+        // 1칸/2칸 전진
+        for (int a = spot - 8; a >= spot - 16; a = a - 8) {
+            if (in_board(a)) {
+                //말이 해당자리 n을 공격할 수 있을 때
+                if (a == n) return n;
+                //  말이 있을경우
+                if (node[a] != 0) break;
+            }
+        }
+        int a= spot-7 ;//우 대각 위에 상대방 말이 있을 때
+        if (in_board(a)&& 8-(spot%8)>=2) {
+            //말이 해당자리 n을 공격할 수 있을 때
+            if (a == n) return n;
+        }
+        a= spot-9;// 좌 대각 아래에 상대발 말이 있을 때
+        if (in_board(a)&& spot%8>=1) {
+            //말이 해당자리 n을 공격할 수 있을 때
+            if (a == n) return n;
+        }
+        return -1;
+    }
+//     //------------------------------------------------------
+
 }
