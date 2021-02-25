@@ -519,14 +519,15 @@ import static java.lang.Thread.sleep;
         });
         AiThread t = new AiThread() ;
         t.start();
-    }
+    } //onCreate
 
     Handler handler = new Handler() ;
     boolean start_handler = false;
-public class AiThread extends Thread {
+
+public class AiThread extends Thread { //work thread
         @Override
     public void run() {
-                AI();
+                AI(); //여기서 start_handler를 true로 바꿔줌
                     while(turn==false) {
                            if(start_handler) {
                                 handler.post(new Runnable() {

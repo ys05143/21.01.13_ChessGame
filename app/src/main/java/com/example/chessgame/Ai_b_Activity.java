@@ -8,9 +8,11 @@ import android.animation.ValueAnimator;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -61,7 +63,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             0,0,0,0,0,0,0,0,
             0,0,0,0,0,0,0,0};
 
-    Button give_up_w; Button draw_w;
+    Button give_up_w; TextView ai_message;
 
     Drawable[] temp = new Drawable[1];// 버튼 클릭 시 이미지 임시 저장
     int[] temp_index = new int[1]; // 첫번째 버튼의 번호 저장(첫번째 누른 block의 인덱스)
@@ -89,6 +91,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             block[i] = (ImageView) findViewById(block_id[i]);
 
         give_up_w=(Button)findViewById(R.id.give_up_w);
+        ai_message=(TextView)findViewById((R.id.ai_message));
 
        /* for(int i=0; i<64;i++)
             board_state[0][i]=number[i];
@@ -502,7 +505,88 @@ public class Ai_b_Activity extends AppCompatActivity {
             }
         });
 
+    }//onCreate
+
+    Handler ai_handler=new Handler();
+
+    public class move_runable implements Runnable{
+        public void run(){
+            int kw=0; int kb=0;
+            for (int i = 0; i < 64; i++) { //알고리즘으로 나온 결과로 판을 바꾸는 것
+                if (number[i] == 1) {
+                    block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_b));
+                    block[i].setVisibility(View.VISIBLE);
+                }//룩
+                else if (number[i] == 2) {
+                    block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_b));
+                    block[i].setVisibility(View.VISIBLE);
+                }//나이트
+                else if (number[i] == 3) {
+                    block[i].setImageDrawable(getResources().getDrawable(R.drawable.bishop_b));
+                    block[i].setVisibility(View.VISIBLE);
+                }//비숍
+                else if (number[i] == 4) {
+                    block[i].setImageDrawable(getResources().getDrawable(R.drawable.queen_b));
+                    block[i].setVisibility(View.VISIBLE);
+                }//퀸
+                else if (number[i] == 5) {
+                    block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_b));
+                    block[i].setVisibility(View.VISIBLE);
+                }//킹
+                else if (number[i] == 7 || number[i] == 6) {
+                    block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_b));
+                    block[i].setVisibility(View.VISIBLE);
+                    kb++;
+                }//폰
+                else if (number[i] == 11) {
+                    block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_w));
+                    block[i].setVisibility(View.VISIBLE);
+                } else if (number[i] == 12) {
+                    block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_w));
+                    block[i].setVisibility(View.VISIBLE);
+                } else if (number[i] == 13) {
+                    block[i].setImageDrawable(getResources().getDrawable(R.drawable.bishop_w));
+                    block[i].setVisibility(View.VISIBLE);
+                } else if (number[i] == 14) {
+                    block[i].setImageDrawable(getResources().getDrawable(R.drawable.queen_w));
+                    block[i].setVisibility(View.VISIBLE);
+                } else if (number[i] == 15) {
+                    block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_w));
+                    block[i].setVisibility(View.VISIBLE);
+                    kw++;
+                } else if (number[i] == 17 || number[i] == 16) {
+                    block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_w));
+                    block[i].setVisibility(View.VISIBLE);
+                } else if (number[i] == 0) {
+                    block[i].setImageDrawable(getResources().getDrawable(R.drawable.dot));
+                    block[i].setVisibility(View.INVISIBLE);
+                }
+            }
+            ValueAnimator ani=ValueAnimator.ofObject(new ArgbEvaluator(),getResources().getColor(R.color.gray),getResources().getColor(R.color.transparent));
+            ani.setDuration(3000);
+            ani.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    block[Point].setBackgroundColor((int)animation.getAnimatedValue());
+                }
+            });
+            ani.start();
+            if(kw==0) end_game(2);
+            turn=false;
+        }
     }
+    public class airunable implements Runnable{
+        public void run(){
+            if(turn==true){
+                ai_message.setTextColor(getResources().getColor(R.color.black));
+                number = MinMax(number).clone();//ai가 minmax 알고리즘으로 찾은 배열을 number로 지정
+                ai_handler.post(new move_runable());
+            }
+            ai_message.setTextColor(getResources().getColor(R.color.transparent));
+        }
+    }
+
+
     //-----------------------------MOVE() 부분 -----------------------------------------------
     public void move(int num){
         // 버튼 선택 1
@@ -1262,70 +1346,9 @@ public class Ai_b_Activity extends AppCompatActivity {
     //---------------------ai관련-----------------------------------------------------------
 
     public void AI() {
-        int a=0; int b=0;
-        number = MinMax(number).clone();//ai가 minmax 알고리즘으로 찾은 배열을 number로 지정
-        for (int i = 0; i < 64; i++) { //알고리즘으로 나온 결과로 판을 바꾸는 것
-            if (number[i] == 1) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_b));
-                block[i].setVisibility(View.VISIBLE);
-            }//룩
-            else if (number[i] == 2) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_b));
-                block[i].setVisibility(View.VISIBLE);
-            }//나이트
-            else if (number[i] == 3) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.bishop_b));
-                block[i].setVisibility(View.VISIBLE);
-            }//비숍
-            else if (number[i] == 4) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.queen_b));
-                block[i].setVisibility(View.VISIBLE);
-            }//퀸
-            else if (number[i] == 5) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_b));
-                block[i].setVisibility(View.VISIBLE);
-                a++;
-            }//킹
-            else if (number[i] == 7 || number[i] == 6) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_b));
-                block[i].setVisibility(View.VISIBLE);
-            }//폰
-            else if (number[i] == 11) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.rook_w));
-                block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 12) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.knight_w));
-                block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 13) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.bishop_w));
-                block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 14) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.queen_w));
-                block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 15) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.king_w));
-                block[i].setVisibility(View.VISIBLE);
-                b++;
-            } else if (number[i] == 17 || number[i] == 16) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.pawn_w));
-                block[i].setVisibility(View.VISIBLE);
-            } else if (number[i] == 0) {
-                block[i].setImageDrawable(getResources().getDrawable(R.drawable.dot));
-                block[i].setVisibility(View.INVISIBLE);
-            }
-        }
-        ValueAnimator ani=ValueAnimator.ofObject(new ArgbEvaluator(),getResources().getColor(R.color.gray),getResources().getColor(R.color.transparent));
-        ani.setDuration(3000);
-        ani.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                block[Point].setBackgroundColor((int)animation.getAnimatedValue());
-            }
-        });
-        ani.start();
-        if (a!=1&&b==1) end_game(1);
-        else if (a==1&&b!=1) end_game(2);
-         turn = false;
+        Thread th=new Thread(new airunable());
+        th.start();
+
     }
 
     // 공통 변수
