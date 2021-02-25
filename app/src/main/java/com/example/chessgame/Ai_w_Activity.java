@@ -18,6 +18,7 @@ import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Node;
@@ -84,7 +85,7 @@ import static java.lang.Thread.sleep;
              1, 1, 1, 1, 1, 1, 1, 1,
              1, 1, 1, 1, 1, 1, 1, 1};
 
-    Button give_up_w;
+    Button give_up_w; TextView ai_message;
 
     Drawable[] temp = new Drawable[1];// 버튼 클릭 시 이미지 임시 저장
     int[] temp_index = new int[1]; // 첫번째 버튼의 번호 저장(첫번째 누른 block의 인덱스)
@@ -112,6 +113,7 @@ import static java.lang.Thread.sleep;
             block[i] = (ImageView) findViewById(block_id[i]);
 
         give_up_w = (Button) findViewById(R.id.give_up_w);
+        ai_message=(TextView)findViewById(R.id.ai_message);
 
        /* for(int i=0; i<64;i++)
             board_state[0][i]=number[i];
@@ -534,6 +536,7 @@ import static java.lang.Thread.sleep;
 public class AiThread extends Thread { //work thread
         @Override
     public void run() {
+            ai_message.setTextColor(getResources().getColor(R.color.black));
                 AI(); //여기서 start_handler를 true로 바꿔줌
                     while(turn==false) {
                            if(start_handler) {
@@ -606,6 +609,7 @@ public class AiThread extends Thread { //work thread
 
                            }
                     } // while
+            ai_message.setTextColor(getResources().getColor(R.color.transparent));
             };
 }
 

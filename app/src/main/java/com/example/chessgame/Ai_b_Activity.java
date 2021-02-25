@@ -18,6 +18,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static java.lang.Math.random;
 
 
@@ -1746,7 +1748,7 @@ public class Ai_b_Activity extends AppCompatActivity {
     // 공통 변수
     final int INF = 100000 ;
     public int[] FinalNode = new int[64] ;
-    int AI_DEPTH = 4;
+    int AI_DEPTH = 5;
     // random 부분
     ArrayList<int[]> cand=new ArrayList<int[]>();
 //    int Count=0;
@@ -1818,8 +1820,8 @@ public class Ai_b_Activity extends AppCompatActivity {
             // node == ret_node ( 움직임이 없을 시 )
             if(ret_val==-INF||ret_val==INF) continue;
 
-//            // beta-cut  (return INF)
-//            if(ret_val>beta) return INF+1 ;
+            // beta-cut  (return INF)
+            if(ret_val>=beta) return INF+1 ;
 
             // best_val,temp_node 갱신
             if (ret_val >= best_val) {
@@ -1880,44 +1882,43 @@ public class Ai_b_Activity extends AppCompatActivity {
             if(Arrays.equals(node,ret_node)) continue ;
             if(ret_val==-INF||ret_val==INF) continue;
 
-//            // alpha-cut (return -INF)
-//            if(ret_val < alpha) return -INF-1;
+            // alpha-cut (return -INF)
+            if(ret_val <= alpha) return -INF-1;
 
             // best_val,temp_node 갱신
             if(depth==AI_DEPTH){
-                if(ret_val<best_val){
+                if(ret_val<=best_val){
                     best_val = ret_val;
+                    beta = min(beta,ret_val) ;
                     temp_node = ret_node.clone();
-                    beta = ret_val;
-                    //  random-arraylist reset
-                    cand.clear();
-                    t=ret_val;
-//                    Count=0;
+//                    //  random-arraylist reset
+//                    cand.clear();
+//                    t=ret_val;
+////                    Count=0;
 
                 }
-                if(ret_val==best_val){
-                    beta = ret_val;
-                    best_val = ret_val;
-                    cand.add(ret_node.clone());
-//                    Count++;
-                }
+//                else if(ret_val==best_val){
+//                    beta = ret_val;
+//                    best_val = ret_val;
+//                    cand.add(ret_node.clone());
+////                    Count++;
+//                }
             }
             else {
                 if (ret_val <= best_val) {
-                    beta = ret_val;
+                    beta = min(beta,ret_val) ;
                     best_val = ret_val;
-                    temp_node = ret_node.clone();
                 }
             }
 
         } // for(i)
         // depth == 최대높이
         if(depth== AI_DEPTH) {
-            if (best_val == t&&cand.size()>0) {
-                temp_node = cand.get((int)((random()*100) % cand.size())).clone();
-                cand.clear();
-//                Count=0;
-            }
+//            if (best_val == t&&cand.size()>0) {
+//                temp_node = cand.get((int)((random()*100) % cand.size())).clone();
+//                cand.clear();
+////                Count=0;
+//            }
             for (int i = 0; i < 64; i++)
                 FinalNode[i] = temp_node[i]; //깊이가 n일때 가장 좋은 node를 (전역변수)FinalNode로 저장.
         }
@@ -1934,14 +1935,14 @@ public class Ai_b_Activity extends AppCompatActivity {
             else if (number[i] == 3) value = value - 30;//비숍
             else if (number[i] == 4) value = value - 90;//퀸
             else if (number[i] == 7 || number[i] == 6) {value = value - 10; /*if((number[i-7]!=16||number[i-7]!=17)||(number[i-9]!=16||number[i-9]!=17)) value=value-1;*/}//폰
-            else if (number[i] == 5) value = value - 10000;
+            else if (number[i] == 5) value = value - 1000;
             //white
             else if (number[i] == 11) value = value + 50;
             else if (number[i] == 12) value = value + 30;
             else if (number[i] == 13) value = value + 30;
             else if (number[i] == 14) value = value + 90;
             else if (number[i] == 17 || number[i] == 16) {value = value + 10; /*if((number[i+7]!=6||number[i+7]!=7)||(number[i+9]!=6||number[i+9]!=7)) value=value+1;*/}
-            else if (number[i] == 15) value = value + 10000;
+            else if (number[i] == 15) value = value + 1000;
         }
         return value;
     }
@@ -1964,6 +1965,10 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -1980,9 +1985,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     Node[spot] = 0;
                     // MinMove
                     ret_val = MinMove(Node, depth - 1,alpha,beta);
-                    // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2000,9 +2008,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     Node[spot] = 0;
                     // MinMove
                     ret_val = MinMove(Node, depth - 1,alpha,beta);
-                    // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2020,9 +2031,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     Node[spot] = 0;
                     // MinMove
                     ret_val = MinMove(Node, depth - 1,alpha,beta);
-                    // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2050,9 +2064,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 Node[spot] = 0 ;
                 // MinMove
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
-                // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
+                    alpha = max(alpha,ret_val) ;
+                }
+                if(ret_val >= beta) {
+                    return best_val;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2067,9 +2084,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 Node[spot] = 0 ;
                 // MinMove
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
-                // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
+                    alpha = max(alpha,ret_val) ;
+                }
+                if(ret_val >= beta) {
+                    return best_val;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2084,9 +2104,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 Node[spot] = 0 ;
                 // MinMove
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
-                // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
+                    alpha = max(alpha,ret_val) ;
+                }
+                if(ret_val >= beta) {
+                    return best_val;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2101,9 +2124,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 Node[spot] = 0 ;
                 // MinMove
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
-                // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
+                    alpha = max(alpha,ret_val) ;
+                }
+                if(ret_val >= beta) {
+                    return best_val;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2118,9 +2144,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 Node[spot] = 0 ;
                 // MinMove
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
-                // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
+                    alpha = max(alpha,ret_val) ;
+                }
+                if(ret_val >= beta) {
+                    return best_val;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2135,9 +2164,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 Node[spot] = 0 ;
                 // MinMove
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
-                // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
+                    alpha = max(alpha,ret_val) ;
+                }
+                if(ret_val >= beta) {
+                    return best_val;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2152,9 +2184,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 Node[spot] = 0 ;
                 // MinMove
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
-                // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
+                    alpha = max(alpha,ret_val) ;
+                }
+                if(ret_val >= beta) {
+                    return best_val;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2169,9 +2204,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 Node[spot] = 0 ;
                 // MinMove
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
-                // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
+                    alpha = max(alpha,ret_val) ;
+                }
+                if(ret_val >= beta) {
+                    return best_val;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2195,9 +2233,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     Node[spot] = 0;
                     // MinMove
                     ret_val = MinMove(Node, depth - 1,alpha,beta);
-                    // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2216,9 +2257,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     Node[spot] = 0;
                     // MinMove
                     ret_val = MinMove(Node, depth - 1,alpha,beta);
-                    // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2236,9 +2280,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     Node[spot] = 0;
                     // MinMove
                     ret_val = MinMove(Node, depth - 1,alpha,beta);
-                    // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2256,9 +2303,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     Node[spot] = 0;
                     // MinMove
                     ret_val = MinMove(Node, depth - 1,alpha,beta);
-                    // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2282,9 +2332,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     Node[spot] = 0;
                     // MinMove
                     ret_val = MinMove(Node, depth - 1,alpha,beta);
-                    // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2301,9 +2354,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     Node[spot] = 0;
                     // MinMove
                     ret_val = MinMove(Node, depth - 1,alpha,beta);
-                    // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2321,9 +2377,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     Node[spot] = 0;
                     // MinMove
                     ret_val = MinMove(Node, depth - 1,alpha,beta);
-                    // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2341,9 +2400,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     Node[spot] = 0;
                     // MinMove
                     ret_val = MinMove(Node, depth - 1,alpha,beta);
-                    // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2361,9 +2423,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     Node[spot] = 0;
                     // MinMove
                     ret_val = MinMove(Node, depth - 1,alpha,beta);
-                    // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2381,9 +2446,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     Node[spot] = 0;
                     // MinMove
                     ret_val = MinMove(Node, depth - 1,alpha,beta);
-                    // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2401,9 +2469,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     Node[spot] = 0;
                     // MinMove
                     ret_val = MinMove(Node, depth - 1,alpha,beta);
-                    // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2421,9 +2492,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                     Node[spot] = 0;
                     // MinMove
                     ret_val = MinMove(Node, depth - 1,alpha,beta);
-                    // 비교  ( temp_node,best_val 갱신)
                     if (ret_val >= best_val) {
                         best_val = ret_val;
+                        alpha = max(alpha,ret_val) ;
+                    }
+                    if(ret_val >= beta) {
+                        return best_val;
                     }
                     // GenerateMove Cancel
                     Node = node.clone();
@@ -2446,9 +2520,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node[spot] = 0 ;
             // MinMove
             ret_val = MinMove(Node,depth-1,alpha,beta) ;
-            // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
-                best_val = ret_val ;
+                best_val = ret_val;
+                alpha = max(alpha,ret_val) ;
+            }
+            if(ret_val >= beta) {
+                return best_val;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2460,9 +2537,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node[spot] = 0 ;
             // MinMove
             ret_val = MinMove(Node,depth-1,alpha,beta) ;
-            // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
-                best_val = ret_val ;
+                best_val = ret_val;
+                alpha = max(alpha,ret_val) ;
+            }
+            if(ret_val >= beta) {
+                return best_val;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2474,9 +2554,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node[spot] = 0 ;
             // MinMove
             ret_val = MinMove(Node,depth-1,alpha,beta) ;
-            // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
-                best_val = ret_val ;
+                best_val = ret_val;
+                alpha = max(alpha,ret_val) ;
+            }
+            if(ret_val >= beta) {
+                return best_val;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2488,9 +2571,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node[spot] = 0 ;
             // MinMove
             ret_val = MinMove(Node,depth-1,alpha,beta) ;
-            // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
-                best_val = ret_val ;
+                best_val = ret_val;
+                alpha = max(alpha,ret_val) ;
+            }
+            if(ret_val >= beta) {
+                return best_val;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2502,9 +2588,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node[spot] = 0 ;
             // MinMove
             ret_val = MinMove(Node,depth-1,alpha,beta) ;
-            // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
-                best_val = ret_val ;
+                best_val = ret_val;
+                alpha = max(alpha,ret_val) ;
+            }
+            if(ret_val >= beta) {
+                return best_val;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2516,9 +2605,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node[spot] = 0 ;
             // MinMove
             ret_val = MinMove(Node,depth-1,alpha,beta) ;
-            // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
-                best_val = ret_val ;
+                best_val = ret_val;
+                alpha = max(alpha,ret_val) ;
+            }
+            if(ret_val >= beta) {
+                return best_val;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2530,9 +2622,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node[spot] = 0 ;
             // MinMove
             ret_val = MinMove(Node,depth-1,alpha,beta) ;
-            // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
-                best_val = ret_val ;
+                best_val = ret_val;
+                alpha = max(alpha,ret_val) ;
+            }
+            if(ret_val >= beta) {
+                return best_val;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2544,9 +2639,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             Node[spot] = 0 ;
             // MinMove
             ret_val = MinMove(Node,depth-1,alpha,beta) ;
-            // 비교  ( temp_node,best_val 갱신)
             if (ret_val >= best_val) {
-                best_val = ret_val ;
+                best_val = ret_val;
+                alpha = max(alpha,ret_val) ;
+            }
+            if(ret_val >= beta) {
+                return best_val;
             }
             // GenerateMove Cancel
             Node = node.clone() ;
@@ -2576,9 +2674,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                         ret_val = MinMove(Node, depth - 1,alpha,beta);
 //                        if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
 //                        if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
-                        // 비교  ( temp_node,best_val 갱신)
                         if (ret_val >= best_val) {
                             best_val = ret_val;
+                            alpha = max(alpha,ret_val) ;
+                        }
+                        if(ret_val >= beta) {
+                            return best_val;
                         }
                         // GenerateMove Cancel
                         Node = node.clone();
@@ -2603,9 +2704,13 @@ public class Ai_b_Activity extends AppCompatActivity {
 //                 if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
 //                 if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
                 // 비교  ( temp_node,best_val 갱신)
-                if (ret_val >= best_val) {
-                best_val = ret_val ;
-                }
+                 if (ret_val >= best_val) {
+                     best_val = ret_val;
+                     alpha = max(alpha,ret_val) ;
+                 }
+                 if(ret_val >= beta) {
+                     return best_val;
+                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
                 }
@@ -2624,9 +2729,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
 //                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
 //                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
-                // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
+                    alpha = max(alpha,ret_val) ;
+                }
+                if(ret_val >= beta) {
+                    return best_val;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2686,9 +2794,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                         ret_val = MinMove(Node, depth - 1,alpha,beta);
 //                        if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
 //                        if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
-                        // 비교  ( temp_node,best_val 갱신)
                         if (ret_val >= best_val) {
                             best_val = ret_val;
+                            alpha = max(alpha,ret_val) ;
+                        }
+                        if(ret_val >= beta) {
+                            return best_val;
                         }
                         // GenerateMove Cancel
                         Node = node.clone();
@@ -2706,9 +2817,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
 //                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
 //                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
-                // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
+                    alpha = max(alpha,ret_val) ;
+                }
+                if(ret_val >= beta) {
+                    return best_val;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2722,9 +2836,12 @@ public class Ai_b_Activity extends AppCompatActivity {
                 ret_val = MinMove(Node,depth-1,alpha,beta) ;
 //                if(Node[a+7]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
 //                if(Node[a+9]!=6) {ret_val=ret_val+1; if(Node[a-7]==6||Node[a-9]==6) ret_val=ret_val+1;}
-                // 비교  ( temp_node,best_val 갱신)
                 if (ret_val >= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
+                    alpha = max(alpha,ret_val) ;
+                }
+                if(ret_val >= beta) {
+                    return best_val;
                 }
                 // GenerateMove Cancel
                 Node = node.clone() ;
@@ -2751,7 +2868,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -2771,7 +2890,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -2792,7 +2913,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -2813,7 +2936,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -2844,9 +2969,11 @@ public class Ai_b_Activity extends AppCompatActivity {
                 ret_val = MaxMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
                     temp_node = Node.clone();
+                    beta=min(beta,ret_val) ;
                 }
+                if(ret_val <= alpha) return best_val;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2862,9 +2989,11 @@ public class Ai_b_Activity extends AppCompatActivity {
                 ret_val = MaxMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
                     temp_node = Node.clone();
+                    beta=min(beta,ret_val) ;
                 }
+                if(ret_val <= alpha) return best_val;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2880,9 +3009,11 @@ public class Ai_b_Activity extends AppCompatActivity {
                 ret_val = MaxMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
                     temp_node = Node.clone();
+                    beta=min(beta,ret_val) ;
                 }
+                if(ret_val <= alpha) return best_val;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2898,9 +3029,11 @@ public class Ai_b_Activity extends AppCompatActivity {
                 ret_val = MaxMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
                     temp_node = Node.clone();
+                    beta=min(beta,ret_val) ;
                 }
+                if(ret_val <= alpha) return best_val;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2916,9 +3049,11 @@ public class Ai_b_Activity extends AppCompatActivity {
                 ret_val = MaxMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
                     temp_node = Node.clone();
+                    beta=min(beta,ret_val) ;
                 }
+                if(ret_val <= alpha) return best_val;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2933,10 +3068,13 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // MinMove
                 ret_val = MaxMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
+                // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
                     temp_node = Node.clone();
+                    beta=min(beta,ret_val) ;
                 }
+                if(ret_val <= alpha) return best_val;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2952,9 +3090,11 @@ public class Ai_b_Activity extends AppCompatActivity {
                 ret_val = MaxMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
                     temp_node = Node.clone();
+                    beta=min(beta,ret_val) ;
                 }
+                if(ret_val <= alpha) return best_val;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -2970,9 +3110,11 @@ public class Ai_b_Activity extends AppCompatActivity {
                 ret_val = MaxMove(Node,depth-1,alpha,beta) ;
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
-                    best_val = ret_val ;
+                    best_val = ret_val;
                     temp_node = Node.clone();
+                    beta=min(beta,ret_val) ;
                 }
+                if(ret_val <= alpha) return best_val;
                 // GenerateMove Cancel
                 Node = node.clone() ;
             }
@@ -3002,7 +3144,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -3024,7 +3168,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -3045,7 +3191,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -3066,7 +3214,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -3098,7 +3248,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -3118,7 +3270,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -3139,7 +3293,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -3160,7 +3316,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -3181,7 +3339,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -3202,7 +3362,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -3223,7 +3385,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -3244,7 +3408,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -3272,9 +3438,11 @@ public class Ai_b_Activity extends AppCompatActivity {
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
+                best_val = ret_val;
                 temp_node = Node.clone();
+                beta=min(beta,ret_val) ;
             }
+            if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -3287,9 +3455,11 @@ public class Ai_b_Activity extends AppCompatActivity {
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
+                best_val = ret_val;
                 temp_node = Node.clone();
+                beta=min(beta,ret_val) ;
             }
+            if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -3302,9 +3472,11 @@ public class Ai_b_Activity extends AppCompatActivity {
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
+                best_val = ret_val;
                 temp_node = Node.clone();
+                beta=min(beta,ret_val) ;
             }
+            if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -3317,9 +3489,11 @@ public class Ai_b_Activity extends AppCompatActivity {
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
+                best_val = ret_val;
                 temp_node = Node.clone();
+                beta=min(beta,ret_val) ;
             }
+            if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -3331,10 +3505,12 @@ public class Ai_b_Activity extends AppCompatActivity {
             // MinMove
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
-            if (ret_val >= best_val) {
-                best_val = ret_val ;
+            if (ret_val <= best_val) {
+                best_val = ret_val;
                 temp_node = Node.clone();
+                beta=min(beta,ret_val) ;
             }
+            if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -3347,9 +3523,11 @@ public class Ai_b_Activity extends AppCompatActivity {
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
+                best_val = ret_val;
                 temp_node = Node.clone();
+                beta=min(beta,ret_val) ;
             }
+            if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -3362,9 +3540,11 @@ public class Ai_b_Activity extends AppCompatActivity {
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
+                best_val = ret_val;
                 temp_node = Node.clone();
+                beta=min(beta,ret_val) ;
             }
+            if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -3377,9 +3557,11 @@ public class Ai_b_Activity extends AppCompatActivity {
             ret_val = MaxMove(Node,depth-1,alpha,beta) ;
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
+                best_val = ret_val;
                 temp_node = Node.clone();
+                beta=min(beta,ret_val) ;
             }
+            if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -3415,7 +3597,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -3439,10 +3623,13 @@ public class Ai_b_Activity extends AppCompatActivity {
 //            if(Node[a-7]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
 //            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
             // 비교  ( temp_node,best_val 갱신)
+            // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
-                temp_node = Node.clone() ;
+                best_val = ret_val;
+                temp_node = Node.clone();
+                beta=min(beta,ret_val) ;
             }
+            if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -3463,9 +3650,11 @@ public class Ai_b_Activity extends AppCompatActivity {
 //            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
-                temp_node = Node.clone() ;
+                best_val = ret_val;
+                temp_node = Node.clone();
+                beta=min(beta,ret_val) ;
             }
+            if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -3533,7 +3722,9 @@ public class Ai_b_Activity extends AppCompatActivity {
                     if (ret_val <= best_val) {
                         best_val = ret_val;
                         temp_node = Node.clone();
+                        beta=min(beta,ret_val) ;
                     }
+                    if(ret_val <= alpha) return best_val;
                     // GenerateMove Cancel
                     Node = node.clone();
                 }
@@ -3552,9 +3743,11 @@ public class Ai_b_Activity extends AppCompatActivity {
 //            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
-                temp_node = Node.clone() ;
+                best_val = ret_val;
+                temp_node = Node.clone();
+                beta=min(beta,ret_val) ;
             }
+            if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
@@ -3569,9 +3762,11 @@ public class Ai_b_Activity extends AppCompatActivity {
 //            if(Node[a-9]!=16) {ret_val=ret_val-1; if(Node[a+7]==16||Node[a+9]==16) ret_val=ret_val-1;}
             // 비교  ( temp_node,best_val 갱신)
             if (ret_val <= best_val) {
-                best_val = ret_val ;
-                temp_node = Node.clone() ;
+                best_val = ret_val;
+                temp_node = Node.clone();
+                beta=min(beta,ret_val) ;
             }
+            if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
