@@ -583,16 +583,16 @@ public class Ai_b_Activity extends AppCompatActivity {
             ani.start();
             if(kw==0) end_game(2);
             turn=false;
+            ai_message.setTextColor(getResources().getColor(R.color.transparent));
         }
     }
     public class airunable implements Runnable{
         public void run(){
             if(turn==true){
-                ai_message.setTextColor(getResources().getColor(R.color.black));
                 number = MinMax(number).clone();//ai가 minmax 알고리즘으로 찾은 배열을 number로 지정
                 ai_handler.post(new move_runable());
             }
-            ai_message.setTextColor(getResources().getColor(R.color.transparent));
+
         }
     }
 
@@ -1695,12 +1695,14 @@ public class Ai_b_Activity extends AppCompatActivity {
         return -1;
     }
     //------------------------------------------------------
+
+
     //---------------------ai관련-----------------------------------------------------------
 
     public void AI() {
+        ai_message.setTextColor(getResources().getColor(R.color.black));
         Thread th=new Thread(new airunable());
         th.start();
-
     }
 
     // 공통 변수

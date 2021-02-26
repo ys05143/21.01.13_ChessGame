@@ -536,7 +536,6 @@ import static java.lang.Thread.sleep;
 public class AiThread extends Thread { //work thread
         @Override
     public void run() {
-            ai_message.setTextColor(getResources().getColor(R.color.black));
                 AI(); //여기서 start_handler를 true로 바꿔줌
                     while(turn==false) {
                            if(start_handler) {
@@ -594,7 +593,7 @@ public class AiThread extends Thread { //work thread
                                             }
                                         }
                                         ValueAnimator ani=ValueAnimator.ofObject(new ArgbEvaluator(),getResources().getColor(R.color.gray),getResources().getColor(R.color.transparent));
-                                        ani.setDuration(5000);
+                                        ani.setDuration(3000);
                                         ani.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                                             @Override
                                             public void onAnimationUpdate(ValueAnimator animation) {
@@ -604,12 +603,13 @@ public class AiThread extends Thread { //work thread
                                         ani.start();
                                         turn = true;
                                         start_handler = false;
+                                        ai_message.setTextColor(getResources().getColor(R.color.transparent));
                                     }
                                 });
 
                            }
                     } // while
-            ai_message.setTextColor(getResources().getColor(R.color.transparent));
+
             };
 }
 
@@ -1499,7 +1499,7 @@ public class AiThread extends Thread { //work thread
      int Point = 0;
 
     public void AI() {
-        int a=0; int b=0;
+        ai_message.setTextColor(getResources().getColor(R.color.black));
         number = MinMax(number).clone();//ai가 minmax 알고리즘으로 찾은 배열을 number로 지정
         start_handler = true;
 //        for (int i = 0; i < 64; i++) { //알고리즘으로 나온 결과로 판을 바꾸는 것
