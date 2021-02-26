@@ -607,50 +607,8 @@ public class Ai_b_Activity extends AppCompatActivity {
                 flag[0] = true;
                 // switch 부문( 말의 종류에따라서 )
                 if(turn==true) {
-                    switch (number[temp_index[0]]) {
-                        case 1: {
-                            choose_num[0] = 1;
-                            rook(num, true);
-                            break;
-                        }
-                        case 2: {
-                            choose_num[0] = 2;
-                            knight(num, true);
-                            break;
-                        }
-                        case 3: {
-                            choose_num[0] = 3;
-                            bishop(num, true);
-                            break;
-                        }
-                        case 4: {
-                            choose_num[0] = 4;
-                            queen(num, true);
-                            break;
-                        }
-                        case 5: {
-                            choose_num[0] = 5;
-                            king(num, true);
-                            break;
-                        }
-                        case 6: { //일반 pawn
-                            choose_num[0] = 6;
-                            pawn(num, true);
-                            break;
-                        }
-                        case 7: { //처음 움직이는 pawn_b
-                            choose_num[0] = 6;
-                            f_pawn(num, true);
-                            break;
-                        }
-                        case 11: case 12: case 13: case 14: case 15: case 16: case 17: {
-                            clear();
-                            Toast.makeText(this,"'흑'차례입니다.",Toast.LENGTH_SHORT).show();
-                            break;
-                        }
-
-                    }
-
+                    clear();
+                    Toast.makeText(this,"'흑'차례입니다.",Toast.LENGTH_SHORT).show();
                 }
                 else if(turn==false){
                     switch (number[temp_index[0]]) {
@@ -1825,7 +1783,7 @@ public class Ai_b_Activity extends AppCompatActivity {
 
             // best_val,temp_node 갱신
             if (ret_val >= best_val) {
-                alpha  = ret_val ;
+               alpha=max(alpha,ret_val);
                 best_val = ret_val;
             }
 
@@ -2664,7 +2622,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                         // GenerateMove
                         if(a>=0&&a<=7){
                             Node[a]=14;
-                            Node[a]=0;
+                            Node[spot]=0;
                         }
                         else {
                             Node[a] = Node[spot];
@@ -2693,7 +2651,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // GenerateMove
                  if(a>=0&&a<=7){
                      Node[a]=14;
-                     Node[a]=0;
+                     Node[spot]=0;
                  }
                  else {
                      Node[a] = Node[spot];
@@ -2719,7 +2677,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                 // GenerateMove
                 if(a>=0&&a<=7){
                     Node[a]=14;
-                    Node[a]=0;
+                    Node[spot]=0;
                 }
                 else {
                     Node[a] = Node[spot];
@@ -3583,7 +3541,7 @@ public class Ai_b_Activity extends AppCompatActivity {
                     // GenerateMove
                     if(a>=56&&a<=63){
                         Node[a]=4;
-                        Node[a]=0;
+                        Node[spot]=0;
                     }
                     else {
                         Node[a] = Node[spot];
@@ -3612,7 +3570,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             // GenerateMove
             if(a>=56&&a<=63){
                 Node[a]=4;
-                Node[a]=0;
+                Node[spot]=0;
             }
             else {
                 Node[a] = Node[spot];
@@ -3638,7 +3596,7 @@ public class Ai_b_Activity extends AppCompatActivity {
             // GenerateMove
             if(a>=56&&a<=63){
                 Node[a]=4;
-                Node[a]=0;
+                Node[spot]=0;
             }
             else {
                 Node[a] = Node[spot];
