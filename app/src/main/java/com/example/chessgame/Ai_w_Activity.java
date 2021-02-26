@@ -2001,7 +2001,6 @@ public class AiThread extends Thread { //work thread
                 }
             }
         }
-
         for(int i=0;i<64;i++) {
             ret_node=node.clone();
             switch(node[i]) {
@@ -2119,7 +2118,6 @@ public class AiThread extends Thread { //work thread
                 best_val = ret_val ;
             }
         }
-
         for(int i=0;i<64;i++) {
 
             switch(node[i]) {
