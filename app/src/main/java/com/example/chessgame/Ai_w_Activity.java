@@ -3351,6 +3351,7 @@ public class AiThread extends Thread { //work thread
             if (ret_val >= best_val) {
                 best_val = ret_val ;
             }
+            if(ret_val <= alpha) return best_val;
             // GenerateMove Cancel
             Node = node.clone() ;
         }
