@@ -526,6 +526,7 @@ import static java.lang.Thread.sleep;
                 give_up(1);
             }
         });
+        ai_message.setTextColor(getResources().getColor(R.color.black));
         AiThread t = new AiThread() ;
         t.start();
     } //onCreate
@@ -601,9 +602,9 @@ public class AiThread extends Thread { //work thread
                                             }
                                         });
                                         ani.start();
+                                        ai_message.setTextColor(getResources().getColor(R.color.transparent));
                                         turn = true;
                                         start_handler = false;
-                                        ai_message.setTextColor(getResources().getColor(R.color.transparent));
                                     }
                                 });
 
@@ -817,6 +818,7 @@ public class AiThread extends Thread { //work thread
         if (Arrays.equals(f_number,number)==false) turn =false;
         if (count >= 50) end_game(0); //말 갯수 변화 없이 50수 진행되면 비긴다
         if(turn==false) {
+            ai_message.setTextColor(getResources().getColor(R.color.black));
             AiThread t = new AiThread() ;
             t.start();
         }
@@ -1499,7 +1501,6 @@ public class AiThread extends Thread { //work thread
      int Point = 0;
 
     public void AI() {
-        ai_message.setTextColor(getResources().getColor(R.color.black));
         number = MinMax(number).clone();//ai가 minmax 알고리즘으로 찾은 배열을 number로 지정
         start_handler = true;
 //        for (int i = 0; i < 64; i++) { //알고리즘으로 나온 결과로 판을 바꾸는 것
