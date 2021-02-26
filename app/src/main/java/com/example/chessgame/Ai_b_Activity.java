@@ -1775,11 +1775,13 @@ public class Ai_b_Activity extends AppCompatActivity {
                     continue;
                 }
             } // switch
+            // beta-cut  (return INF)
+            if(ret_val>=beta) return INF+1 ;
+
             // node == ret_node ( 움직임이 없을 시 )
             if(ret_val==-INF||ret_val==INF) continue;
 
-            // beta-cut  (return INF)
-            if(ret_val>=beta) return INF+1 ;
+
 
             // best_val,temp_node 갱신
             if (ret_val >= best_val) {
@@ -1836,12 +1838,14 @@ public class Ai_b_Activity extends AppCompatActivity {
                     continue ;
                 }
             } // switch
+            // alpha-cut (return -INF)
+            if(ret_val <= alpha) return -INF-1;
+
             // node == ret_node ( 움직임이 없을 시 )
             if(Arrays.equals(node,ret_node)) continue ;
             if(ret_val==-INF||ret_val==INF) continue;
 
-            // alpha-cut (return -INF)
-            if(ret_val <= alpha) return -INF-1;
+
 
             // best_val,temp_node 갱신
             if(depth==AI_DEPTH){
@@ -3025,7 +3029,6 @@ public class Ai_b_Activity extends AppCompatActivity {
                 Node[spot] = 0 ;
                 // MinMove
                 ret_val = MaxMove(Node,depth-1,alpha,beta) ;
-                // 비교  ( temp_node,best_val 갱신)
                 // 비교  ( temp_node,best_val 갱신)
                 if (ret_val <= best_val) {
                     best_val = ret_val;
