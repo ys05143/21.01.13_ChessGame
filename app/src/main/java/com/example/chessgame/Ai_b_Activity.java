@@ -1354,6 +1354,46 @@ public class Ai_b_Activity extends AppCompatActivity {
         //위 조건 모두 통과 했으면 캐슬링 가능
         return true;
     }
+    public boolean check_castling_w(int []node, int side){
+        if(side==5) { //kingside castling
+            if (is_first_move[63]!=1||is_first_move[60]!=1) return false;
+        }
+        else if(side==4){ //queenside castling
+            if (is_first_move[56]!=1||is_first_move[60]!=1) return false;
+        }
+
+        int [] Node=node.clone();
+
+        //두 기물 사이에 기물이 있는가
+        if(side==5) { //kingside castling
+            if (Node[61] != 0 || Node[62] != 0) return false;
+        }
+        else if(side==4){ //queenside castling
+            if (Node[57] != 0 || Node[58] != 0) return false;
+        }
+
+        //현재 킹이 공격 받고 있는가(처음위치 4에서 공격받고 있는가)
+        if(is_attack(Node,60)) return false;
+
+        //캐슬링을 했을 때 두 기물중 하나라도 공격 받고 있는가
+        if(side==5){
+            Node[62]=Node[60];
+            Node[61]=Node[63];
+            Node[60]=0;
+            Node[63]=0;
+            if(is_attack(Node,62)||is_attack(Node,61)) return false;
+        }
+        else if(side==4){
+            Node[57]=Node[60];
+            Node[58]=Node[56];
+            Node[60]=0;
+            Node[56]=0;
+            if(is_attack(Node,57)||is_attack(Node,58)) return false;
+        }
+
+        //위 조건 모두 통과 했으면 캐슬링 가능
+        return true;
+    }
 
 
     public boolean is_attack(int []node,int n){
@@ -1740,6 +1780,37 @@ public class Ai_b_Activity extends AppCompatActivity {
         int ret_val ;
         int  best_val = -INF +1 ;
 
+        if(check_castling_w(node,5)){
+            ret_val=Kingside_castlingMax(node,depth,alpha,beta);
+//            // beta-cut  (return INF)
+//            if(ret_val>=beta) return INF+1 ;
+
+//            // node == ret_node ( 움직임이 없을 시 )
+//            if(ret_val==-INF||ret_val==INF)
+
+            // best_val,temp_node 갱신
+            if (ret_val >= best_val) {
+                alpha=max(alpha,ret_val);
+                best_val = ret_val;
+            }
+        }
+
+        if(check_castling_w(node,4)){
+            ret_val=Queenside_castlingMax(node,depth,alpha,beta);
+//            // beta-cut  (return INF)
+//            if(ret_val>=beta) return INF+1 ;
+
+//            // node == ret_node ( 움직임이 없을 시 )
+//            if(ret_val==-INF||ret_val==INF)
+
+
+
+            // best_val,temp_node 갱신
+            if (ret_val >= best_val) {
+                alpha=max(alpha,ret_val);
+                best_val = ret_val;
+            }
+        }
 
         for(int i=0;i<64;i++) {
             switch(node[i]) {
@@ -1802,6 +1873,82 @@ public class Ai_b_Activity extends AppCompatActivity {
         int  best_val = INF -1  ;
         int[] ret_node = node.clone();
         int[] temp_node = new int[64] ;
+
+        if(check_castling_b(node,5)){
+            ret_val=Kingside_castlingMin(node,depth,ret_node,alpha,beta);
+//            // alpha-cut (return -INF)
+//            if(ret_val <= alpha) return -INF-1;
+
+//            // node == ret_node ( 움직임이 없을 시 )
+//            if(Arrays.equals(node,ret_node))
+//            if(ret_val==-INF||ret_val==INF)
+
+
+
+            // best_val,temp_node 갱신
+            if(depth==AI_DEPTH){
+                if(ret_val<=best_val){
+                    best_val = ret_val;
+                    beta = min(beta,ret_val) ;
+                    temp_node = ret_node.clone();
+//                    //  random-arraylist reset
+//                    cand.clear();
+//                    t=ret_val;
+////                    Count=0;
+
+                }
+//                else if(ret_val==best_val){
+//                    beta = ret_val;
+//                    best_val = ret_val;
+//                    cand.add(ret_node.clone());
+////                    Count++;
+//                }
+            }
+            else {
+                if (ret_val <= best_val) {
+                    beta = min(beta,ret_val) ;
+                    best_val = ret_val;
+                }
+            }
+        }
+
+        if(check_castling_b(node,4)){
+            ret_val=Queenside_castlingMin(node,depth,ret_node,alpha,beta);
+//            // alpha-cut (return -INF)
+//            if(ret_val <= alpha) return -INF-1;
+
+//            // node == ret_node ( 움직임이 없을 시 )
+//            if(Arrays.equals(node,ret_node))
+//            if(ret_val==-INF||ret_val==INF)
+
+
+
+            // best_val,temp_node 갱신
+            if(depth==AI_DEPTH){
+                if(ret_val<=best_val){
+                    best_val = ret_val;
+                    beta = min(beta,ret_val) ;
+                    temp_node = ret_node.clone();
+//                    //  random-arraylist reset
+//                    cand.clear();
+//                    t=ret_val;
+////                    Count=0;
+
+                }
+//                else if(ret_val==best_val){
+//                    beta = ret_val;
+//                    best_val = ret_val;
+//                    cand.add(ret_node.clone());
+////                    Count++;
+//                }
+            }
+            else {
+                if (ret_val <= best_val) {
+                    beta = min(beta,ret_val) ;
+                    best_val = ret_val;
+                }
+            }
+        }
 
         for(int i=0;i<64;i++) {
             ret_node=node.clone();
@@ -1889,6 +2036,7 @@ public class Ai_b_Activity extends AppCompatActivity {
 
         return best_val ;
     }
+
 
     public int Evalstate_w(int[] number) {// 현재 상태를 평가하는 평가함수 (일단 ai가 백 이라는 가정으로 작성)
         int value = 0;
@@ -3736,6 +3884,102 @@ public class Ai_b_Activity extends AppCompatActivity {
         if (best_val!=INF)
             for(int i=0 ; i<64 ; i++) best_node[i] = temp_node[i] ;
         return best_val ;
+    }
+
+    public int Kingside_castlingMax(int[] node,int depth,int alpha,int beta){ //white가 캐슬링
+        int[] Node=node.clone();  //
+        int  best_val = -INF  ;
+        int ret_val= -INF ;
+
+        //GenerateMove
+        Node[62]=Node[60];
+        Node[61]=Node[63];
+        Node[60]=0;
+        Node[63]=0;
+        // MinMove
+        ret_val = MinMove(Node,depth-1,alpha,beta) ;
+        if (ret_val >= best_val) {
+            best_val = ret_val;
+            alpha = max(alpha,ret_val) ;
+        }
+        if(ret_val >= beta) {
+            return best_val;
+        }
+
+        return best_val;
+    }
+    public int Queenside_castlingMax(int[] node,int depth,int alpha,int beta){
+        int[] Node=node.clone();  //
+        int  best_val = -INF  ;
+        int ret_val= -INF ;
+
+        //GenerateMove
+        Node[57]=Node[60];
+        Node[58]=Node[56];
+        Node[60]=0;
+        Node[56]=0;
+        // MinMove
+        ret_val = MinMove(Node,depth-1,alpha,beta) ;
+        if (ret_val >= best_val) {
+            best_val = ret_val;
+            alpha = max(alpha,ret_val) ;
+        }
+        if(ret_val >= beta) {
+            return best_val;
+        }
+
+        return best_val;
+    }
+    public int Kingside_castlingMin(int[] node,int depth,int[] best_node,int alpha,int beta){
+        int[] Node=node.clone();  //
+        int  best_val = INF  ;
+        int ret_val = INF;
+
+        int[] temp_node = node.clone();
+        // GenerateMove
+        Node[6]=Node[4];
+        Node[5]=Node[7];
+        Node[4]=0;
+        Node[7]=0;
+        // MinMove
+        ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+        // 비교  ( temp_node,best_val 갱신)
+        if (ret_val <= best_val) {
+            best_val = ret_val;
+            temp_node = Node.clone();
+            beta=min(beta,ret_val) ;
+        }
+        if(ret_val <= alpha) return best_val;
+
+        if (best_val!=INF)
+            for(int i=0 ; i<64 ; i++) best_node[i] = temp_node[i] ;
+        return best_val;
+
+    }
+    public int Queenside_castlingMin(int[] node,int depth,int[] best_node,int alpha,int beta){
+        int[] Node=node.clone();  //
+        int  best_val = INF  ;
+        int ret_val = INF;
+
+        int[] temp_node = node.clone();
+        // GenerateMove
+        Node[1]=Node[4];
+        Node[2]=Node[0];
+        Node[4]=0;
+        Node[0]=0;
+        // MinMove
+        ret_val = MaxMove(Node,depth-1,alpha,beta) ;
+        // 비교  ( temp_node,best_val 갱신)
+        if (ret_val <= best_val) {
+            best_val = ret_val;
+            temp_node = Node.clone();
+            beta=min(beta,ret_val) ;
+        }
+        if(ret_val <= alpha) return best_val;
+
+        if (best_val!=INF)
+            for(int i=0 ; i<64 ; i++) best_node[i] = temp_node[i] ;
+        return best_val;
     }
 
 
