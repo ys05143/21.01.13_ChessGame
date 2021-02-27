@@ -1045,7 +1045,7 @@
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_marginStart="40dp"
-        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
         android:layout_marginTop="80dp"
         android:layout_marginBottom="45dp"
         android:text="GG"
@@ -1054,6 +1054,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/draw_b"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <Button
         android:id="@+id/give_up_w"
@@ -1082,6 +1083,60 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/give_up_w"
         app:layout_constraintTop_toBottomOf="@+id/board" />
+
+    <Button
+        android:id="@+id/kingside_castling_w"
+        android:layout_width="180dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="180dp"
+        android:layout_marginBottom="80dp"
+        android:text="kingside castling"
+        app:backgroundTint="@color/brown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/queenside_castling_w"
+        app:layout_constraintTop_toBottomOf="@+id/board" />
+
+    <Button
+        android:id="@+id/queenside_castling_w"
+        android:layout_width="180dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="180dp"
+        android:layout_marginBottom="80dp"
+        android:text="queenside castling"
+        app:backgroundTint="@color/brown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/kingside_castling_w"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/board" />
+
+    <Button
+        android:id="@+id/kingside_castling_b"
+        android:layout_width="180dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="180dp"
+        android:text="kingside castling"
+        app:backgroundTint="@color/beige"
+        app:layout_constraintBottom_toTopOf="@+id/board"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/queenside_castling_b"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/queenside_castling_b"
+        android:layout_width="180dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="180dp"
+        android:text="queenside castling"
+        app:backgroundTint="@color/beige"
+        app:layout_constraintBottom_toTopOf="@+id/board"
+        app:layout_constraintEnd_toStartOf="@+id/kingside_castling_b"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
