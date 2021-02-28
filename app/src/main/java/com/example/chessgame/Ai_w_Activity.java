@@ -1575,36 +1575,36 @@ public class AiThread extends Thread { //work thread
      public int RookMax_c(int[] node,int spot,int n) {
          for (int a = spot + 8; a < 64; a = a + 8) {//하
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int a = spot - 8; a >= 0; a = a - 8) {//상
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < spot % 8; b++) {//좌
              int a = spot - (b+1) ;
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우
              int a = spot + (b+1) ;
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
 
@@ -1667,38 +1667,38 @@ public class AiThread extends Thread { //work thread
          for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
              int a = spot + (9 * (b + 1));
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
 
          for (int b = 0; b < spot % 8; b++) { //좌 대각 위
              int a = spot - (9 * (b + 1));
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < spot % 8; b++) { //좌 대각 아래
              int a = spot + (7 * (b + 1));
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 위
              int a = spot - (7 * (b + 1));
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          return -1 ;
@@ -1707,72 +1707,72 @@ public class AiThread extends Thread { //work thread
 
          for (int a = spot + 8; a < 64; a = a + 8) {//하
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int a = spot - 8; a >= 0; a = a - 8) {//상
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < spot % 8; b++) {//좌
              int a = spot - (b + 1);
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우
              int a = spot + (b + 1);
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
              int a = spot + (9 * (b + 1));
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < spot % 8; b++) { //좌 대각 위
              int a = spot - (9 * (b + 1));
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < spot % 8; b++) { //좌 대각 아래
              int a= spot + (7 * (b + 1));
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
              int a = spot - (7 * (b + 1));
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          return -1;
@@ -1826,10 +1826,10 @@ public class AiThread extends Thread { //work thread
          // 1칸 전진
          for (int a = spot - 8; a >= spot - 8; a = a - 8) {
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          int a= spot-7 ;//우 대각 위에 상대방 말이 있을 때
@@ -1849,10 +1849,10 @@ public class AiThread extends Thread { //work thread
          // 1칸/2칸 전진
          for (int a = spot - 8; a >= spot - 16; a = a - 8) {
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          int a= spot-7 ;//우 대각 위에 상대방 말이 있을 때
@@ -1871,36 +1871,36 @@ public class AiThread extends Thread { //work thread
      public int RookMin_c(int[] node,int spot,int n) {
          for (int a = spot + 8; a < 64; a = a + 8) {//하
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int a = spot - 8; a >= 0; a = a - 8) {//상
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < spot % 8; b++) {//좌
              int a = spot - (b+1) ;
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우
              int a = spot + (b+1) ;
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
 
@@ -1963,38 +1963,38 @@ public class AiThread extends Thread { //work thread
          for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
              int a = spot + (9 * (b + 1));
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
 
          for (int b = 0; b < spot % 8; b++) { //좌 대각 위
              int a = spot - (9 * (b + 1));
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < spot % 8; b++) { //좌 대각 아래
              int a = spot + (7 * (b + 1));
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 위
              int a = spot - (7 * (b + 1));
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          return -1 ;
@@ -2003,72 +2003,72 @@ public class AiThread extends Thread { //work thread
 
          for (int a = spot + 8; a < 64; a = a + 8) {//하
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int a = spot - 8; a >= 0; a = a - 8) {//상
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < spot % 8; b++) {//좌
              int a = spot - (b + 1);
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우
              int a = spot + (b + 1);
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
              int a = spot + (9 * (b + 1));
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < spot % 8; b++) { //좌 대각 위
              int a = spot - (9 * (b + 1));
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < spot % 8; b++) { //좌 대각 아래
              int a= spot + (7 * (b + 1));
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          for (int b = 0; b < 8 - ((spot % 8) + 1); b++) {//우 대각 아래
              int a = spot - (7 * (b + 1));
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          return -1;
@@ -2121,10 +2121,10 @@ public class AiThread extends Thread { //work thread
          // 1칸 전진
          for (int a = spot + 8; a <= spot + 8; a = a + 8) {
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          int a= spot+9 ;//우 대각 아래에 상대방 말이 있을 때
@@ -2144,10 +2144,10 @@ public class AiThread extends Thread { //work thread
          // 1칸/2칸 전진
          for (int a = spot + 8; a <= spot + 16; a = a + 8) {
              if (in_board(a)) {
-                 //  말이 있을경우
-                 if (node[a] != 0) break;
                  //말이 해당자리 n을 공격할 수 있을 때
                  if (a == n) return n;
+                 //  말이 있을경우
+                 if (node[a] != 0) break;
              }
          }
          int a= spot+9 ;//우 대각 아래에 상대방 말이 있을 때
